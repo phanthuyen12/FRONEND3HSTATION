@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { topupService, Topup } from "../../config";
+import { topupService } from "../../config";
+
+type Topup = {
+  code: string;
+  bank?: string;
+  amount?: number | string;
+  topupStatus: TopupStatus;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 type TopupStatus = 'chua-thanh-toan' | 'het-han' | 'da-thanh-cong';
 

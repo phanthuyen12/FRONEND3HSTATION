@@ -89,7 +89,7 @@ class DocumentService {
       }
 
       // Handle nested data structure: {success: true, data: {data: [...], pagination: {...}}}
-      let responseData = body.data;
+      let responseData: any = body.data;
       if (responseData && typeof responseData === 'object' && 'data' in responseData) {
         // Already nested, use as is
         const nested = responseData as any;

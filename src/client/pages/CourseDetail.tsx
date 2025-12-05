@@ -92,7 +92,7 @@ const CourseDetail: React.FC = () => {
   const getCoursePriceDisplay = (course: Course | null): string => {
     if (!course) return "Liên hệ";
     
-    const isFree = course.is_free === true || course.is_free === 1 || course.is_free === '1';
+    const isFree = [true, 1, '1'].includes(course.is_free as any);
     const priceValue = typeof course.price === 'number' 
       ? course.price 
       : typeof course.price === 'string' 
@@ -116,7 +116,7 @@ const CourseDetail: React.FC = () => {
   const requiresPayment = (course: Course | null): boolean => {
     if (!course) return false;
     
-    const isFree = course.is_free === true || course.is_free === 1 || course.is_free === '1';
+    const isFree = [true, 1, '1'].includes(course.is_free as any);
     const priceValue = typeof course.price === 'number' 
       ? course.price 
       : typeof course.price === 'string' 
@@ -377,7 +377,7 @@ const CourseDetail: React.FC = () => {
       {/* Enrollment Confirmation Modal */}
       {showEnrollModal && course && (() => {
         const displayPrice = getCoursePriceDisplay(course);
-        const isFree = course.is_free === true || course.is_free === 1 || course.is_free === '1';
+        const isFree = [true, 1, '1'].includes(course.is_free as any);
         const priceValue = typeof course.price === 'number' 
           ? course.price 
           : typeof course.price === 'string' 

@@ -5,12 +5,12 @@ import { elearningService } from "../../config";
 
 interface MyCourse {
   course_id: number;
-  status: string;
-  created_at: string;
+  status?: string;
+  created_at?: string;
   title: string;
-  thumbnail_url: string;
-  is_free: boolean;
-  price: number;
+  thumbnail_url?: string;
+  is_free?: boolean;
+  price?: number;
 }
 
 const MyCourses: React.FC = () => {
@@ -24,8 +24,11 @@ const MyCourses: React.FC = () => {
         setLoading(true);
         const data = await elearningService.getMyCourses();
         console.log("My courses loaded:", data);
-        // getMyCourses returns Course[] directly, not wrapped in data
-        setCourses(Array.isArray(data) ? data : []);
+        const normalized = (Array.isArray(data) ? data : []).map((d: any) => ({
+          ...d,
+          course_id: d.course_id ?? d.id ?? 0,
+        }));
+        setCourses(normalized);
       } catch (error) {
         console.error("Không thể tải khóa học của tôi", error);
         setCourses([]);
@@ -140,11 +143,20 @@ const MyCourses: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>Đăng ký: {new Date(item.created_at).toLocaleDateString('vi-VN')}</span>
+                  <span>
+                    Đăng ký:{" "}
+                    {item.created_at
+                      ? new Date(item.created_at).toLocaleDateString('vi-VN')
+                      : "-"}
+                  </span>
                 </div>
                 <div className="mt-auto flex items-center justify-between pt-2">
                   <span className="text-primary font-semibold text-sm">
-                    {item.is_free ? "Miễn phí" : `${item.price.toLocaleString('vi-VN')}đ`}
+                    {item.is_free
+                      ? "Miễn phí"
+                      : item.price !== undefined
+                      ? `${item.price.toLocaleString('vi-VN')}đ`
+                      : "Liên hệ"}
                   </span>
                   <Link
                     to={`/courses/${item.course_id}`}

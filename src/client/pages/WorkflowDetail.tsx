@@ -156,7 +156,7 @@ const WorkflowDetail: React.FC = () => {
             <div className="p-6 space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-500">Loại:</span>
-                <span className="font-medium">{wf.category_name || wf.category || 'N/A'}</span>
+                <span className="font-medium">{(wf as any).category_name || wf.category || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Giá trọn gói:</span>

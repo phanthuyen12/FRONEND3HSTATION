@@ -278,9 +278,9 @@ const WorkflowsAdminList: React.FC = () => {
                         {wf.category || wf.categoryId || "-"}
                       </td>
                       <td className="px-3 py-3 text-xs text-slate-600">
-                        {wf.tags && wf.tags.length > 0 ? (
+                        {wf.tags && (Array.isArray(wf.tags) ? wf.tags.length > 0 : true) ? (
                           <div className="flex flex-wrap gap-1">
-                            {wf.tags.map((tag, idx) => (
+                            {(Array.isArray(wf.tags) ? wf.tags : wf.tags ? [wf.tags] : []).map((tag, idx) => (
                               <span
                                 key={idx}
                                 className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px]"
@@ -308,7 +308,7 @@ const WorkflowsAdminList: React.FC = () => {
                         <button
                           type="button"
                           className="btn btn-xs bg-rose-50 text-rose-600 text-xs"
-                          onClick={() => handleDelete(wf.id)}
+                          onClick={() => handleDelete(String(wf.id))}
                         >
                           <i className="mgc_delete_line mr-1" />
                           Xoá
@@ -348,7 +348,7 @@ const WorkflowsAdminList: React.FC = () => {
                 Trước
               </button>
               {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum;
+                let pageNum: number;
                 if (pagination.totalPages <= 5) {
                   pageNum = i + 1;
                 } else if (pagination.page <= 3) {
