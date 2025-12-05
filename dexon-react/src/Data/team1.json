@@ -1,0 +1,32 @@
+[
+  {
+    "img": "/assets/images/resource/team.png",  
+    "title": "Rosa X. Foster",
+    "desc": "CEO & Founder"
+  },
+  {
+    "img": "/assets/images/resource/team2.png",  
+    "title": "Darel M. Stewarld",
+    "desc": "HR Manager"
+  },
+  {
+    "img": "/assets/images/resource/team3.png",  
+    "title": "Kenneth Ames",
+    "desc": "Social Marketer"
+  },  
+  {
+    "img": "/assets/images/resource/team4.png",  
+    "title": "Cameron William",
+    "desc": "UI/UX DESIGNER"
+  },
+  {
+    "img": "/assets/images/resource/team5.png",  
+    "title": "Willard Thompson",
+    "desc": "UI Designer"
+  },
+  {
+    "img": "/assets/images/resource/team6.png",  
+    "title": "Amanda Campbell",
+    "desc": "Digital Marketer"
+  }
+]

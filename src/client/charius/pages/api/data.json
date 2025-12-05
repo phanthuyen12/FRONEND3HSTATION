@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "proImg": "/product/1.jpg",
+    "title": "Makita miter saw",
+    "slug": "Makita-miter-saw",
+    "price": "340.00",
+    "delPrice": "380.00",
+    "brand":"Gucci",
+    "size":"Xl"
+  },
+  {
+    "id": 2,
+    "proImg": "/product/2.jpg",
+    "title": "Impact Drill Yato Brand",
+    "slug": "Impact-Drill-Yato-Brand",
+    "price": "65.00",
+    "delPrice": "85.00",
+    "brand":"Gucci",
+    "size":"XXl"
+  },
+  {
+    "id": 3,
+    "proImg": "/product/3.jpg",
+    "title": "Contractor Grade",
+    "slug": "Contractor-Grade",
+    "price": "285.00",
+    "delPrice": "300.00",
+    "brand":"Gucci",
+    "size":"L"
+  },
+  {
+    "id": 4,
+    "proImg": "/product/4.jpg",
+    "title": "LiIon Compact Drill Driver",
+    "slug": "LiIon-Compact-Drill-Driver",
+    "price": "176.00",
+    "delPrice": "178.00",
+    "brand":"Gucci",
+    "size":"M"
+  },
+  {
+    "id": 5,
+    "proImg": "/product/5.jpg",
+    "title": "Cutter Grinder",
+    "slug": "Cutter-Grinder",
+    "price": "125.00",
+    "delPrice": "130.00",
+    "brand":"Gucci",
+    "size":"XXl"
+  },
+  {
+    "id": 6,
+    "proImg": "/product/6.jpg",
+    "title": "Cut off Saw 3000W (4HP)",
+    "slug": "Cut-off-Saw ",
+    "price": "548.00",
+    "delPrice": "600.00",
+    "brand":"Gucci",
+    "size":"Xl"
+  }
+]

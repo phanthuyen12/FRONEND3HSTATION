@@ -1,0 +1,73 @@
+import { TopupStatus, topupHistory } from "./topupHistory";
+import { UserProfile, mockUsers } from "./user";
+
+export type AdminTopupStatus = "cho-duyet" | "da-duyet" | "da-huy";
+
+export interface AdminTopup {
+  code: string;
+  userId: string;
+  bank: string;
+  amount: number;
+  status: AdminTopupStatus;
+  topupStatus: TopupStatus;
+  createdAt: string;
+  updatedAt: string;
+  statusLabel?: string;
+  statusColor?: string;
+}
+
+export interface AdminTopupExpanded extends AdminTopup {
+  user?: UserProfile;
+}
+
+// Gắn tạm các giao dịch nạp tiền demo vào user cho admin quản lý
+export const adminTopups: AdminTopup[] = [
+  {
+    code: "987543216",
+    userId: "u-001",
+    bank: "Vietcombank",
+    amount: 60000,
+    status: "da-duyet",
+    topupStatus: "da-thanh-cong",
+    createdAt: "02/12/2025 20:15:46",
+    updatedAt: "02/12/2025 20:16:10",
+  },
+  {
+    code: "563827491",
+    userId: "u-001",
+    bank: "Vietcombank",
+    amount: 1000,
+    status: "cho-duyet",
+    topupStatus: "da-thanh-cong",
+    createdAt: "02/12/2025 12:27:48",
+    updatedAt: "02/12/2025 12:27:48",
+  },
+  {
+    code: "631759284",
+    userId: "u-002",
+    bank: "Vietcombank",
+    amount: 10000,
+    status: "cho-duyet",
+    topupStatus: "da-thanh-cong",
+    createdAt: "29/11/2025 00:55:37",
+    updatedAt: "29/11/2025 00:55:37",
+  },
+  {
+    code: "367281549",
+    userId: "u-003",
+    bank: "Vietcombank",
+    amount: 10000,
+    status: "da-huy",
+    topupStatus: "het-han",
+    createdAt: "26/11/2025 03:04:22",
+    updatedAt: "26/11/2025 03:30:00",
+  },
+];
+
+export const expandAdminTopups = (): AdminTopupExpanded[] =>
+  adminTopups.map((t) => ({
+    ...t,
+    user: mockUsers.find((u) => u.id === t.userId),
+  }));
+
+

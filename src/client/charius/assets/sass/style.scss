@@ -1,0 +1,152 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+Theme Name:     Charius - Charity Nonprofit HTML5 Template
+Version:        1.0.0
+-------------------------------------------------------------------*/
+
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+
+1. General
+	1.1 Theme Reset Style
+	1.2 Global Elements
+
+2. header
+	2.1 topbar
+	2.2 navigation
+
+3. content
+	3.1 wpo-hero-slider
+	3.2 wpo-features-area
+	3.3 wpo-about-section
+	3.4 wpo-causes-section
+	3.5 wpo-service-section
+	3.6 wpo-cta-section
+	3.7 wpo-event-section
+	3.8 wpo-fun-fact-section
+	3.9 wpo-testimonial-section
+	3.10 wpo-instagram-section
+	3.11 wpo-blog-section 
+	3.12 wpo-partners-section 
+
+4. wpo-footer
+
+5. Home-style-2
+   5.1 wpo-service-section-s2
+   5.2 wpo-about-section-s2 
+   5.3 wpo-cta-section-s2
+   5.4 wpo-causes-section-s2
+   5.5 wpo-fun-fact-section-s2
+   5.6 wpo-blog-section-s2 
+
+6. Home-style-3
+   6.1 wpo-about-section-s3
+   6.2 wpo-fun-fact-section-s3
+   6.3 wpo-causes-section-s3
+   6.4 wpo-instagram-section-s2 
+   6.5 wpo-testimonial-section-s2
+   6.6 wpo-volunteer-section
+
+7. Home-style-4
+   7.1 wpo-about-section-s4
+   7.2 wpo-cta-section-s3 
+   7.3 wpo-fun-fact-section-s4
+
+8. event-details-page
+
+9. wpo-case-details-area
+
+10. wpo-donation-page-area
+
+11. volunteer page
+
+12. wpo-team-single
+
+13. wpo-service-single-section
+
+14. wpo-faq-page
+
+15. wpo-blog-pg-section
+
+16. wpo-blog-single-section
+
+17. wpo-contact-pg-section
+
+18. login-design
+
+19. error-404-section
+
+
+----------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------------
+1. General
+----------------------------------------------------------------*/
+
+// helpers
+@import "helpers/variables";
+@import "helpers/functions";
+@import "helpers/mixins";
+
+// base
+@import "base/base";
+
+
+// components
+@import "components/section-title";
+@import "components/buttons";
+@import "components/form";
+@import "components/social-links";
+@import "components/page-title";
+@import "components/preloader";
+@import "components/blog-sidebar";
+@import "components/pagination";
+
+// layout
+@import "layout/header";
+@import "layout/hero-slider";
+@import "layout/footer";
+
+// components
+@import "components/sticky-header";
+
+
+// page
+@import "page/home-default";
+
+@import "page/home-style-2";
+
+@import "page/home-style-3";
+
+@import "page/home-style-4";
+
+@import "page/event-single";
+
+@import "page/cause-single";
+
+@import "page/donate";
+
+@import "page/volunteer";
+
+@import "page/volunteer-single";
+
+@import "page/service-single";
+
+@import "page/faq";
+
+@import "page/_blog";
+
+@import "page/_blog-single";
+
+@import "page/contact";
+
+@import "page/auth-page";
+
+@import "page/error-404";
+
+
+

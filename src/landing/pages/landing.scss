@@ -1,0 +1,121 @@
+// Landing page styles - Scoped để không ảnh hưởng đến CSS hiện tại
+.landing-h3station {
+  // Reset và base styles chỉ áp dụng trong landing
+  * {
+    box-sizing: border-box;
+  }
+
+  // Topbar
+  .landing-topbar {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  // Hero Section
+  .landing-hero {
+    background: linear-gradient(135deg, #fef3c7 0%, #ffffff 50%, #fef9e7 100%);
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+  }
+
+  // Features Section
+  .landing-features {
+    .bg-white {
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  // Pricing Section
+  .landing-pricing {
+    .bg-white,
+    .bg-gradient-to-br {
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  // Benefits Section
+  .landing-benefits {
+    .bg-white {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // Testimonials Section
+  .landing-testimonials {
+    .bg-white {
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  // Commitments Section
+  .landing-commitments {
+    .bg-white {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+      }
+    }
+  }
+
+  // CTA Section
+  .landing-cta {
+    background: linear-gradient(135deg, #eab308 0%, #f59e0b 100%);
+  }
+
+  // Footer
+  .landing-footer {
+    background: #111827;
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    .landing-hero {
+      min-height: 500px;
+      padding: 2rem 0;
+    }
+
+    h1 {
+      font-size: 2rem !important;
+    }
+
+    h2 {
+      font-size: 2rem !important;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
