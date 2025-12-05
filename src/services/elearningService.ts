@@ -76,7 +76,7 @@ class ElearningService {
   private api: string;
 
   constructor() {
-    this.api = 'http://localhost:3000';
+    this.api = 'https://api.3hstation.com';
   }
 
   // Helper fetch wrapper
