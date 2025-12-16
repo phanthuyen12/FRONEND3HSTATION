@@ -42,7 +42,7 @@ class VpsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'http://localhost:3000'
+    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {

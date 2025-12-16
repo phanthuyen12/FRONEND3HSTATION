@@ -159,7 +159,7 @@ class AdminElearningService {
   private AUTH_SESSION_KEY = 'konrix_user';
 
   constructor() {
-    this.api = 'http://localhost:3000';
+    this.api = 'https://api.3hstation.com';
   }
 
   // Helper để lấy token từ sessionStorage
