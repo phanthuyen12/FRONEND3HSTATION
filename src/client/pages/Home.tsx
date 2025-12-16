@@ -429,13 +429,11 @@ const Home: React.FC = () => {
                         </p>
                         <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
                           <span className="text-primary font-bold text-lg">
-                            {!workflow.price || workflow.price === 0 || workflow.price === "0" || workflow.price === "Miễn phí"
+                            {!workflow.price || workflow.price === "0" || workflow.price === "Miễn phí" || parseFloat(workflow.price) === 0
                               ? "Miễn phí"
-                              : (typeof workflow.price === 'number'
-                                ? `${workflow.price.toLocaleString('vi-VN')} VNĐ`
-                                : (typeof workflow.price === 'string' && !isNaN(parseFloat(workflow.price))
-                                  ? `${parseFloat(workflow.price).toLocaleString('vi-VN')} VNĐ`
-                                  : workflow.price))}
+                              : (typeof workflow.price === 'string' && !isNaN(parseFloat(workflow.price))
+                                ? `${parseFloat(workflow.price).toLocaleString('vi-VN')} VNĐ`
+                                : workflow.price)}
                           </span>
                           <span className="text-xs text-primary font-semibold flex items-center gap-1">
                             Xem chi tiết

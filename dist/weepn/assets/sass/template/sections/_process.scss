@@ -1,0 +1,277 @@
+.process-layout1{
+    .container-style1{
+        background-color: $title-color;
+        border-radius: 20px;
+        position: relative;
+    }
+    .process-img{
+        position: relative;
+    }
+    .process-list{
+        height: 520px;
+    }
+}
+.process-style1{
+    align-items: start;
+    position: relative;
+    margin-bottom: 60px;
+    padding-left: 110px;
+    height: 80px;
+    width: max-content;
+    &:not(:last-child){
+        transition: all 0.3s ease;
+        &::after{
+            content: '';
+            bottom: -50px;
+            left: 40px;
+            position: absolute;
+            height: 40px;
+            width: 2px;
+            background-color: $smoke-color;
+            transition: all 0.3s ease;
+        }
+        &.active{
+            height: 100px;
+            .accordion-collapse{
+                &.show{
+                    .process-text{
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    &:hover{
+        .process-icon{
+            background-color: $secondary-color;
+            img{
+                filter: invert(42%) sepia(0%) saturate(387%) hue-rotate(15deg) brightness(45%) contrast(165%);
+            }
+            .numbar{
+                color: $title-color;
+                background-color: $theme-color;
+            }
+        }
+    }
+    &.active{
+        &::after{
+            height: 60px;
+        }
+        .process-icon{
+            background-color: $secondary-color;
+            img{
+                filter: invert(42%) sepia(0%) saturate(387%) hue-rotate(15deg) brightness(45%) contrast(165%);
+            }
+            .numbar{
+                color: $title-color;
+                background-color: $theme-color;
+            }
+        }
+        .process-title{
+            color: $theme-color;
+        }
+    }
+    .process-icon{
+        width: 100%;
+        height: 80px;
+        line-height: 80px;
+        max-width: 80px;
+        text-align: center;
+        background-color: $body-color;
+        border-radius: 50%;
+        position: relative;
+        margin-right: 30px;
+        transition: all 0.5s ease;
+        position: absolute;
+        left: 0;
+       
+        .numbar{
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: $white-color;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            background-color: $theme-color2;
+            display: block;
+            transition: all 0.5s ease;
+        }
+        img{
+            transition: all 0.5s ease;
+        }
+    }
+    .process-title{
+        font-size: 30px;
+        padding: 0;
+        border: none;
+        margin-bottom: 32px;
+        top: 22px;
+        line-height: 132%;
+        font-family: $title-font;
+        font-weight: 700;
+        color: $white-color;
+        position: relative;
+        transition: all 0.5s ease;
+        cursor: pointer;
+        text-align: left;
+        &::after{
+            content: '';
+            display: none;
+        }
+        &:hover{
+            color: $theme-color;
+        }
+        &:focus{
+            border: none;
+            box-shadow: none;
+        }
+    }
+    .accordion-collapse {
+        border: none;
+    }
+    .process-title:not(.collapsed) {
+        background-color: transparent;
+    }
+    .process-text{
+        color: $white-color;
+        max-width: 50ch;
+        margin-bottom: 0; 
+    }
+    .process-content {
+        padding: 0;
+    }
+}
+
+.process-style2{
+    position: relative;
+    transform: translateY(-100px);
+    padding: 60px 60px 20px 60px;
+    background-color: $body-bg;
+    border-radius: 10px;
+    z-index: 1;
+    height: 100%;
+    .process-item{
+        padding: 30px;
+        border-radius: 20px;
+        background-color: $title-color;
+        position: relative;
+        height: 100%;
+        transition: all 0.5s ease;
+        &:hover{
+            background-color: $theme-color;
+            .process-title{
+                color: $title-color;
+                transition: all 0.5s ease;
+            }
+            .process-text{
+                color: $title-color;
+                transition: all 0.5s ease;
+            }
+            .process-icon{
+                background-color: $title-color;
+            }
+            .icon-btn{
+                background-color: $secondary-color;
+            }
+        }
+    }
+    .process-inner{
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    .process-icon {
+        max-width: 60px;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        background-color: var(--body-color);
+        border-radius: 10px;
+        margin-right: 20px;
+        transition: all 0.5s ease;
+        img{
+            max-width: 30px;
+        }
+    }
+    .process-title{
+        color: $white-color;
+        margin-bottom: 0;
+        line-height: 125%;
+        transition: all 0.5s ease;
+    }
+    .process-text{
+        font-size: 14px;
+        line-height: 170%;
+        font-family: $body-font;
+        margin-bottom: 0;
+        transition: all 0.5s ease;
+    }
+    .shep-btn {
+        position: absolute;
+        right: -1px;
+        bottom: -1px;
+        transform: rotate(90deg);
+        transition: all 0.5s ease;
+        svg path {
+            fill: var(--body-bg) !important;
+        }
+    }
+    .icon-btn {
+        color: $title-color;
+        font-weight: 700;
+        border-radius: 50%;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-size: 14px;
+    }
+}
+
+@include md{
+    .process-layout1{
+        .process-list {
+            height: auto;
+        }
+    }
+}
+@include sm{
+    .process-style1{
+        width: 100%;
+    } 
+}
+
+@include xs{
+    .process-style2 {
+        position: relative;
+        transform: unset;
+        padding: 0;
+        background-color: var(--body-bg);
+        .process-inner {
+            align-items: center;
+        }
+    }
+    .container-style2{
+        margin: 80px auto;
+    }
+    .process-style1{
+        .process-icon{
+            margin-right: 15px;
+        }
+    } 
+    .process-style1.active {
+        height: 100%;
+    }
+    .process-style1:not(:last-child).active{
+        height: 100%;
+    }
+    .process-style1::after {
+        display: none;
+    }
+    .process-style1 .process-title{
+        font-size: 20px;
+    }
+}

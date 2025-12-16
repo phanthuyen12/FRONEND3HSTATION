@@ -170,13 +170,11 @@ const Workflows: React.FC = () => {
                   )}
                   <div className="flex items-center justify-between mt-auto">
                     <span className="text-primary font-semibold text-sm">
-                      {!wf.price || wf.price === 0 || wf.price === "0" || wf.price === "Miễn phí"
+                      {!wf.price || wf.price === "0" || wf.price === "Miễn phí" || parseFloat(wf.price) === 0
                         ? "Miễn phí"
-                        : (typeof wf.price === 'number'
-                          ? `${wf.price.toLocaleString('vi-VN')} VNĐ`
-                          : (typeof wf.price === 'string' && !isNaN(parseFloat(wf.price))
-                            ? `${parseFloat(wf.price).toLocaleString('vi-VN')} VNĐ`
-                            : wf.price || "Liên hệ"))}
+                        : (typeof wf.price === 'string' && !isNaN(parseFloat(wf.price))
+                          ? `${parseFloat(wf.price).toLocaleString('vi-VN')} VNĐ`
+                          : wf.price || "Liên hệ")}
                     </span>
                     <Link
                       to={`/workflows/${wf.id}`}
