@@ -1,0 +1,278 @@
+// Primary Button 
+.vs-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  text-transform: capitalize;
+  text-align: center;
+  background-color: $theme-color;
+  color: $title-color;
+  font-family: var(--title-font);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 19px 30px;
+  border-radius: 40px;
+  z-index: 1;
+  overflow: hidden;
+  &::after,
+  &::before {
+    width: 100%;
+    height: 100%;
+    content: "";
+    margin: auto;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    background: $secondary-color;
+    transition: all ease 0.5s;
+    z-index: -1;
+    border-radius: inherit;
+  }
+
+  &:before {
+    transform: rotateX(90deg);
+  }
+
+  &:after {
+    transform: rotateY(90deg);
+  }
+  
+  &:hover {
+    color: $title-color;
+    background-color: $secondary-color;
+
+    i {
+      background-color: var(--theme-color);
+      color: var(--white-color);
+    }
+
+    &:before {
+      transform: rotateX(0);
+    }
+
+    &:after {
+      transform: rotateY(0);
+    }
+  }
+}
+.vs-btn2 {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  text-align: center;
+  text-transform: capitalize;
+  vertical-align: middle;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: $title-font;
+  background-color: $theme-color;
+  color: $title-color;
+  line-height: 1;
+  padding: 19px 30px;
+  border-radius: 9999px;
+  transition: all 0.5s ease;
+  &:hover{
+    background-color: $secondary-color;
+  }
+}
+// Icon Btn
+.icon-btn {
+  width: var(--icon-size, 40px);
+  height: var(--icon-size, 40px);
+  line-height: var(--icon-size, 40px);
+  background-color: $theme-color;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: $title-color;
+  border-radius: 6px;
+  transition: all ease 0.4s;
+  position: relative;
+  z-index: 1;
+  &:hover {
+    color: $title-color;
+    background-color: $secondary-color;
+  }
+}
+
+
+// Play Button 
+.play-btn {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+
+  >i {
+    display: inline-block;
+    width: var(--icon-size, 120px);
+    height: var(--icon-size, 120px);
+    line-height: var(--icon-size, 120px);
+    text-align: center;
+    background-color: $theme-color;
+    color: $title-color;
+    font-size: 40px;
+    border-radius: 50%;
+    z-index: 1;
+    transition: all ease 0.4s;
+  }
+
+
+  &:after,
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $white-color;
+    @extend .ripple-animation;
+    z-index: -1;
+    border-radius: 50%;
+    transition: all ease 0.4s;
+  }
+
+  &:after {
+    animation-delay: 2s;
+  }
+
+
+  &:hover {
+
+    &:after,
+    &::before,
+    i {
+      background-color: $secondary-color;
+      // color: $white-color;
+    }
+  }
+
+  
+}
+
+
+// Link Button
+.link-btn {
+  font-family: $title-font;
+  color: $title-color;
+  font-weight: 500;
+  font-size: 18px;
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+  text-transform: capitalize;
+  transition: all ease 0.3s;
+
+  i {
+    margin-right: 7px;
+  }
+
+  &:hover {
+    color: $theme-color;
+  }
+}
+
+
+// Scroll To Top
+.scroll-btn {
+  position: fixed;
+  bottom: 300px;
+  right: 30px;
+  z-index: 94;
+  opacity: 0;
+  visibility: hidden;
+  display: inline-block;
+  border-radius: 50%;
+
+  i {
+    display: inline-block;
+    background-color: $theme-color;
+    color: $white-color;
+    text-align: center;
+    font-size: 16px;
+    width: var(--btn-size, 50px);
+    height: var(--btn-size, 50px);
+    line-height: var(--btn-size, 50px);
+    z-index: 2;
+    border-radius: inherit;
+    position: relative;
+    transition: all ease 0.8s;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: var(--extra-shape, -6px);
+    top: var(--extra-shape, -6px);
+    right: var(--extra-shape, -6px);
+    bottom: var(--extra-shape, -6px);
+    background-color: $body-bg;
+    border-radius: inherit;
+    z-index: 1;
+    transition: all ease 0.4s;
+  }
+
+  &:focus,
+  &:hover {
+    i {
+      background-color: $secondary-color;
+      color: $white-color;
+    }
+  }
+
+  &.show {
+    bottom: 120px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include sm {
+    --btn-size: 40px;
+    --extra-shape: -4px;
+    right: 15px;
+    bottom: 50px;
+
+    &.show {
+      bottom: 15px;
+    }
+  }
+}
+
+.scrollToTop {
+  position: fixed;
+  right: 60px;
+  bottom: 500px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all ease 0.4s;
+  z-index: 96;
+
+  &.show {
+    bottom: 60px;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+
+@include sm {
+  .play-btn {
+    --icon-size: 60px;
+    i{
+      font-size: 22px;
+    }
+  }
+
+  .scrollToTop {
+    right: 20px;
+
+    &.show {
+      bottom: 20px;
+    }
+  }
+}

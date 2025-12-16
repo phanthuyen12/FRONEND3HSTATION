@@ -1,0 +1,42 @@
+[
+  {
+    "icon": "/assets/img/icons/service-icon1.png",
+    "title": "VPS Cloud H3Station",
+    "desc": "Hạ tầng VPS hiệu năng cao, SSD NVMe, uptime 99.99%, phù hợp website, app, API và hệ thống tự động hóa.",   
+    "btnText": "Xem chi tiết",
+    "btnLink": "/service/service-details",
+    "addClass": "col-lg-6"
+  },
+  {
+    "icon": "/assets/img/icons/service-icon2.png",
+    "title": "Triển khai & tối ưu n8n",
+    "desc": "Thiết kế, triển khai và tối ưu workflow n8n cho CRM, marketing, vận hành nội bộ và tích hợp đa nền tảng.",   
+    "btnText": "Xem workflow",
+    "btnLink": "/service/service-details",
+    "addClass": "col-lg-6"
+  },
+  {
+    "icon": "/assets/img/icons/service-icon3.png",
+    "title": "Giải pháp Elearning",
+    "desc": "Nền tảng khóa học online cho cá nhân/doanh nghiệp, tích hợp thanh toán, quản lý học viên và nội dung.",   
+    "btnText": "Xem khóa học",
+    "btnLink": "/service/service-details",
+    "addClass": "col-lg-4"
+  },
+  {
+    "icon": "/assets/img/icons/service-icon4.png",
+    "title": "Quản lý & giám sát server",
+    "desc": "Giám sát tài nguyên, cảnh báo sớm, backup định kỳ và tối ưu hiệu năng cho server & VPS của bạn.",   
+    "btnText": "Tư vấn ngay",
+    "btnLink": "/service/service-details",
+    "addClass": "col-lg-4"
+  },
+  {
+    "icon": "/assets/img/icons/service-icon5.png",
+    "title": "Tư vấn hạ tầng & DevOps",
+    "desc": "Đồng hành xây dựng kiến trúc hạ tầng, CI/CD, bảo mật và tối ưu chi phí cloud cho startup & SME.",   
+    "btnText": "Đặt lịch tư vấn",
+    "btnLink": "/service/service-details",
+    "addClass": "col-lg-4"
+  }   
+]

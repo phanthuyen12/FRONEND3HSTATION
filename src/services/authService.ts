@@ -289,6 +289,17 @@ class AuthService {
     
     return response as User;
   }
+
+  // Đổi mật khẩu (khi đã đăng nhập)
+  async changePassword(payload: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<void> {
+    await this.request<void>("/api/client/users/change-password", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
 }
 
 export default AuthService;

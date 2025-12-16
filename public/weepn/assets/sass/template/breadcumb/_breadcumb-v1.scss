@@ -1,0 +1,93 @@
+.breadcumb-menu-wrap {
+  text-align: center;
+}
+.breadcumb-menu {
+  max-width: 100%;
+  margin: 10px 0 0 0;
+  list-style-type: none;
+  position: relative;
+  text-align: center;
+  display: inline-block;
+
+  li {
+    display: inline-block;
+    list-style: none;
+    position: relative;
+    font-family: $title-font;
+    font-weight: 600;
+    line-height: 162%;
+    a{
+      font-weight: 600;
+      &:hover{
+        color: $white-color;
+      }
+    }
+    
+
+    &:not(:last-child){
+      padding-right: 10px;
+      margin-right: 10px;
+      a{
+        margin-right: 10px;
+      }
+      &:after {
+        content: "";
+        position: absolute;
+        width: 15px;
+        height: 4px;
+        background-color: $body-color;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 16px;
+      }
+      
+    }
+  }
+
+  li,
+  a,
+  span {
+    word-break: break-word;
+    white-space: normal;
+    // font-weight: 400;
+    font-size: 16px;
+    color: $body-bg;
+    font-family: $title-font;
+    text-transform: capitalize;
+  }
+
+  .fa-home-lg {
+    margin-right: 10px;
+  }
+
+  a:hover {
+    color: $theme-color;
+  }
+}
+
+.breadcumb-title {
+  color: $white-color;
+  font-weight: 700;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.breadcumb-wrapper {
+  background-color: $title-color;
+  background-size: cover;
+  text-align: center;
+  padding-top: 150px;
+  padding-bottom: 168px;
+}
+@include md{
+  .breadcumb-wrapper {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+@include sm{
+  .breadcumb-wrapper {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}

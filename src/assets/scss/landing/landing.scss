@@ -1,5 +1,9 @@
 // Landing page styles - Scoped để không ảnh hưởng đến CSS hiện tại
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
 .landing-h3station {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
   // Reset và base styles chỉ áp dụng trong landing
   * {
     box-sizing: border-box;

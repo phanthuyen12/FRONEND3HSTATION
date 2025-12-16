@@ -289,22 +289,10 @@ const Orders: React.FC = () => {
                   Liên kết
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-600">
-                  Bình luận
-                </th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-600">
                   Trạng thái
                 </th>
                 <th className="px-3 py-2 text-right font-semibold text-slate-600">
                   Thanh toán
-                </th>
-                <th className="px-3 py-2 text-center font-semibold text-slate-600">
-                  Số lượng cần tăng
-                </th>
-                <th className="px-3 py-2 text-center font-semibold text-slate-600">
-                  Ban đầu
-                </th>
-                <th className="px-3 py-2 text-center font-semibold text-slate-600">
-                  Còn lại
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-600">
                   Cập nhật
@@ -365,9 +353,6 @@ const Orders: React.FC = () => {
                       <span className="text-slate-600 text-xs">
                         {order.type === 'course' ? 'Khóa học' : order.type === 'workflow' ? 'Workflow' : 'VPS'}
                       </span>
-                    </td>
-                    <td className="px-3 py-2 text-slate-600">
-                      -
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       <span
@@ -515,6 +500,33 @@ const Orders: React.FC = () => {
                         <label className="text-xs text-slate-500">Ngày hết hạn</label>
                         <p>{selectedOrder.instance.expires_at ? new Date(selectedOrder.instance.expires_at).toLocaleDateString('vi-VN') : '-'}</p>
                       </div>
+              {(() => {
+                const billing = selectedOrder.instance.configuration?.billing || {};
+                const months = selectedOrder.instance.billing_months || billing.months;
+                const discount = selectedOrder.instance.billing_discount_percent ?? billing.discountPercent;
+                const autoRenew = selectedOrder.instance.billing_auto_renew === 1 || selectedOrder.instance.billing_auto_renew === true || billing.autoRenew;
+                const amount = selectedOrder.instance.billing_amount ?? billing.finalAmount;
+                return (
+                  <>
+                    <div>
+                      <label className="text-xs text-slate-500">Chu kỳ</label>
+                      <p className="font-semibold">
+                        {months ? `${months} tháng` : '-'} {discount != null ? `( -${discount}% )` : ''}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-500">Tự động gia hạn</label>
+                      <p className="font-semibold">{autoRenew ? 'Có' : 'Không'}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-500">Số tiền chu kỳ</label>
+                      <p className="font-semibold text-emerald-600">
+                        {amount != null ? `${Number(amount).toLocaleString('vi-VN')}đ` : '-'}
+                      </p>
+                    </div>
+                  </>
+                );
+              })()}
                       {selectedOrder.instance.notes && (
                         <div className="col-span-2">
                           <label className="text-xs text-slate-500">Ghi chú</label>

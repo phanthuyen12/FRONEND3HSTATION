@@ -342,3 +342,5 @@ const BankAdminList: React.FC = () => {
 
 export default BankAdminList;
 
+
+

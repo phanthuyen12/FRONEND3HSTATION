@@ -1,0 +1,14 @@
+.error-content{
+    text-align: center;
+    .vs-btn{
+        &:hover{
+            background-color: $secondary-color;
+        }
+    }
+}
+.error-text {
+    max-width: 60ch;
+    text-align: center;
+    margin: 0 auto 45px;
+    font-family: $body-font;
+}

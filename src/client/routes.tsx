@@ -25,6 +25,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RecoverPassword from "./pages/RecoverPassword";
+import ResetPassword from "./pages/ResetPassword";
 import LockScreen from "./pages/LockScreen";
 import TopUp from "./pages/TopUp";
 import TopUpBank from "./pages/TopUpBank";
@@ -188,6 +189,14 @@ const ClientRoutes: React.FC = () => {
           element={
             <PublicRoute>
               <RecoverPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <PublicRoute>
+              <ResetPassword />
             </PublicRoute>
           }
         />

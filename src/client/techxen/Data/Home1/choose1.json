@@ -1,0 +1,17 @@
+[
+  {
+    "img": "/assets/img/icons/work-iocn1.png",  
+    "title": "VPS tối ưu cho tự động hóa",
+    "desc": "Máy chủ được tối ưu cho n8n, webhook, queue và các workflow chạy liên tục 24/7."
+  },
+  {
+    "img": "/assets/img/icons/work-iocn2.png",  
+    "title": "Triển khai nhanh trong vài phút",
+    "desc": "Tạo VPS, cài n8n, cấu hình domain/SSL và monitoring chỉ trong vài bước đơn giản."
+  },
+  {
+    "img": "/assets/img/icons/work-iocn3.png",  
+    "title": "Đồng hành cùng đội ngũ H3Station",
+    "desc": "Hỗ trợ kỹ thuật, tư vấn kiến trúc và tối ưu chi phí hạ tầng cho startup & SME."
+  }
+]

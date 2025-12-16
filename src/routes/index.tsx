@@ -42,6 +42,7 @@ const TopupAdminDetail = React.lazy(() => import("../pages/apps/TopupAdmin/Detai
 const DocumentsAdminList = React.lazy(() => import("../pages/apps/DocumentsAdmin/List"));
 const DocumentsAdminDetail = React.lazy(() => import("../pages/apps/DocumentsAdmin/Detail"));
 const BankAdminList = React.lazy(() => import("../pages/apps/BankAdmin/List"));
+const OrdersReport = React.lazy(() => import("../pages/apps/OrdersAdmin/Report"));
 
 // extra pages 
 const Starter = React.lazy(() => import('../pages/extra/Starter'));
@@ -426,6 +427,16 @@ const bankAdminRoutes: RoutesProps = {
   ],
 };
 
+const ordersReportRoutes: RoutesProps = {
+  path: "/admin/orders-report",
+  name: "OrdersReport",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  icon: "chart",
+  element: <OrdersReport />,
+  header: "Reports",
+};
+
 const appRoutes = [
   calendarAppRoutes,
   ticketsAppRoutes,
@@ -439,6 +450,7 @@ const appRoutes = [
   topupAdminRoutes,
   documentsAdminRoutes,
   bankAdminRoutes,
+  ordersReportRoutes,
 ];
 
 // pages (admin)

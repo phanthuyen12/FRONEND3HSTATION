@@ -68,6 +68,35 @@
     }
 }
 
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    
+    &::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari and Opera */
+    }
+}
+
+// Override text-2xl
+.text-2xl {
+    font-size: 13px;
+    line-height: 2rem;
+}
+
+// Override text-4xl
+.text-4xl {
+    font-size: 20px;
+    line-height: 2.5rem;
+}
+
+// Override md:text-5xl for VPS pricing
+@media (min-width: 768px) {
+    .md\:text-5xl {
+        font-size: 20px;
+        line-height: 1;
+    }
+}
+
 
 // Gallery Page
 .filter-options li a {

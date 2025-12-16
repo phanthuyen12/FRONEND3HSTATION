@@ -126,3 +126,5 @@ const ClientVerticalLayout = ({ children }: ClientVerticalLayoutProps) => {
 
 export default ClientVerticalLayout;
 
+
+

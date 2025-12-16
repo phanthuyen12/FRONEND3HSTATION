@@ -1,0 +1,22 @@
+[
+  {
+    "img": "/assets/img/icons/hero-bottom-icon1.png",  
+    "title": "99.99% Uptime",
+    "desc": "Hạ tầng VPS ổn định"
+  },
+  {
+    "img": "/assets/img/icons/hero-bottom-icon2.png",  
+    "title": "100+ Workflow",
+    "desc": "n8n triển khai thực tế"
+  },
+  {
+    "img": "/assets/img/icons/hero-bottom-icon3.png",  
+    "title": "24/7 Support",
+    "desc": "Đội ngũ H3Station hỗ trợ"
+  },  
+  {
+    "img": "/assets/img/icons/hero-bottom-icon4.png",  
+    "title": "Chi phí tối ưu",
+    "desc": "Phù hợp startup & SME"
+  }
+]

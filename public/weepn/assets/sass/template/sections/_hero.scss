@@ -1,0 +1,181 @@
+.hero-layout1 {
+    position: relative;
+    max-height: 860px;
+    z-index: 1;
+    overflow: hidden;
+
+    .title-area {
+        margin-bottom: 42px;
+    }
+
+    .hero-slide {
+        padding: 247px 0 0;
+    }
+
+    .sec-subtitle {
+        @extend .animated;
+        animation-delay: 0.5s;
+    }
+
+    .sec-subtitle2 {
+        @extend .animated;
+        animation-delay: 0.5s;
+    }
+
+    .sec-title {
+        @extend .animated;
+        animation-delay: 0.6s;
+    }
+
+    .sec-text {
+        margin-bottom: 0;
+        @extend .animated;
+        animation-delay: 0.7s;
+    }
+
+    .img-wrap {
+        position: relative;
+
+        .img-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            @extend .fadein;
+        }
+    }
+
+    .hero-img {
+        @extend .animated;
+        animation-delay: .5s;
+        position: relative;
+        text-align: right;
+
+    }
+
+    .vs-btn {
+        color: $title-color;
+        line-height: 160%;
+        padding: 18px 50px;
+        @extend .animated;
+        animation-delay: 1s;
+
+        &:hover {
+            background-color: $secondary-color;
+        }
+    }
+
+    &.style2 {
+        max-height: 996px;
+        margin-top: -40px;
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .shape-mockup {
+            width: 100%;
+            text-align: center;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            padding: 160px 0 470px;
+        }
+
+        .slick-current {
+            --animation-name: slideinup;
+        }
+
+        .slick-current {
+            .hero-img {
+                --animation-name: slideinup;
+            }
+
+        }
+
+    }
+
+    .slick-current {
+        --animation-name: slideinleft;
+    }
+
+    .slick-current {
+        .hero-img {
+            --animation-name: slideinright;
+        }
+
+    }
+}
+
+.hero-layout2 {
+    max-height: 840px;
+    padding: 185px 0;
+
+    .hero-img {
+        position: relative;
+    }
+
+    .shape-mockup {
+        z-index: 0;
+    }
+
+    .sec-subtitle2 {
+        @extend .animated;
+        animation-delay: 0.5s;
+    }
+
+    .sec-title {
+        @extend .animated;
+        animation-delay: 0.6s;
+    }
+
+    .sec-text {
+        margin-bottom: 0;
+        @extend .animated;
+        animation-delay: 0.7s;
+    }
+
+    .vs-btn {
+        @extend .animated;
+        animation-delay: 1s;
+
+        &:hover {
+            background-color: $secondary-color;
+        }
+    }
+
+    .slick-current {
+        --animation-name: slideinleft;
+
+        .hero-img {
+            --animation-name: slideinleft;
+        }
+    }
+}
+
+@include lg {
+    .hero-layout1 {
+        max-height: 100%;
+
+        .hero-slide {
+            padding: 120px 0 0;
+        }
+    }
+
+    .hero-layout2 {
+        max-height: 100%;
+        padding: 120px 0;
+    }
+
+    .hero-layout1.style2 .hero-slide {
+        padding: 120px 0 350px;
+    }
+}
+
+@include sm {
+    .hero-layout1.style2 .hero-slide {
+        padding: 160px 0 220px;
+    }
+}

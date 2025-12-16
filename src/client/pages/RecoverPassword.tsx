@@ -20,9 +20,9 @@ interface UserData {
 const BottomLink = () => {
   return (
     <p className="text-gray-500 dark:text-gray-400 text-center">
-      Back to
+      Quay lại
       <Link to="/login" className="text-primary ms-1">
-        <b>Log In</b>
+        <b>Đăng nhập</b>
       </Link>
     </p>
   )
@@ -44,7 +44,10 @@ const RecoverPassword = () => {
 */
   const schemaResolver = yupResolver<any>(
     yup.object().shape({
-      email: yup.string().required("Please enter email").email("Please enter valid email"),
+      email: yup
+        .string()
+        .required("Vui lòng nhập email")
+        .email("Vui lòng nhập địa chỉ email hợp lệ"),
     })
   );
   /*
@@ -85,11 +88,11 @@ const RecoverPassword = () => {
 
   return (
     <>
-      <PageBreadcrumb title='Recover Password' />
+      <PageBreadcrumb title="Khôi phục mật khẩu" />
 
       <AuthLayout
-        authTitle='Recover Password'
-        helpText="Enter your email address and we'll send you an email with instructions to reset your password."
+        authTitle="Khôi phục mật khẩu"
+        helpText="Nhập địa chỉ email, chúng tôi sẽ gửi hướng dẫn để bạn đặt lại mật khẩu."
         bottomLinks={<BottomLink />}
       >
         {!passwordReset ? (
@@ -99,17 +102,19 @@ const RecoverPassword = () => {
           >
 
             <FormInput
-              label='Email Address'
-              type='email'
-              name='email'
-              placeholder='Enter your email'
-              containerClass='mb-4'
-              className='form-input'
-              labelClassName='block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2'
+            label="Địa chỉ email"
+            type="email"
+            name="email"
+            placeholder="Nhập địa chỉ email"
+            containerClass="mb-4"
+            className="form-input"
+            labelClassName="block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2"
             />
 
             <div className="flex justify-center mb-6">
-              <button type='submit' className="btn w-full text-white bg-primary" disabled={loading}> Reset Password </button>
+              <button type='submit' className="btn w-full text-white bg-primary" disabled={loading}>
+                Đặt lại mật khẩu
+              </button>
             </div>
           </VerticalForm>
         ) : (
@@ -117,9 +122,9 @@ const RecoverPassword = () => {
             <div className="mb-4">
               <i className="mgc_check_circle_line text-5xl text-success"></i>
             </div>
-            <h4 className="text-lg font-semibold mb-2">Check your email</h4>
+            <h4 className="text-lg font-semibold mb-2">Vui lòng kiểm tra email</h4>
             <p className="text-gray-600 dark:text-gray-400">
-              We have sent you an email with instructions to reset your password.
+              Chúng tôi đã gửi email hướng dẫn đặt lại mật khẩu đến địa chỉ email của bạn.
             </p>
           </div>
         )}

@@ -1,0 +1,106 @@
+.brand-style1{
+    padding: 80px 90px;
+    border-radius: 20px;
+    transform: translateY(-43%);
+    .slick-current{
+        .brand-item{
+            img{
+                filter: invert(60%) sepia(100%) saturate(400%) hue-rotate(90deg) brightness(95%) contrast(105%);
+            }
+        }
+    }
+    
+}
+.brand-item{
+    background-color: $title-color;
+    padding: 35px 40px;
+    border-radius: 20px;
+    height: auto;
+    max-width: 240px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    img{
+        transition: all 0.5s ease;
+    }
+    &:hover{
+        img{
+            filter: invert(60%) sepia(100%) saturate(400%) hue-rotate(90deg) brightness(95%) contrast(105%);
+
+        }
+    }
+}
+
+.brand-style2{
+    .brand-item{
+        border: 1px solid transparent;
+        background-color: $body-color;
+        transition: all 0.5s ease;
+        &:hover{
+            border-color: $theme-color;
+        }
+    }
+    .slick-current{
+        .brand-item{
+            border-color: $theme-color;
+             img {
+                filter: invert(60%) sepia(100%) saturate(400%) hue-rotate(90deg) brightness(95%) contrast(105%);
+            }
+        }
+    }
+}
+.brand-layout1{
+    padding: 85px 0;
+    background-color: $title-color;
+    border: 1px solid transparent;
+    .brand-item {
+        background-color: var(--title-color);
+        padding: 0;
+        border-radius: 20px;
+        height: auto;
+        width: 100%;
+        text-align: center;
+    }
+    .slick-current{
+        .brand-item{
+            border-color: $theme-color;
+             img {
+                filter: invert(60%) sepia(100%) saturate(400%) hue-rotate(90deg) brightness(95%) contrast(105%);
+            }
+        }
+    }
+}
+.brand-layout3{
+    .brand-item{
+        border: 1px solid transparent;
+        background-color: $title-color;
+    }
+    .slick-current{
+        .brand-item{
+            border-color: $theme-color;
+             img {
+                filter: invert(60%) sepia(100%) saturate(400%) hue-rotate(90deg) brightness(95%) contrast(105%);
+            }
+        }
+    }
+}
+@include md{
+    .brand-style1{
+        transform: translateY(-30%);
+    }
+}
+@include xs{
+    .brand-item {
+        padding: 20px;
+        margin: 0 auto;
+
+    }
+    .brand-style1{
+        padding: 80px 30px;
+        .brand-item{
+            img{
+                max-width: 70px;
+            }
+        }
+    }
+}

@@ -1,0 +1,66 @@
+.title-img{
+  margin-bottom: 10px;
+}
+
+.title-area {
+  margin-bottom: 50px;
+ 
+} 
+.sec-title{
+  color: $white-color;
+  font-weight: 700;
+  span{
+    display: inline-block;
+    color: $secondary-color;
+  }
+}
+.sec-subtitle{
+    font-size: 20px;
+    line-height: 150%;
+    font-family: $title-font;
+    color: $secondary-color;
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 15px;
+    &::before{
+      content: '\f2f7';
+      font-family: "Font Awesome 6 Pro";
+      margin-right: 10px;
+      color: $theme-color;
+    }
+    &::after{
+      content: '\f2f7';
+      font-family: "Font Awesome 6 Pro";
+      margin-left: 10px;
+      color: $theme-color;
+    }
+}
+.sec-subtitle2{
+    font-size: 20px;
+    line-height: 150%;
+    font-family: $title-font;
+    color: $secondary-color;
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 13px;
+    &::before{
+      content: '\f2f7';
+      font-family: "Font Awesome 6 Pro";
+      margin-right: 10px;
+      color: $theme-color;
+    }
+}
+.sec-text{
+  font-family: $body-font;
+}
+
+
+
+
+
+
+@include md{
+  .title-arraw {
+    display: none;
+  }
+}

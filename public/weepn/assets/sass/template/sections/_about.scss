@@ -1,0 +1,104 @@
+.about-layout1{
+    position: relative;
+    overflow: hidden;
+    .title-area {
+        margin-bottom: 40px;
+    }
+    .list-style1{
+        margin: 30px 0 32px;
+        ul{
+            li{
+                margin-bottom: 15px;
+            }
+        }
+        .text{
+            font-size: 14px;
+            margin-bottom: 0;
+            margin-top: 10px;
+            font-weight: 400;
+            line-height: 170%;
+            font-family: $body-font;
+        }
+    }
+    .vs-btn{
+        display: inline-flex;
+        padding: 22px 50px;
+    }
+    p{
+        font-family: $body-font;
+    }
+    &.style2{
+        .icon{
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            background-color: $title-color;
+            border-radius: 10px;
+            top: 6px;
+            cursor: pointer;
+            img{
+                transition: all 0.5s ease;
+            }
+            &:hover{
+                img{
+                    filter: invert(67%) sepia(96%) saturate(500%) hue-rotate(1deg) brightness(102%) contrast(102%);
+                }
+            }
+            
+        }
+        .list-style1{
+            padding-right: 100px;
+            ul li{
+                font-size: 20px;
+                padding-left: 120px;
+                margin-bottom: 25px;
+            }
+        } 
+        .text{
+            margin-top: 5px;
+        }
+        .about-text{
+            margin-bottom: 0;
+        }
+        .list-style1 {
+            margin: 18px 0 40px;
+        }
+    }
+}
+.about-img{
+    position: relative;
+    text-align: center;
+}
+.about-layout2{
+    .title-area {
+        margin-bottom: 40px;
+    }
+    .about-content{
+        .about-text{
+            margin-bottom: 25px;
+        }
+    }
+}
+
+
+@include lg{
+    .about-layout1.style2{
+        .list-style1 {
+            ul li {
+                .text{
+                    max-width: 50ch;
+                }
+            }
+        }
+        .about-img {
+            text-align: center;
+        }
+    } 
+}
+@include sm{
+    .about-layout2{
+        .about-btn{
+            text-align: center;
+        }
+    }
+}

@@ -78,7 +78,7 @@ const ClientTopbar = () => {
 
   return (
     <>
-      <header className="app-header flex items-center px-4 gap-3">
+      <header className="app-header flex items-center px-2 sm:px-4 gap-2 sm:gap-3">
         <button
           id="button-toggle-menu"
           className="nav-link p-2"
@@ -90,27 +90,33 @@ const ClientTopbar = () => {
           </span>
         </button>
 
-        <Link to="/" className="logo-box">
+        <Link to="/" className="logo-box flex-shrink-0">
           <div className="logo-light">
-            <img src={logoLight} className="logo-lg h-6" alt="Light logo" />
-            <img src={logoSm} className="logo-sm" alt="Small logo" />
+            <img src={logoLight} className="logo-lg" alt="Light logo" />
           </div>
 
           <div className="logo-dark">
-            <img src={logoDark} className="logo-lg h-6" alt="Dark logo" />
-            <img src={logoSm} className="logo-sm" alt="Small logo" />
+            <img src={logoDark} className="logo-lg" alt="Dark logo" />
           </div>
         </Link>
 
-        <TopBarSearch />
+        <div className="hidden md:block flex-1">
+          <TopBarSearch />
+        </div>
 
-        <MaximizeScreen />
+        <div className="hidden lg:block">
+          <MaximizeScreen />
+        </div>
 
-        <ClientProfileDropDown />
+        <div className="ml-auto flex-shrink-0">
+          <ClientProfileDropDown />
+        </div>
       </header>
     </>
   )
 }
 
 export default ClientTopbar
+
+
 

@@ -176,18 +176,17 @@ const Profile: React.FC = () => {
 
     try {
       setSaving(true);
-      // TODO: Gọi API đổi mật khẩu khi backend có
-      // await authService.changePassword({
-      //   currentPassword: passwordData.currentPassword,
-      //   newPassword: passwordData.newPassword,
-      // });
+      await authService.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
 
       await Swal.fire({
-        icon: 'info',
-        title: 'Thông báo',
-        text: 'Chức năng đổi mật khẩu đang được phát triển. Vui lòng liên hệ admin để được hỗ trợ.',
+        icon: 'success',
+        title: 'Đổi mật khẩu thành công',
+        text: 'Mật khẩu của bạn đã được thay đổi thành công.',
         confirmButtonText: 'Đã hiểu',
-        confirmButtonColor: '#3b82f6',
+        confirmButtonColor: '#10b981',
       });
 
       // Reset form

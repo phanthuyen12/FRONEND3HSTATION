@@ -6,7 +6,13 @@ import AllRoutes from "./Routes";
 import ClientRoutes from "../client/routes";
 import SimpleAdminRoutes from "./SimpleAdminRoutes";
 import ChariusRoutes from "../client/charius/routes";
-import DexonRoutes from "../landingpage/DexonRoutes";
+import Landing from "../client/pages/Landing";
+import TechxenLanding from "../client/techxen/TechxenLanding";
+import {
+  TechxenHomePage,
+  TechxenServicesPage,
+  TechxenServiceIntroPage,
+} from "../client/techxen/TechxenPages";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import AdminLogin from "../pages/auth/AdminLogin";
 
@@ -37,8 +43,11 @@ const AppRouter: React.FC = () => {
         {/* Demo Charius */}
         <Route path="/charius/*" element={<ChariusRoutes />} />
 
-        {/* Landing Dexon (project dexon-react) */}
-        <Route path="/landing/*" element={<DexonRoutes />} />
+        {/* Landing page (TechXen components) */}
+        <Route path="/landing" element={<TechxenLanding />} />
+        <Route path="/techxen/home" element={<TechxenHomePage />} />
+        <Route path="/techxen/services" element={<TechxenServicesPage />} />
+        <Route path="/techxen/service-intro" element={<TechxenServiceIntroPage />} />
 
         {/* Client chính */}
         <Route path="/*" element={<ClientRoutes />} />

@@ -68,12 +68,10 @@ const LeftSideBar = ({ isCondensed, hideLogo }: LeftSideBarProps) => {
       <div className="app-menu">
         <Link to="/" className="logo-box">
           <div className="logo-light">
-            <img src={logoLight} className="logo-lg h-8" alt="Light logo" />
-            <img src={logoSm} className="logo-sm" alt="Small logo" />
+            <img src={logoLight} className="logo-lg" alt="Light logo" />
           </div>
           <div className="logo-dark">
-            <img src={logoDark} className="logo-lg h-8" alt="Dark logo" />
-            <img src={logoSm} className="logo-sm" alt="Small logo" />
+            <img src={logoDark} className="logo-lg" alt="Dark logo" />
           </div>
         </Link>
 

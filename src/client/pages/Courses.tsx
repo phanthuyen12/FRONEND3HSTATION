@@ -161,7 +161,13 @@ const Courses: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between pt-2 mt-auto">
                   <span className="text-primary font-semibold text-sm">
-                    {course.is_free ? "Miễn phí" : (typeof course.price === 'number' ? course.price.toLocaleString('vi-VN') + 'đ' : course.price || "Liên hệ")}
+                    {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
+                      ? "Miễn phí" 
+                      : (typeof course.price === 'number' 
+                        ? `${course.price.toLocaleString('vi-VN')} VNĐ` 
+                        : (typeof course.price === 'string' && !isNaN(parseFloat(course.price))
+                          ? `${parseFloat(course.price).toLocaleString('vi-VN')} VNĐ`
+                          : course.price || "Liên hệ"))}
                   </span>
                   <Link
                     to={`/courses/${course.id}`}

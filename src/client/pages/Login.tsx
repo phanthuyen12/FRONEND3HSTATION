@@ -23,10 +23,10 @@ interface UserData {
 /* bottom links */
 const BottomLink = () => {
   return (
-    <p className="text-gray-500 dark:text-gray-400 text-center">Don't have an account ?
+    <p className="text-gray-500 dark:text-gray-400 text-center">Bạn Chưa có tài khoản ?
       <Link to="/register" className="text-primary ms-1">
         <b>
-          Register
+          Đăng ký
         </b>
       </Link>
     </p>
@@ -61,8 +61,11 @@ const Login = () => {
   */
   const schemaResolver = yupResolver(
     yup.object().shape({
-      email: yup.string().required("Please enter Email").email("Please enter valid Email"),
-      password: yup.string().required("Please enter Password"),
+      email: yup
+        .string()
+        .required("Vui lòng nhập email")
+        .email("Vui lòng nhập địa chỉ email hợp lệ"),
+      password: yup.string().required("Vui lòng nhập mật khẩu"),
     })
   );
 
@@ -132,10 +135,10 @@ const Login = () => {
   return (
     <>
       {isAuthenticated && <Navigate to={redirectUrl} />}
-      <PageBreadcrumb title="Login" />
+      <PageBreadcrumb title="Đăng nhập" />
       <AuthLayout
-        authTitle="Sign In"
-        helpText="Enter your email address and password to access client panel."
+        authTitle="Đăng nhập"
+        helpText="Nhập email và mật khẩu của bạn để truy cập vào bảng điều khiển khách hàng."
         bottomLinks={<BottomLink />}
         hasThirdPartyLogin
       >
@@ -144,10 +147,10 @@ const Login = () => {
           resolver={schemaResolver}
         >
           <FormInput
-            label="Email Address"
+            label="Địa chỉ email"
             type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="Nhập địa chỉ email"
             containerClass="mb-4"
             className="form-input"
             labelClassName="block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2"
@@ -155,10 +158,10 @@ const Login = () => {
           />
 
           <FormInput
-            label="Password"
+            label="Mật khẩu"
             type="password"
             name="password"
-            placeholder="Enter your password"
+            placeholder="Nhập mật khẩu"
             containerClass="mb-4"
             className="form-input"
             labelClassName="block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2"
@@ -167,14 +170,19 @@ const Login = () => {
 
           <div className="flex items-center justify-between mb-4">
             <FormInput
-              label="Remember me"
+              label="Ghi nhớ đăng nhập"
               type="checkbox"
               name="checkbox"
               containerClass="flex items-center"
               labelClassName="ms-2"
               className="form-checkbox rounded"
             />
-            <Link to="/recover-password" className="text-sm text-primary border-b border-dashed border-primary">Forget Password ?</Link>
+            <Link
+              to="/recover-password"
+              className="text-sm text-primary border-b border-dashed border-primary"
+            >
+              Quên mật khẩu?
+            </Link>
           </div>
 
           <div className="flex justify-center mb-6">
@@ -182,7 +190,7 @@ const Login = () => {
               className="btn w-full text-white bg-primary"
               type="submit"
             >
-              Log In
+              Đăng nhập
             </button>
           </div>
         </VerticalForm>

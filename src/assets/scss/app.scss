@@ -6,6 +6,9 @@ Email: support@coderthemes.com
 File: Main Css File
 */
 
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
 // Custom Variables
 @import "config/variables";
 @import "config/theme-config";
@@ -59,5 +62,5 @@ File: Main Css File
 
 // Global font override
 body {
-  font-family: 'Signika', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }

@@ -11,6 +11,27 @@ export interface VpsPlan {
   popular?: boolean;
 }
 
+export interface VpsBillingTerm {
+  code: string; // '1m', '3m', '6m', '12m', ...
+  label: string; // '1 tháng', '3 tháng', ...
+  months: number;
+  discountPercent: number;
+  baseMonthlyPrice: number;
+  subtotal: number;
+  discountAmount: number;
+  finalAmount: number;
+}
+
+export interface VpsPlanPricingResponse {
+  plan: {
+    id: string;
+    name: string;
+    baseMonthlyPrice: number;
+    unit: string;
+  };
+  terms: VpsBillingTerm[];
+}
+
 interface ApiResponse<T> {
   success?: boolean;
   data: T;
@@ -21,7 +42,7 @@ class VpsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
+    this.api = apiUrl; // ví dụ: 'http://localhost:3000'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -123,12 +144,52 @@ class VpsService {
     return { data: [] };
   }
 
+  // ADMIN - VPS Orders (from /api/orders/admin/vps)
+  async getAdminVpsOrders(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    search?: string;
+  }): Promise<{ data: any[]; pagination?: any }> {
+    const token = localStorage.getItem('auth_token') 
+      || localStorage.getItem('authToken')
+      || sessionStorage.getItem('auth_token')
+      || sessionStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('Authorization token not found. Please login again.');
+    }
+
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', String(params.page));
+    if (params?.limit) queryParams.append('limit', String(params.limit));
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.search) queryParams.append('search', params.search);
+    const queryString = queryParams.toString();
+
+    const res = await fetch(`${this.api}/api/orders/admin/vps${queryString ? `?${queryString}` : ''}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const body = await res.json();
+    if (!res.ok) {
+      throw new Error(body?.message || 'Không thể tải đơn hàng VPS');
+    }
+    const payload = body.data || {};
+    return {
+      data: Array.isArray(payload.data) ? payload.data : Array.isArray(body.data) ? body.data : [],
+      pagination: payload.pagination || body.pagination,
+    };
+  }
+
   async updateInstance(id: string, payload: {
     status?: string;
     ipAddress?: string;
     hostname?: string;
     expiresAt?: string | null;
     notes?: string;
+    configuration?: any;
   }): Promise<any> {
     // Get token from localStorage - try both possible keys
     const token = localStorage.getItem('auth_token') 
@@ -185,7 +246,12 @@ class VpsService {
   }
 
   // CLIENT
-  async createVpsOrder(planId: string, paymentMethod: string = 'balance'): Promise<{ order: any; instance: any }> {
+  async createVpsOrder(
+    planId: string,
+    paymentMethod: string = 'balance',
+    billingTermCode: string = '1m',
+    autoRenew: boolean = false
+  ): Promise<{ order: any; instance: any }> {
     try {
       // Get token from localStorage - try both possible keys
       // authService uses 'auth_token' key
@@ -205,7 +271,7 @@ class VpsService {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ planId, paymentMethod }),
+        body: JSON.stringify({ planId, paymentMethod, billingTermCode, autoRenew }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -252,6 +318,23 @@ class VpsService {
       console.error("❌ Fetch failed:", error);
       throw error;
     }
+  }
+
+  async fetchPlanPricing(planId: string): Promise<VpsPlanPricingResponse> {
+    const res = await fetch(this.api + `/api/client/vps/plans/${planId}/pricing`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const body = await res.json();
+
+    if (!res.ok) {
+      console.error('❌ API error:', body);
+      throw new Error(body?.message || 'API Error');
+    }
+
+    return body.data as VpsPlanPricingResponse;
   }
 }
 export default VpsService;

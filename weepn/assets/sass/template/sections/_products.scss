@@ -1,0 +1,185 @@
+.product_meta {
+  font-weight: 400;
+  font-size: 18px;
+  text-transform: capitalize;
+  color: $body-color;
+
+  >span {
+    display: block;
+    margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: $theme-color;
+      }
+    }
+
+    >a,
+    >span {
+      position: relative;
+      margin-right: 3px;
+      font-weight: 700;
+      color: $title-color;
+
+      &:not(:last-child):after {
+        content: ',';
+      }
+
+      &:first-child {
+        margin-left: 5px;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.product-about {
+  margin-bottom: 30px;
+
+  .product-title {
+    margin-bottom: 7px;
+  }
+
+  .text {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    color: $theme-color;
+    margin-top: 22px;
+    margin-bottom: 8px;
+
+    del {
+      margin-left: 15px;
+      color: $body-color;
+      font-weight: 500;
+      font-size: 24px;
+    }
+  }
+
+  .text2 {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 33px;
+  }
+
+  .screen-reader-text {
+    display: none;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 15px;
+    margin-bottom: 43px;
+
+    .vs-btn {
+      height: 60px;
+      line-height: 60px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .quantity {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+.product-description {
+  margin-top: 23px;
+  margin-bottom: 53px;
+}
+
+.product-table {
+  margin-bottom: 53px;
+
+  th {
+    background-color: $smoke-color;
+    border-color: $smoke-color;
+    border-bottom-color: $border-color;
+    border-top-color: $border-color;
+    width: 15%;
+    padding: 15px 25px;
+  }
+
+  td {
+    padding: 15px 25px;
+  }
+}
+
+@include lg {
+  .product-about {
+    .product-title {
+      margin-bottom: 7px;
+      font-size: 30px;
+    }
+    
+    .price {
+      font-size: 30px;
+
+      del {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+@include sm {
+  .product-table {
+    th {
+      width: 10%;
+      padding: 6px 15px;
+    }
+
+    td {
+      padding: 10px 15px;
+    }
+  }
+
+  .product-about {
+    .product-title {
+      font-size: 26px;
+    }
+
+    .text {
+      font-size: 16px;
+    }
+
+    .text2 {
+      font-size: 14px;
+      letter-spacing: 0;
+      margin-bottom: 33px;
+    }
+
+    .actions {
+      .vs-btn {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+    }
+
+    .price {
+      font-size: 24px;
+
+      del {
+        font-size: 16px;
+        margin-left: 8px;
+      }
+    }
+  }
+}
