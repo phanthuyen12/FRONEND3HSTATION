@@ -275,9 +275,9 @@ const Home: React.FC = () => {
             {Array.from({ length: 8 }).map((_, idx) => (
               <div
                 key={idx}
-                className="card h-full animate-pulse bg-slate-50/60"
+                className="card h-full min-h-[320px] max-h-[360px] animate-pulse bg-slate-50/60"
               >
-                <div className="h-52 bg-slate-200 rounded-t-xl" />
+                <div className="h-40 bg-slate-200 rounded-t-xl" />
                 <div className="p-6 space-y-3">
                   <div className="h-4 bg-slate-200 rounded w-1/2" />
                   <div className="h-4 bg-slate-200 rounded w-full" />
@@ -291,13 +291,13 @@ const Home: React.FC = () => {
             {displayedCourses.map((course) => (
               <div
                 key={course.id}
-                className="card h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
+                className="card h-full min-h-[320px] max-h-[360px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
               >
                 <div className="relative overflow-hidden">
                   <img
                     src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
                     alt={course.title}
-                    className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "/images/placeholder.jpg";
                     }}
@@ -308,15 +308,15 @@ const Home: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <div className="flex-1 p-6 flex flex-col">
-                  <h4 className="text-lg font-bold mb-3 line-clamp-2 text-slate-900 dark:text-slate-100 leading-tight">
+                <div className="flex-1 p-4 flex flex-col">
+                  <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
                     {course.title}
                   </h4>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
                     {course.short_description || course.description || ""}
                   </p>
 
-                  <div className="flex items-center justify-between mb-3 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 dark:text-slate-400">
                     <span className="flex items-center gap-1">
                       <i className="mgc_time_line"></i>
                       {course.duration || "N/A"}
@@ -326,7 +326,7 @@ const Home: React.FC = () => {
                       {course.lessons || 0} bài học
                     </span>
                   </div>
-                  <div className="flex items-center justify-between mb-5 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500 dark:text-slate-400">
                     <span className="flex items-center gap-1">
                       <i className="mgc_user_line"></i>
                       {(course.students || 0).toLocaleString()} học viên
@@ -341,8 +341,8 @@ const Home: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
-                    <span className="text-primary font-bold text-lg">
+                  <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                    <span className="text-primary font-bold text-sm">
                       {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
                         ? "Miễn phí" 
                         : (typeof course.price === 'number' 
@@ -353,7 +353,7 @@ const Home: React.FC = () => {
                     </span>
                     <Link
                       to={`/courses/${course.id}`}
-                      className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
+                      className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
                     >
                       Đăng ký
                     </Link>
@@ -394,15 +394,15 @@ const Home: React.FC = () => {
           </div>
           <div className="relative">
             <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
-              <div className="flex gap-4 pb-4" style={{ scrollSnapType: 'x mandatory' }}>
+              <div className="flex gap-4 pb-4 min-h-[260px]" style={{ scrollSnapType: 'x mandatory' }}>
                 {workflows.map((workflow) => (
                   <div
                     key={workflow.id}
-                    className="flex-shrink-0 w-72 md:w-80 card hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden"
+                    className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[240px] max-h-[280px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden"
                     style={{ scrollSnapAlign: 'start' }}
                   >
                     <Link to={`/workflows/${workflow.id}`} className="block">
-                      <div className="relative h-44 bg-gradient-to-br from-purple-100 via-purple-50 to-blue-100 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 overflow-hidden">
+                      <div className="relative h-32 bg-gradient-to-br from-purple-100 via-purple-50 to-blue-100 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 overflow-hidden">
                         {workflow.image ? (
                           <img
                             src={workflow.image}
@@ -420,22 +420,22 @@ const Home: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      <div className="p-6">
-                        <h4 className="text-base font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-tight">
+                      <div className="p-4 flex flex-col h-[calc(100%-8rem)]">
+                        <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
                           {workflow.name}
                         </h4>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
                           {workflow.description || ""}
                         </p>
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
-                          <span className="text-primary font-bold text-lg">
+                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                          <span className="text-primary font-bold text-sm">
                             {!workflow.price || workflow.price === "0" || workflow.price === "Miễn phí" || parseFloat(workflow.price) === 0
                               ? "Miễn phí"
                               : (typeof workflow.price === 'string' && !isNaN(parseFloat(workflow.price))
                                 ? `${parseFloat(workflow.price).toLocaleString('vi-VN')} VNĐ`
                                 : workflow.price)}
                           </span>
-                          <span className="text-xs text-primary font-semibold flex items-center gap-1">
+                          <span className="text-[11px] text-primary font-semibold flex items-center gap-1">
                             Xem chi tiết
                             <i className="mgc_arrow_right_line"></i>
                           </span>
