@@ -247,7 +247,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Phần Khóa học - Đưa lên trên */}
+      {/* Phần Khóa học - Slide ngang với chiều cao cố định */}
       <div className="mb-10">
         <div className="mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -272,14 +272,14 @@ const Home: React.FC = () => {
 
         {loading ? (
           <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
-            <div className="flex gap-4 pb-4">
+            <div className="flex gap-4 pb-4 min-h-[380px]">
               {Array.from({ length: 3 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[320px] max-h-[360px] animate-pulse bg-slate-50/60"
+                  className="flex-shrink-0 w-72 card h-[380px] animate-pulse bg-slate-50/60"
                 >
                   <div className="h-40 bg-slate-200 rounded-t-xl" />
-                  <div className="p-6 space-y-3">
+                  <div className="p-4 space-y-3">
                     <div className="h-4 bg-slate-200 rounded w-1/2" />
                     <div className="h-4 bg-slate-200 rounded w-full" />
                     <div className="h-4 bg-slate-200 rounded w-3/4" />
@@ -291,14 +291,14 @@ const Home: React.FC = () => {
         ) : (
           <div className="relative">
             <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
-              <div className="flex gap-4 pb-4" style={{ scrollSnapType: 'x mandatory' }}>
+              <div className="flex gap-4 pb-4 min-h-[380px]" style={{ scrollSnapType: 'x mandatory' }}>
                 {displayedCourses.map((course) => (
                   <div
                     key={course.id}
-                    className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[320px] max-h-[360px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
+                    className="flex-shrink-0 w-72 card h-[380px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
                     style={{ scrollSnapAlign: 'start' }}
                   >
-                    <div className="relative overflow-hidden">
+                    <div className="relative overflow-hidden flex-shrink-0">
                       <img
                         src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
                         alt={course.title}
@@ -313,15 +313,15 @@ const Home: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex-1 p-4 flex flex-col">
+                    <div className="flex-1 p-4 flex flex-col min-h-0">
                       <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
                         {course.title}
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed flex-shrink-0">
                         {course.short_description || course.description || ""}
                       </p>
 
-                      <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 dark:text-slate-400 flex-shrink-0">
                         <span className="flex items-center gap-1">
                           <i className="mgc_time_line"></i>
                           {course.duration || "N/A"}
@@ -331,7 +331,7 @@ const Home: React.FC = () => {
                           {course.lessons || 0} bài học
                         </span>
                       </div>
-                      <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500 dark:text-slate-400 flex-shrink-0">
                         <span className="flex items-center gap-1">
                           <i className="mgc_user_line"></i>
                           {(course.students || 0).toLocaleString()} học viên
@@ -346,7 +346,7 @@ const Home: React.FC = () => {
                         )}
                       </div>
 
-                      <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                      <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700 flex-shrink-0">
                         <span className="text-primary font-bold text-sm">
                           {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
                             ? "Miễn phí" 
@@ -358,7 +358,7 @@ const Home: React.FC = () => {
                         </span>
                         <Link
                           to={`/courses/${course.id}`}
-                          className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
+                          className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105 whitespace-nowrap"
                         >
                           Đăng ký
                         </Link>
@@ -367,7 +367,7 @@ const Home: React.FC = () => {
                   </div>
                 ))}
                 {displayedCourses.length === 0 && !loading && (
-                  <div className="flex-shrink-0 w-72 card">
+                  <div className="flex-shrink-0 w-72 card h-[380px] flex items-center justify-center">
                     <div className="p-6 text-center text-slate-500">
                       Không có khóa học nào.
                     </div>
@@ -401,15 +401,15 @@ const Home: React.FC = () => {
           </div>
           <div className="relative">
             <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
-              <div className="flex gap-4 pb-4 min-h-[260px]" style={{ scrollSnapType: 'x mandatory' }}>
+              <div className="flex gap-4 pb-4 min-h-[280px]" style={{ scrollSnapType: 'x mandatory' }}>
                 {workflows.map((workflow) => (
                   <div
                     key={workflow.id}
-                    className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[240px] max-h-[280px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden"
+                    className="flex-shrink-0 w-72 card h-[280px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden"
                     style={{ scrollSnapAlign: 'start' }}
                   >
-                    <Link to={`/workflows/${workflow.id}`} className="block">
-                      <div className="relative h-32 bg-gradient-to-br from-purple-100 via-purple-50 to-blue-100 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 overflow-hidden">
+                    <Link to={`/workflows/${workflow.id}`} className="block h-full flex flex-col">
+                      <div className="relative h-32 bg-gradient-to-br from-purple-100 via-purple-50 to-blue-100 dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 overflow-hidden flex-shrink-0">
                         {workflow.image ? (
                           <img
                             src={workflow.image}
@@ -427,14 +427,14 @@ const Home: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      <div className="p-4 flex flex-col h-[calc(100%-8rem)]">
+                      <div className="p-4 flex flex-col flex-1 min-h-0">
                         <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
                           {workflow.name}
                         </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed flex-shrink-0">
                           {workflow.description || ""}
                         </p>
-                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700 flex-shrink-0">
                           <span className="text-primary font-bold text-sm">
                             {!workflow.price || workflow.price === "0" || workflow.price === "Miễn phí" || parseFloat(workflow.price) === 0
                               ? "Miễn phí"
@@ -442,7 +442,7 @@ const Home: React.FC = () => {
                                 ? `${parseFloat(workflow.price).toLocaleString('vi-VN')} VNĐ`
                                 : workflow.price)}
                           </span>
-                          <span className="text-[11px] text-primary font-semibold flex items-center gap-1">
+                          <span className="text-[11px] text-primary font-semibold flex items-center gap-1 whitespace-nowrap">
                             Xem chi tiết
                             <i className="mgc_arrow_right_line"></i>
                           </span>
@@ -479,7 +479,7 @@ const Home: React.FC = () => {
           </div>
           <div className="relative">
             <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
-              <div className="flex gap-4 pb-4" style={{ scrollSnapType: 'x mandatory' }}>
+              <div className="flex gap-4 pb-4 min-h-[320px]" style={{ scrollSnapType: 'x mandatory' }}>
                 {vpsPlans.map((plan) => {
                   const getPlanPriceDisplay = () => {
                     const priceValue = typeof plan.price === 'number' 
@@ -498,24 +498,24 @@ const Home: React.FC = () => {
                   return (
                     <div
                       key={plan.id}
-                      className={`flex-shrink-0 w-72 md:w-80 card hover:shadow-lg transition-shadow ${
-                        plan.popular ? "border-primary/30 ring-1 ring-primary/10" : ""
+                      className={`flex-shrink-0 w-72 card h-[320px] flex flex-col hover:shadow-lg transition-shadow overflow-hidden ${
+                        plan.popular ? "border-primary/30 ring-1 ring-primary/10" : "border border-slate-200 dark:border-slate-700"
                       }`}
                       style={{ scrollSnapAlign: 'start' }}
                     >
-                      <Link to={`/vps`} className="block">
-                        <div className="p-5">
-                          <div className="flex items-start justify-between gap-3 mb-3">
-                            <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 flex-1">
+                      <Link to={`/vps`} className="block h-full flex flex-col">
+                        <div className="p-5 flex flex-col flex-1 min-h-0">
+                          <div className="flex items-start justify-between gap-3 mb-3 flex-shrink-0">
+                            <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 flex-1 line-clamp-2">
                               {plan.name}
                             </h4>
                             {plan.popular && (
-                              <span className="text-[10px] px-2 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold uppercase whitespace-nowrap">
+                              <span className="text-[10px] px-2 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold uppercase whitespace-nowrap flex-shrink-0">
                                 Phổ biến
                               </span>
                             )}
                           </div>
-                          <div className="mb-4">
+                          <div className="mb-4 flex-shrink-0">
                             <div className="flex items-baseline gap-2 mb-2">
                               <span className="font-bold text-2xl text-slate-900 dark:text-slate-100">
                                 {getPlanPriceDisplay()}
@@ -525,29 +525,29 @@ const Home: React.FC = () => {
                               </span>
                             </div>
                           </div>
-                          <div className="space-y-2 mb-4 text-xs">
+                          <div className="space-y-2 mb-4 text-xs flex-1 min-h-0">
                             <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                              <span className="w-12 px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-semibold uppercase">CPU</span>
-                              <span className="font-medium">{plan.cpu}</span>
+                              <span className="w-12 px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-semibold uppercase flex-shrink-0">CPU</span>
+                              <span className="font-medium truncate">{plan.cpu}</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                              <span className="w-12 px-2 py-1 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-semibold uppercase">RAM</span>
-                              <span className="font-medium">{plan.ram}</span>
+                              <span className="w-12 px-2 py-1 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-semibold uppercase flex-shrink-0">RAM</span>
+                              <span className="font-medium truncate">{plan.ram}</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                              <span className="w-12 px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold uppercase">SSD</span>
-                              <span className="font-medium">{plan.ssd}</span>
+                              <span className="w-12 px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold uppercase flex-shrink-0">SSD</span>
+                              <span className="font-medium truncate">{plan.ssd}</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                              <span className="w-16 px-2 py-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-semibold uppercase">Băng thông</span>
-                              <span className="font-medium">{plan.bandwidth}</span>
+                              <span className="w-16 px-2 py-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-semibold uppercase flex-shrink-0">Băng thông</span>
+                              <span className="font-medium truncate">{plan.bandwidth}</span>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700 flex-shrink-0">
                             <span className="text-xs text-slate-400">
                               Xem chi tiết →
                             </span>
-                            <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                            <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium whitespace-nowrap">
                               Chọn gói
                             </span>
                           </div>
