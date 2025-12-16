@@ -271,103 +271,110 @@ const Home: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-            {Array.from({ length: 8 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="card h-full min-h-[320px] max-h-[360px] animate-pulse bg-slate-50/60"
-              >
-                <div className="h-40 bg-slate-200 rounded-t-xl" />
-                <div className="p-6 space-y-3">
-                  <div className="h-4 bg-slate-200 rounded w-1/2" />
-                  <div className="h-4 bg-slate-200 rounded w-full" />
-                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+          <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
+            <div className="flex gap-4 pb-4">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[320px] max-h-[360px] animate-pulse bg-slate-50/60"
+                >
+                  <div className="h-40 bg-slate-200 rounded-t-xl" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-slate-200 rounded w-1/2" />
+                    <div className="h-4 bg-slate-200 rounded w-full" />
+                    <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-            {displayedCourses.map((course) => (
-              <div
-                key={course.id}
-                className="card h-full min-h-[320px] max-h-[360px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
-                    alt={course.title}
-                    className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/images/placeholder.jpg";
-                    }}
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-amber-600 uppercase shadow-sm">
-                      {categories.find((c) => String(c.id) === String(course.category_id || course.categoryId))?.name || "Khóa học"}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-1 p-4 flex flex-col">
-                  <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
-                    {course.title}
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
-                    {course.short_description || course.description || ""}
-                  </p>
-
-                  <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <i className="mgc_time_line"></i>
-                      {course.duration || "N/A"}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <i className="mgc_book_2_line"></i>
-                      {course.lessons || 0} bài học
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500 dark:text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <i className="mgc_user_line"></i>
-                      {(course.students || 0).toLocaleString()} học viên
-                    </span>
-                    {course.rating && (
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20">
-                        <i className="mgc_star_fill text-amber-400"></i>
-                        <span className="font-semibold text-amber-600 dark:text-amber-400">
-                          {typeof course.rating === 'number' ? course.rating.toFixed(1) : course.rating}
+          <div className="relative">
+            <div className="overflow-x-auto scrollbar-hide -mx-2 px-2">
+              <div className="flex gap-4 pb-4" style={{ scrollSnapType: 'x mandatory' }}>
+                {displayedCourses.map((course) => (
+                  <div
+                    key={course.id}
+                    className="flex-shrink-0 w-72 md:w-80 card h-full min-h-[320px] max-h-[360px] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden group"
+                    style={{ scrollSnapAlign: 'start' }}
+                  >
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
+                        alt={course.title}
+                        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/images/placeholder.jpg";
+                        }}
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-bold text-amber-600 uppercase shadow-sm">
+                          {categories.find((c) => String(c.id) === String(course.category_id || course.categoryId))?.name || "Khóa học"}
                         </span>
-                      </span>
-                    )}
-                  </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 p-4 flex flex-col">
+                      <h4 className="text-sm font-bold mb-2 line-clamp-2 text-slate-900 dark:text-slate-100 leading-snug">
+                        {course.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
+                        {course.short_description || course.description || ""}
+                      </p>
 
-                  <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
-                    <span className="text-primary font-bold text-sm">
-                      {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
-                        ? "Miễn phí" 
-                        : (typeof course.price === 'number' 
-                          ? `${course.price.toLocaleString('vi-VN')} VNĐ` 
-                          : (typeof course.price === 'string' && !isNaN(parseFloat(course.price))
-                            ? `${parseFloat(course.price).toLocaleString('vi-VN')} VNĐ`
-                            : course.price || "Liên hệ"))}
-                    </span>
-                    <Link
-                      to={`/courses/${course.id}`}
-                      className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
-                    >
-                      Đăng ký
-                    </Link>
+                      <div className="flex items-center justify-between mb-2 text-[11px] text-slate-500 dark:text-slate-400">
+                        <span className="flex items-center gap-1">
+                          <i className="mgc_time_line"></i>
+                          {course.duration || "N/A"}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <i className="mgc_book_2_line"></i>
+                          {course.lessons || 0} bài học
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500 dark:text-slate-400">
+                        <span className="flex items-center gap-1">
+                          <i className="mgc_user_line"></i>
+                          {(course.students || 0).toLocaleString()} học viên
+                        </span>
+                        {course.rating && (
+                          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20">
+                            <i className="mgc_star_fill text-amber-400"></i>
+                            <span className="font-semibold text-amber-600 dark:text-amber-400">
+                              {typeof course.rating === 'number' ? course.rating.toFixed(1) : course.rating}
+                            </span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <span className="text-primary font-bold text-sm">
+                          {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
+                            ? "Miễn phí" 
+                            : (typeof course.price === 'number' 
+                              ? `${course.price.toLocaleString('vi-VN')} VNĐ` 
+                              : (typeof course.price === 'string' && !isNaN(parseFloat(course.price))
+                                ? `${parseFloat(course.price).toLocaleString('vi-VN')} VNĐ`
+                                : course.price || "Liên hệ"))}
+                        </span>
+                        <Link
+                          to={`/courses/${course.id}`}
+                          className="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
+                        >
+                          Đăng ký
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
+                {displayedCourses.length === 0 && !loading && (
+                  <div className="flex-shrink-0 w-72 card">
+                    <div className="p-6 text-center text-slate-500">
+                      Không có khóa học nào.
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
-            {displayedCourses.length === 0 && !loading && (
-              <div className="col-span-full card">
-                <div className="p-6 text-center text-slate-500">
-                  Không có khóa học nào.
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         )}
       </div>
