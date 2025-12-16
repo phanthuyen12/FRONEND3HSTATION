@@ -8,6 +8,7 @@ import Pricing1 from "../Components/Pricing/Pricing1";
 import Project1 from "../Components/Project/Project1";
 import Services1 from "../Components/Services/Services1";
 import Testimonial1 from "../Components/Testimonial/Testimonial1";
+import VPSList from "../Components/VPS/VPSList";
 
 const Home = () => {
     return (
@@ -44,6 +45,7 @@ const Home = () => {
             ></About1>
             <Services1></Services1>
             <Choose1></Choose1>
+            <VPSList></VPSList>
             <Project1></Project1>
             <Pricing1></Pricing1>
             <Testimonial1></Testimonial1>
