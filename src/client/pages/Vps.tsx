@@ -336,8 +336,8 @@ const Vps: React.FC = () => {
 
       {/* Order Confirmation Modal */}
       {showOrderModal && selectedPlan && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 relative z-[10000]">
             <h3 className="text-lg font-semibold mb-4">Chọn chu kỳ & xác nhận mua VPS</h3>
             <div className="space-y-4 mb-6">
               <p className="text-sm text-slate-600">
