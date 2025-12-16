@@ -110,16 +110,16 @@ const Home: React.FC = () => {
   );
 
   return (
-    <>
+    <div className="w-full max-w-full overflow-x-hidden">
       <div className="flex flex-col gap-8 mb-8">
         {/* Hero section tạo điểm nhấn */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-white shadow-2xl">
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-white shadow-2xl w-full">
+          <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
             <div className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-white blur-3xl" />
             <div className="absolute -left-40 bottom-0 w-[500px] h-[500px] rounded-full bg-amber-200 blur-3xl" />
           </div>
-          <div className="relative px-6 py-8 md:px-12 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div className="max-w-2xl flex-1">
+          <div className="relative px-6 py-8 md:px-12 md:py-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 lg:gap-8 w-full">
+            <div className="flex-1 min-w-0 max-w-2xl z-10">
               <p className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider mb-4 border border-white/30">
                 <span className="mr-2 text-base">🔥</span> Học nhanh – Thực chiến – Dễ áp dụng
               </p>
@@ -133,19 +133,19 @@ const Home: React.FC = () => {
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/courses"
-                  className="btn bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-6 py-3 rounded-xl shadow-lg shadow-slate-900/40 transition-all hover:scale-105"
+                  className="btn bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-6 py-3 rounded-xl shadow-lg shadow-slate-900/40 transition-all hover:scale-105 whitespace-nowrap"
                 >
                   Bắt đầu học ngay
                 </Link>
                 <Link
                   to="/workflows"
-                  className="btn bg-white/20 hover:bg-white/30 text-sm font-semibold text-white border-2 border-white/40 rounded-xl px-6 py-3 backdrop-blur-sm transition-all hover:scale-105"
+                  className="btn bg-white/20 hover:bg-white/30 text-sm font-semibold text-white border-2 border-white/40 rounded-xl px-6 py-3 backdrop-blur-sm transition-all hover:scale-105 whitespace-nowrap"
                 >
                   Khám phá Workflows
                 </Link>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 min-w-[280px]">
+            <div className="grid grid-cols-2 gap-4 w-full lg:w-auto lg:min-w-[280px] lg:max-w-[320px] flex-shrink-0 z-10">
               <div className="rounded-2xl bg-white/20 backdrop-blur-md p-4 border border-white/30 shadow-lg">
                 <p className="text-white/90 mb-2 text-xs font-medium">Khoá học đã đăng ký</p>
                 <p className="text-3xl font-bold mb-2">{enrolledCourses}</p>
@@ -171,10 +171,8 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Thông tin tài khoản */}
-
         {/* Stats Cards - Cải thiện design */}
-        <div className="grid md:grid-cols-4 grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 grid-cols-2 gap-4 lg:gap-5 w-full">
           <div className="card bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/20 dark:to-amber-800/10 border-2 border-amber-200 dark:border-amber-800/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="p-6 h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
@@ -248,7 +246,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Phần Khóa học - Slide ngang với chiều cao cố định */}
-      <div className="mb-10">
+      <div className="mb-10 w-full">
         <div className="mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             Khóa học
@@ -381,8 +379,8 @@ const Home: React.FC = () => {
 
       {/* Slide Workflows */}
       {workflows.length > 0 && (
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-10 w-full">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                 Workflows nổi bật
@@ -459,8 +457,8 @@ const Home: React.FC = () => {
 
       {/* Slide VPS */}
       {vpsPlans.length > 0 && (
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-10 w-full">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                 Gói VPS nổi bật
@@ -562,7 +560,7 @@ const Home: React.FC = () => {
         </div>
       )}
 
-    </>
+    </div>
   );
 };
 
