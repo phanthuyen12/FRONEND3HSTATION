@@ -86,7 +86,7 @@ const Documents: React.FC = () => {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) return "Hôm qua";
     if (diffDays < 7) return `${diffDays} ngày trước`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} tuần trước`;
@@ -115,11 +115,10 @@ const Documents: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-2 text-xs">
             <button
-              className={`px-3 py-1.5 rounded-full font-medium border transition ${
-                activeCategory === "all"
+              className={`px-3 py-1.5 rounded-full font-medium border transition ${activeCategory === "all"
                   ? "bg-amber-500 border-amber-500 text-white shadow-sm"
                   : "bg-transparent border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
+                }`}
               onClick={() => setActiveCategory("all")}
             >
               Tất cả
@@ -130,11 +129,10 @@ const Documents: React.FC = () => {
               categories.map((cat) => (
                 <button
                   key={cat.id}
-                  className={`px-3 py-1.5 rounded-full font-medium border transition ${
-                    activeCategory === String(cat.id)
+                  className={`px-3 py-1.5 rounded-full font-medium border transition ${activeCategory === String(cat.id)
                       ? "bg-amber-500 border-amber-500 text-white shadow-sm"
                       : "bg-transparent border-slate-200 text-slate-600 hover:bg-slate-50"
-                  }`}
+                    }`}
                   onClick={() => setActiveCategory(String(cat.id))}
                 >
                   {cat.name}
@@ -163,7 +161,7 @@ const Documents: React.FC = () => {
       ) : filteredDocuments.length === 0 ? (
         <div className="card">
           <div className="p-6 text-sm text-slate-500 text-center">
-            {activeCategory !== "all" 
+            {activeCategory !== "all"
               ? `Không có tài liệu nào trong danh mục "${categories.find(c => String(c.id) === activeCategory)?.name || ''}".`
               : "Không tìm thấy tài liệu nào."}
           </div>
@@ -214,7 +212,7 @@ const Documents: React.FC = () => {
                     </div>
 
                     <div className="flex items-center justify-end gap-2 mt-1">
-                      <button 
+                      <button
                         className="btn btn-sm bg-slate-100 text-slate-700"
                         onClick={() => navigate(`/documents/${doc.id}`)}
                       >
@@ -224,7 +222,7 @@ const Documents: React.FC = () => {
                         href={doc.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-sm bg-amber-500 text-white"
+                        className="btn btn-sm bg-amber-500 hover:bg-amber-600 text-white transition-colors"
                       >
                         Tải xuống
                       </a>

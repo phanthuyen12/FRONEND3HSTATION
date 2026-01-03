@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { elearningService, userService, authService } from "../../config";
+import { elearningService, userService, authService, vpsService, workflowsService } from "../../config";
 import { Category, Course } from "../../services/elearningService";
 import { User } from "../../services/userService";
 
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [vpsPlans, setVpsPlans] = useState<any[]>([]);
+  const [workflows, setWorkflows] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<string>("Tất cả");
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -16,18 +18,22 @@ const Home: React.FC = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        
+
         // Lấy thông tin user từ localStorage trước
         const localUser = authService.getUser();
         setUserProfile(localUser);
-        
-        const [catsData, coursesData] = await Promise.all([
+
+        const [catsData, coursesData, vpsData, workflowsData] = await Promise.all([
           elearningService.getClientCategories(),
-          elearningService.getClientCourses({ limit: 12 }),
+          elearningService.getClientCourses({ limit: 8 }),
+          vpsService.fetchClientPlans().catch(() => []),
+          workflowsService.fetchClientWorkflows({ limit: 8 }).catch(() => ({ data: [] })),
         ]);
         setCategories(catsData);
         setCourses(coursesData.data || []);
-        
+        setVpsPlans(vpsData || []);
+        setWorkflows(workflowsData.data || []);
+
         // Lấy thông tin chi tiết từ API nếu có token
         if (authService.isAuthenticated()) {
           try {
@@ -62,7 +68,7 @@ const Home: React.FC = () => {
   const totalCourses = courses.length;
   const enrolledCourses = 0; // TODO: Load from user's enrolled courses
   const completedCourses = 0; // TODO: Load from user's completed courses
-  
+
   // Lấy thông tin user
   const currentUser = userProfile || authService.getUser();
   const balance = userInfo?.balance || currentUser?.balance || 0;
@@ -80,6 +86,7 @@ const Home: React.FC = () => {
     },
     [activeCategory, courses, categories]
   );
+
 
   return (
     <>
@@ -150,8 +157,8 @@ const Home: React.FC = () => {
         {/* Thông tin tài khoản */}
 
         {/* Stats Cards - Box vuông đều nhau */}
-        <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
-          <div className="card bg-amber-50 border border-amber-200 hover:shadow-md transition-shadow">
+        <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="card h-full bg-amber-50 border border-amber-200 hover:shadow-md transition-shadow">
             <div className="p-5 h-full flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -167,8 +174,8 @@ const Home: React.FC = () => {
               </p>
             </div>
           </div>
-          
-          <div className="card bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow">
+
+          <div className="card h-full bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow">
             <div className="p-5 h-full flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -184,8 +191,8 @@ const Home: React.FC = () => {
               </p>
             </div>
           </div>
-          
-          <div className="card bg-sky-50 border border-sky-200 hover:shadow-md transition-shadow">
+
+          <div className="card h-full bg-sky-50 border border-sky-200 hover:shadow-md transition-shadow">
             <div className="p-5 h-full flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center">
@@ -201,8 +208,8 @@ const Home: React.FC = () => {
               </p>
             </div>
           </div>
-          
-          <div className="card bg-emerald-50 border border-emerald-200 hover:shadow-md transition-shadow">
+
+          <div className="card h-full bg-emerald-50 border border-emerald-200 hover:shadow-md transition-shadow">
             <div className="p-5 h-full flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
@@ -222,108 +229,356 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Courses Section */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">
+              Khóa học nổi bật
+            </h2>
+            <p className="text-base text-slate-600">Học tập kỹ năng mới, nâng cao chuyên môn</p>
+          </div>
+          <Link
+            to="/courses"
+            className="text-sm font-semibold flex items-center gap-1 group"
+            style={{ color: '#FFC700' }}
+          >
+            Xem tất cả
+            <i className="mgc_arrow_right_line group-hover:translate-x-1 transition-transform"></i>
+          </Link>
+        </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex flex-wrap gap-2">
-          {categoryNames.map((cat) => (
-            <button
-              key={cat}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
-                activeCategory === cat
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap gap-2">
+            {categoryNames.map((cat) => (
+              <button
+                key={cat}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border ${activeCategory === cat
                   ? "bg-amber-500 border-amber-500 text-white"
                   : "bg-transparent border-slate-200 text-slate-600 hover:bg-slate-50"
-              }`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+                  }`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+
+
+        {loading ? (
+          <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="card h-full animate-pulse bg-slate-50/60"
+              >
+                <div className="h-48 bg-slate-200 rounded-t-xl" />
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-slate-200 rounded w-1/2" />
+                  <div className="h-4 bg-slate-200 rounded w-full" />
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            {displayedCourses.map((course) => (
+              <div
+                key={course.id}
+                className="card h-full flex flex-col hover:shadow-lg transition-shadow"
+              >
+                <div className="relative">
+                  <img
+                    src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
+                    alt={course.title}
+                    className="w-full h-48 object-cover rounded-t-xl"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/images/placeholder.jpg";
+                    }}
+                  />
+                </div>
+                <div className="flex-1 p-6 flex flex-col">
+                  <span className="text-xs font-medium text-amber-500 uppercase mb-2">
+                    {categories.find((c) => String(c.id) === String(course.category_id || course.categoryId))?.name || "Khóa học"}
+                  </span>
+                  <h4 className="text-base font-semibold mb-2 line-clamp-2">
+                    {course.title}
+                  </h4>
+                  <p className="text-sm text-slate-500 mb-4 line-clamp-3">
+                    {course.short_description || course.description || ""}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
+                    <span>{course.duration || "N/A"}</span>
+                    <span>{course.lessons || 0} bài học</span>
+                  </div>
+                  <div className="flex items-center justify-between mb-4 text-xs text-slate-500">
+                    <span>{(course.students || 0).toLocaleString()} học viên</span>
+                    {course.rating && (
+                      <span className="flex items-center gap-1">
+                        <i className="mgc_star_fill text-amber-400" />
+                        <span className="font-medium text-slate-700">
+                          {typeof course.rating === 'number' ? course.rating.toFixed(1) : course.rating}
+                        </span>
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between pt-1">
+                    <span className="text-primary font-semibold">
+                      {course.is_free ? "Miễn phí" : (() => {
+                        const priceValue = typeof course.price === 'number'
+                          ? course.price
+                          : parseFloat(course.price?.toString().replace(/[^\d.]/g, '') || '0');
+                        return priceValue > 0 ? Math.round(priceValue).toLocaleString('vi-VN') + 'đ' : 'Liên hệ';
+                      })()}
+                    </span>
+                    <Link
+                      to={`/courses/${course.id}`}
+                      className="btn bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
+                    >
+                      Đăng ký ngay
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {displayedCourses.length === 0 && !loading && (
+              <div className="col-span-full card">
+                <div className="p-6 text-center text-slate-500">
+                  Không có khóa học nào.
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {loading ? (
-        <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-          {Array.from({ length: 8 }).map((_, idx) => (
-            <div
-              key={idx}
-              className="card h-full animate-pulse bg-slate-50/60"
-            >
-              <div className="h-48 bg-slate-200 rounded-t-xl" />
-              <div className="p-6 space-y-3">
-                <div className="h-4 bg-slate-200 rounded w-1/2" />
-                <div className="h-4 bg-slate-200 rounded w-full" />
-                <div className="h-4 bg-slate-200 rounded w-3/4" />
-              </div>
-            </div>
-          ))}
+      {/* Workflows Section */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">
+              Workflows tự động hóa
+            </h2>
+            <p className="text-base text-slate-600">Tự động hóa quy trình, tiết kiệm thời gian làm việc</p>
+          </div>
+          <Link
+            to="/workflows"
+            className="text-sm font-semibold flex items-center gap-1 group"
+            style={{ color: '#FFC700' }}
+          >
+            Xem tất cả
+            <i className="mgc_arrow_right_line group-hover:translate-x-1 transition-transform"></i>
+          </Link>
         </div>
-      ) : (
-        <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-          {displayedCourses.map((course) => (
-            <div
-              key={course.id}
-              className="card h-full flex flex-col hover:shadow-lg transition-shadow"
-            >
-              <div className="relative">
-                <img
-                  src={course.thumbnail || course.thumbnail_url || "/images/placeholder.jpg"}
-                  alt={course.title}
-                  className="w-full h-48 object-cover rounded-t-xl"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/images/placeholder.jpg";
-                  }}
-                />
+
+        {workflows.length === 0 ? (
+          <div className="card bg-white border border-slate-200">
+            <div className="p-12 text-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FFF9E6' }}>
+                <i className="mgc_settings_3_line text-4xl" style={{ color: '#FFC700' }}></i>
               </div>
-              <div className="flex-1 p-6 flex flex-col">
-                <span className="text-xs font-medium text-amber-500 uppercase mb-2">
-                  {categories.find((c) => String(c.id) === String(course.category_id || course.categoryId))?.name || "Khóa học"}
-                </span>
-                <h4 className="text-base font-semibold mb-2 line-clamp-2">
-                  {course.title}
-                </h4>
-                <p className="text-sm text-slate-500 mb-4 line-clamp-3">
-                  {course.short_description || course.description || ""}
-                </p>
-
-                <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
-                  <span>{course.duration || "N/A"}</span>
-                  <span>{course.lessons || 0} bài học</span>
-                </div>
-                <div className="flex items-center justify-between mb-4 text-xs text-slate-500">
-                  <span>{(course.students || 0).toLocaleString()} học viên</span>
-                  {course.rating && (
-                    <span className="flex items-center gap-1">
-                      <i className="mgc_star_fill text-amber-400" />
-                      <span className="font-medium text-slate-700">
-                        {typeof course.rating === 'number' ? course.rating.toFixed(1) : course.rating}
+              <p className="text-slate-600 mb-4 text-lg">Chưa có workflow nào</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            {workflows.slice(0, 8).map((workflow: any) => (
+              <div
+                key={workflow.id}
+                className="card hover:shadow-lg transition-shadow"
+              >
+                {workflow.image && (
+                  <img
+                    src={workflow.image}
+                    alt={workflow.name}
+                    className="w-full h-48 object-cover rounded-t-xl"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                )}
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FEF3C7' }}>
+                      <i className="mgc_settings_3_fill text-2xl" style={{ color: '#FFC700' }}></i>
+                    </div>
+                    {workflow.status && (
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${workflow.status === 'active'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-slate-100 text-slate-700'
+                        }`}>
+                        {workflow.status === 'active' ? 'Hoạt động' : 'Mới'}
                       </span>
-                    </span>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className="mt-auto flex items-center justify-between pt-1">
-                  <span className="text-primary font-semibold">
-                    {course.is_free ? "Miễn phí" : (typeof course.price === 'number' ? course.price.toLocaleString('vi-VN') + 'đ' : course.price || "Liên hệ")}
-                  </span>
+                  <h4 className="font-semibold text-slate-900 mb-2 line-clamp-2">
+                    {workflow.name || workflow.workflowName}
+                  </h4>
+
+                  <p className="text-sm text-slate-600 mb-4 line-clamp-3">
+                    {workflow.description || 'Workflow tự động hóa giúp tiết kiệm thời gian'}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-lg font-bold" style={{ color: '#FFC700' }}>
+                      {(() => {
+                        if (!workflow.price || workflow.price === 'Miễn phí') return 'Miễn phí';
+                        const priceValue = typeof workflow.price === 'number'
+                          ? workflow.price
+                          : parseFloat(workflow.price?.toString().replace(/[^\d.]/g, '') || '0');
+                        return priceValue > 0 ? Math.round(priceValue).toLocaleString('vi-VN') + 'đ' : 'Miễn phí';
+                      })()}
+                    </span>
+                    {workflow.category && (
+                      <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                        {workflow.category}
+                      </span>
+                    )}
+                  </div>
+
                   <Link
-                    to={`/courses/${course.id}`}
-                    className="btn bg-amber-500 text-white px-4 py-2 rounded-md text-sm"
+                    to={`/workflows/${workflow.id}`}
+                    className="btn text-white w-full py-2 rounded-lg text-sm"
+                    style={{ background: 'linear-gradient(to right, #FFC700, #EAB308)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #EAB308, #B45309)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #FFC700, #EAB308)'}
                   >
-                    Đăng ký ngay
+                    Xem chi tiết
                   </Link>
                 </div>
               </div>
-            </div>
-          ))}
-          {displayedCourses.length === 0 && !loading && (
-            <div className="col-span-full card">
-              <div className="p-6 text-center text-slate-500">
-                Không có khóa học nào.
-              </div>
-            </div>
-          )}
+            ))}
+          </div>
+        )}
+      </div>
+      {/* VPS Section */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">
+              Gói VPS
+            </h2>
+            <p className="text-base text-slate-600">Máy chủ ảo hiệu năng cao, ổn định 24/7</p>
+          </div>
+          <Link
+            to="/vps"
+            className="text-sm font-semibold flex items-center gap-1 group"
+            style={{ color: '#FFC700' }}
+          >
+            Xem tất cả
+            <i className="mgc_arrow_right_line group-hover:translate-x-1 transition-transform"></i>
+          </Link>
         </div>
-      )}
+
+        {vpsPlans.length === 0 ? (
+          <div className="card bg-white border border-slate-200">
+            <div className="p-12 text-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FFF9E6' }}>
+                <i className="mgc_server_line text-4xl" style={{ color: '#FFC700' }}></i>
+              </div>
+              <p className="text-slate-600 mb-4 text-lg">Chưa có gói VPS nào</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid 2xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6">
+            {vpsPlans.slice(0, 4).map((plan: any, index: number) => (
+              <div
+                key={plan.id}
+                className="relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+              >
+                {/* Header */}
+                <div className="text-white text-center py-4 relative" style={{ background: 'linear-gradient(to right, #FFC700, #EAB308)' }}>
+                  <h3 className="text-xl font-bold uppercase tracking-wide">
+                    {plan.name}
+                  </h3>
+                  {plan.discountLabel && (
+                    <span className="inline-block mt-2 text-[10px] px-3 py-1 rounded-full bg-white/20 text-white font-bold">
+                      {plan.discountLabel}
+                    </span>
+                  )}
+
+                  {/* Popular Badge - moved here */}
+                  {plan.popular && (
+                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 ">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100 text-amber-700 text-[11px] font-bold uppercase tracking-wider border border-amber-300/50 shadow-md">
+                        <i className="mgc_star_fill text-xs"></i>
+                        Phổ biến nhất
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-6">
+                  {/* Price */}
+                  <div className="text-center mb-6">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-5xl font-black" style={{ color: '#FFC700' }}>
+                        {(() => {
+                          // Parse price to number
+                          const priceValue = typeof plan.price === 'number'
+                            ? plan.price
+                            : parseFloat(plan.price?.toString().replace(/[^\d.]/g, '') || '0');
+
+                          // Format to Vietnamese (use dot as thousand separator)
+                          return Math.round(priceValue).toLocaleString('vi-VN');
+                        })()}
+                      </span>
+                      <span className="font-medium" style={{ color: '#FFC700' }}>đ</span>
+                    </div>
+                    <p className="text-slate-500 text-sm mt-1">/ tháng</p>
+                  </div>
+
+                  {/* Features with colored badges - giống trang /vps */}
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50/50 border border-blue-100">
+                      <div className="flex-shrink-0 w-14 px-3 py-1.5 rounded-md bg-blue-500 flex items-center justify-center shadow-sm">
+                        <span className="text-white text-[10px] font-bold uppercase tracking-wide">CPU</span>
+                      </div>
+                      <span className="flex-1 text-sm font-semibold text-slate-900">{plan.cpu || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-purple-50/50 border border-purple-100">
+                      <div className="flex-shrink-0 w-14 px-3 py-1.5 rounded-md bg-purple-500 flex items-center justify-center shadow-sm">
+                        <span className="text-white text-[10px] font-bold uppercase tracking-wide">RAM</span>
+                      </div>
+                      <span className="flex-1 text-sm font-semibold text-slate-900">{plan.ram || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-50/50 border border-emerald-100">
+                      <div className="flex-shrink-0 w-14 px-3 py-1.5 rounded-md bg-emerald-500 flex items-center justify-center shadow-sm">
+                        <span className="text-white text-[10px] font-bold uppercase tracking-wide">SSD</span>
+                      </div>
+                      <span className="flex-1 text-sm font-semibold text-slate-900">{plan.ssd || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-amber-50/50 border border-amber-100">
+                      <div className="flex-shrink-0 w-20 px-3 py-1.5 rounded-md bg-amber-500 flex items-center justify-center shadow-sm">
+                        <span className="text-white text-[10px] font-bold uppercase tracking-wide">Băng thông</span>
+                      </div>
+                      <span className="flex-1 text-sm font-semibold text-slate-900">{plan.bandwidth || 'N/A'}</span>
+                    </div>
+                  </div>
+
+                  {/* Button */}
+                  <Link
+                    to="/vps"
+                    className="block w-full text-center text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+                    style={{ background: 'linear-gradient(to right, #FFC700, #EAB308)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #EAB308, #B45309)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #FFC700, #EAB308)'}
+                  >
+                    Đăng Ký
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+
     </>
   );
 };

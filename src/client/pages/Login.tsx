@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 
 // form validation
@@ -36,6 +36,7 @@ const BottomLink = () => {
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   // redirection back to where user got redirected from
   const getRedirectUrl = () => {
@@ -43,18 +44,28 @@ const Login = () => {
     const returnUrl = params.get('return');
     return returnUrl ? decodeURIComponent(returnUrl) : "/";
   };
-  
+
   const redirectUrl = getRedirectUrl();
 
   // Check if user is already logged in
   const isAuthenticated = authService.isAuthenticated();
 
-  useEffect(() => {
-    // Redirect if already logged in
-    if (isAuthenticated) {
-      navigate(redirectUrl);
-    }
-  }, [isAuthenticated, navigate, redirectUrl]);
+  // useEffect(() => {
+  //   // Chỉ clear session khi vào trang login lần đầu
+  //   // KHÔNG navigate ở đây để tránh vòng lặp reload
+  //   const currentAuth = authService.isAuthenticated();
+
+  //   if (!currentAuth) {
+  //     // Chỉ clear session nếu chưa đăng nhập
+  //     authService.clearSession();
+  //     localStorage.removeItem('authToken');
+  //     localStorage.removeItem('authUser');
+  //     sessionStorage.removeItem('authToken');
+  //     sessionStorage.removeItem('authUser');
+  //     console.log('[LOGIN] Đã xóa session data cũ');
+  //   }
+  //   // Nếu đã authenticated, component <Navigate> ở dưới sẽ tự động redirect
+  // }, []);
 
   /*
   form validation schema
@@ -73,24 +84,32 @@ const Login = () => {
   handle form submission
   */
   const onSubmit = async (formData: UserData) => {
+    console.log("Form data submitted:", formData);
     try {
-      const response = await authService.login({
-        email: formData.email,
-        password: formData.password,
-      });
-      
-      // Kiểm tra xem token đã được lưu chưa
+    const response = await authService.login({
+      email: formData.email,
+      password: formData.password,
+    });
+    console.log("Đăng nhập thành công:", response);
+
+    // Navigate ngay sau khi login thành công
+    // setHasSubmitted(true);
+    // setTimeout(() => {
+    //   navigate(redirectUrl);
+    // }, 100);
+
+    //   // Kiểm tra xem token đã được lưu chưa
       const token = authService.getToken();
       const user = authService.getUser();
-      
-      console.log("Login response:", response);
+
+    //   console.log("Login response:", response);
       console.log("Token saved:", token ? "Yes" : "No");
-      console.log("User saved:", user);
-      
+    //   console.log("User saved:", user);
+
       if (!token) {
         throw new Error("Token không được lưu vào localStorage");
       }
-      
+
       // Hiển thị thông báo thành công và chuyển trang sau khi đóng
       Swal.fire({
         icon: 'success',
@@ -118,23 +137,55 @@ const Login = () => {
       });
     } catch (error: any) {
       console.error("Login failed", error);
-      
-      // Hiển thị thông báo thất bại
+
+      // Xác định thông báo lỗi chi tiết
+      let errorMessage = 'Email hoặc mật khẩu không đúng. Vui lòng thử lại.';
+      let errorTitle = 'Đăng nhập thất bại';
+
+      if (error?.message) {
+        const message = error.message.toLowerCase();
+        if (message.includes('invalid credentials') || message.includes('không đúng')) {
+          errorMessage = 'Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại thông tin đăng nhập.';
+        } else if (message.includes('not found') || message.includes('không tìm thấy')) {
+          errorMessage = 'Tài khoản không tồn tại. Vui lòng kiểm tra lại email.';
+        } else if (message.includes('network') || message.includes('fetch')) {
+          errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối internet và thử lại.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      // Hiển thị modal lỗi với thông tin chi tiết
       await Swal.fire({
         icon: 'error',
-        title: 'Đăng nhập thất bại',
-        text: error?.message || 'Email hoặc mật khẩu không đúng. Vui lòng thử lại.',
+        title: errorTitle,
+        html: `
+          <div class="text-left">
+            <p class="mb-2">${errorMessage}</p>
+            <p class="text-xs text-slate-500 mt-3">
+              <i class="mgc_info_line mr-1"></i>
+              Vui lòng kiểm tra lại thông tin đăng nhập hoặc liên hệ hỗ trợ nếu vấn đề vẫn tiếp tục.
+            </p>
+          </div>
+        `,
         confirmButtonText: 'Đã hiểu',
         confirmButtonColor: '#ef4444',
+        width: '500px',
+        customClass: {
+          popup: 'rounded-lg',
+          title: 'text-lg font-semibold',
+          htmlContainer: 'text-sm',
+        },
+        allowOutsideClick: false,
+        allowEscapeKey: true,
       });
-      
-      throw error; // Let VerticalForm handle the error display
+
+    throw error; // Let VerticalForm handle the error display
     }
   };
 
   return (
     <>
-      {isAuthenticated && <Navigate to={redirectUrl} />}
       <PageBreadcrumb title="Đăng nhập" />
       <AuthLayout
         authTitle="Đăng nhập"

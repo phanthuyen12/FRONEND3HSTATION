@@ -47,7 +47,7 @@ const MenuItemWithChildren = ({ item, linkClassName, subMenuClassNames, activeMe
             <i className={item.icon} />
           </span>
         )}
-        <span className='menu-text'> {item.label} </span>
+        <span className='menu-text font-semibold text-slate-100'> {item.label} </span>
         <span className='menu-arrow' />
       </Link>
       <SimpleCollapse open={open} as="ul" classNames={subMenuClassNames}>
@@ -98,7 +98,7 @@ const MenuItemLink = ({ item, className }: SubMenus) => {
           <i className={item.icon} />
         </span>
       )}
-      <span className='menu-text'>{item.label}</span>
+      <span className='menu-text font-semibold text-slate-100'>{item.label}</span>
     </Link>
   )
 }

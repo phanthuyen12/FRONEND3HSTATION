@@ -37,7 +37,7 @@ const OffcanvasLayout = ({ open, toggleOffcanvas, children, placement, sizeClass
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
           >
-            <div className='fixed inset-0 bg-black bg-opacity-40 z-40' />
+            <div className='fixed inset-0 bg-black bg-opacity-40 z-60' />
           </Transition.Child>
 
           <Transition.Child
@@ -47,7 +47,7 @@ const OffcanvasLayout = ({ open, toggleOffcanvas, children, placement, sizeClass
             leaveFrom={enterTo}
             leaveTo={enterFrom}
           >
-            <div className={`fixed duration-300 overflow-y-auto z-50 transform overflow-hidden card rounded-none shadow-xl transition-all ${sizeClassName ?? ''} ${placement ?? 'end'}-0 ${(placement == 'top' || placement == 'bottom') ? 'min-w-full w-full inset-x-0' : 'min-h-full h-full inset-y-0'}`}>
+            <div className={`fixed duration-300 overflow-y-auto z-70 transform overflow-hidden card rounded-none shadow-xl transition-all ${sizeClassName ?? ''} ${placement ?? 'end'}-0 ${(placement == 'top' || placement == 'bottom') ? 'min-w-full w-full inset-x-0' : 'min-h-full h-full inset-y-0'}`}>
               <Dialog.Panel>
                 {children}
               </Dialog.Panel>

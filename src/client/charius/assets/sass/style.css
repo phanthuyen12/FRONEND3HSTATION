@@ -1603,7 +1603,7 @@ img {
   .wpo-site-header .navbar-header {
     float: none;
     position: relative;
-    z-index: 99;
+    
     text-align: center;
   }
   .wpo-site-header .navbar-right {
@@ -2160,7 +2160,7 @@ img {
   text-transform: uppercase;
   color: #000;
   letter-spacing: 2px;
-  z-index: 99;
+  
 }
 
 .header-search-area .close-form button:focus {
@@ -2428,7 +2428,7 @@ img {
   }
   .wpo-site-header .menu-close {
     display: block;
-    z-index: 99;
+    
     background: none;
     text-align: center;
     color: #fff;
@@ -2591,7 +2591,7 @@ img {
   left: 0;
   top: 30px;
   width: 100%;
-  z-index: 99;
+  
   background: transparent;
 }
 .wpo-header-style-2 .navigation {
@@ -2635,7 +2635,7 @@ img {
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 99;
+  
   background: #FBF8F2;
 }
 @media (min-width: 1200px) {
@@ -3590,7 +3590,7 @@ img {
   background: #fff;
   border-radius: 20px;
   box-shadow: 0px 1px 20px 0px rgba(43, 45, 118, 0.1);
-  z-index: 99;
+  
 }
 @media (max-width: 1890px) {
   .static-hero .charius-pic .wpo-supporter,
@@ -11436,7 +11436,7 @@ img {
   box-shadow: 0px 1px 15px 0px rgba(62, 65, 159, 0.1);
   margin-bottom: -125px;
   position: relative;
-  z-index: 99;
+  
 }
 @media (max-width: 767px) {
   .wpo-contact-pg-section .wpo-contact-form-area {

@@ -87,11 +87,10 @@ const Courses: React.FC = () => {
             {categoryNames.map((cat) => (
               <button
                 key={cat}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
-                  activeCategory === cat
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${activeCategory === cat
                     ? "bg-amber-500 border-amber-500 text-white shadow-sm"
                     : "bg-transparent border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
+                  }`}
                 onClick={() => setActiveCategory(cat)}
               >
                 {cat}
@@ -161,17 +160,17 @@ const Courses: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between pt-2 mt-auto">
                   <span className="text-primary font-semibold text-sm">
-                    {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí" 
-                      ? "Miễn phí" 
-                      : (typeof course.price === 'number' 
-                        ? `${course.price.toLocaleString('vi-VN')} VNĐ` 
+                    {course.is_free || course.price === 0 || course.price === "0" || course.price === "Miễn phí"
+                      ? "Miễn phí"
+                      : (typeof course.price === 'number'
+                        ? `${course.price.toLocaleString('vi-VN')} VNĐ`
                         : (typeof course.price === 'string' && !isNaN(parseFloat(course.price))
                           ? `${parseFloat(course.price).toLocaleString('vi-VN')} VNĐ`
                           : course.price || "Liên hệ"))}
                   </span>
                   <Link
                     to={`/courses/${course.id}`}
-                    className="btn bg-amber-500 text-white px-4 py-2 rounded-md text-sm"
+                    className="btn bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
                   >
                     Xem chi tiết
                   </Link>

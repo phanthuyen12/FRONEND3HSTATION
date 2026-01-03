@@ -6,6 +6,10 @@ export interface User {
   phone?: string;
   balance?: number;
   status?: string;
+  refCode?: string | null;
+  refBy?: number | string | null;
+  refCount?: number;
+  refCommission?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -55,8 +59,11 @@ class AuthService {
 
       const body: ApiResponse<T> = await res.json();
 
-      // Nếu token hết hạn (401), thử refresh token
-      if (res.status === 401 && retry) {
+      // Skip refresh token logic cho login/register endpoints
+      // const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+
+      // Nếu token hết hạn (401), thử refresh token (nhưng không cho login/register)
+      if (res.status === 401 ) {
         const refreshToken = this.getRefreshToken();
         if (refreshToken) {
           try {
@@ -66,13 +73,13 @@ class AuthService {
           } catch (refreshError) {
             // Refresh token thất bại, đăng xuất
             this.clearAuth();
-            window.location.href = '/login';
+            // window.location.href = '/login';
             throw new Error("Session expired. Please login again.");
           }
         } else {
           // Không có refresh token, đăng xuất
           this.clearAuth();
-          window.location.href = '/login';
+          // window.location.href = '/login';
           throw new Error("Session expired. Please login again.");
         }
       }
@@ -103,6 +110,16 @@ class AuthService {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.refreshTokenKey);
+
+    // Xóa cả sessionStorage để đảm bảo
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.userKey);
+    sessionStorage.removeItem(this.refreshTokenKey);
+  }
+
+  // Public method để clear session (có thể gọi từ bên ngoài)
+  clearSession() {
+    this.clearAuth();
   }
 
   // Lấy token từ localStorage
@@ -137,6 +154,7 @@ class AuthService {
     email: string;
     password: string;
     phone?: string;
+    ref?: string;
   }): Promise<AuthResponse> {
     const response = await this.request<any>("/api/auth/register", {
       method: "POST",
@@ -151,7 +169,7 @@ class AuthService {
     // Lưu token và user
     if (token && user) {
       this.saveAuth(token, user);
-      
+
       // Trả về format chuẩn
       return {
         token,
@@ -166,15 +184,15 @@ class AuthService {
   async login(payload: {
     email: string;
     password: string;
-  }): Promise<AuthResponse> {
+  }): Promise<any> {
     const response = await this.request<any>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify(payload),
     });
 
     console.log("Login API response:", response);
-
-    // API trả về format: { data: { token, user } }
+    // return response;
+    // // API trả về format: { data: { token, user } }
     const authData = response?.data || response;
     const token = authData?.token;
     const user = authData?.user;
@@ -183,15 +201,16 @@ class AuthService {
     if (token && user) {
       this.saveAuth(token, user);
       console.log("Token và user đã được lưu vào localStorage");
-      
+
       // Trả về format chuẩn
       return {
         token,
         user,
       };
     } else {
-      console.error("Response không có token hoặc user:", response);
-      throw new Error("Response không hợp lệ từ server");
+      return response;
+      // console.error("Response không có token hoặc user:", response);
+      // throw new Error("Response không hợp lệ từ server");
     }
   }
 
@@ -260,12 +279,12 @@ class AuthService {
   // Lấy thông tin profile
   async getProfile(): Promise<User> {
     const response = await this.request<{ data: User } | User>("/api/client/users/me");
-    
+
     // Xử lý response có thể là { data: User } hoặc User trực tiếp
     if (response && typeof response === 'object' && 'data' in response) {
       return (response as any).data;
     }
-    
+
     return response as User;
   }
 
@@ -275,18 +294,18 @@ class AuthService {
       method: "PUT",
       body: JSON.stringify(payload),
     });
-    
+
     // Cập nhật user trong localStorage
     if (response) {
       const updatedUser = (typeof response === 'object' && 'data' in response) ? (response as any).data : response;
       this.saveAuth(this.getToken() || '', updatedUser as User);
     }
-    
+
     // Xử lý response có thể là { data: User } hoặc User trực tiếp
     if (response && typeof response === 'object' && 'data' in response) {
       return (response as any).data;
     }
-    
+
     return response as User;
   }
 

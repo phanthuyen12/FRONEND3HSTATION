@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageBreadcrumb } from "../../components";
 import { vpsService } from "../../config";
 import { VpsBillingTerm, VpsPlan } from "../../services/vpsService";
@@ -15,6 +16,7 @@ const BILLING_TERM_TABS: { code: string; label: string; discount: number }[] = [
 ];
 
 const Vps: React.FC = () => {
+  const navigate = useNavigate();
   const [plans, setPlans] = useState<VpsPlan[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +94,7 @@ const Vps: React.FC = () => {
       await vpsService.createVpsOrder(selectedPlan.id, "balance", selectedTermCode, autoRenew);
       setShowOrderModal(false);
       alert("Đơn hàng VPS đã được tạo thành công! Vui lòng đợi admin cấu hình VPS.");
+      navigate("/orders");
       // Optionally reload plans or redirect
     } catch (err: any) {
       alert(err.message || "Tạo đơn hàng VPS thất bại. Vui lòng thử lại.");
@@ -101,16 +104,16 @@ const Vps: React.FC = () => {
   };
 
   const getPlanPriceDisplay = (plan: VpsPlan): string => {
-    const priceValue = typeof plan.price === 'number' 
-      ? plan.price 
-      : typeof plan.price === 'string' 
-      ? parseFloat(plan.price) || 0 
-      : 0;
-    
+    const priceValue = typeof plan.price === 'number'
+      ? plan.price
+      : typeof plan.price === 'string'
+        ? parseFloat(plan.price) || 0
+        : 0;
+
     if (isNaN(priceValue) || priceValue <= 0) {
       return "Liên hệ";
     }
-    
+
     return `${priceValue.toLocaleString('vi-VN')} VNĐ`;
   };
 
@@ -139,8 +142,8 @@ const Vps: React.FC = () => {
         typeof plan.price === "number"
           ? plan.price
           : typeof plan.price === "string"
-          ? parseFloat(plan.price) || 0
-          : 0;
+            ? parseFloat(plan.price) || 0
+            : 0;
       return Math.max(v, 0);
     })();
     const months =
@@ -236,11 +239,10 @@ const Vps: React.FC = () => {
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className={`card h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden ${
-              plan.popular 
-                ? "border-2 border-primary/30 ring-2 ring-primary/10 shadow-lg" 
-                : "border border-slate-200 dark:border-slate-700 hover:border-primary/20"
-            }`}
+            className={`card h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden ${plan.popular
+              ? "border-2 border-primary/30 ring-2 ring-primary/10 shadow-lg"
+              : "border border-slate-200 dark:border-slate-700 hover:border-primary/20"
+              }`}
           >
             {/* Header với badges */}
             <div className="relative p-6 pb-4 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-b border-slate-100 dark:border-slate-700">
@@ -319,12 +321,11 @@ const Vps: React.FC = () => {
                   <span className="flex-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{plan.bandwidth || "N/A"}</span>
                 </div>
               </div>
-              <button 
-                className={`btn w-full text-white text-sm font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${
-                  plan.popular
-                    ? "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-                    : "bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700"
-                }`}
+              <button
+                className={`btn w-full text-white text-sm font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${plan.popular
+                  ? "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700"
+                  : "bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700"
+                  }`}
                 onClick={() => handleSelectPlan(plan)}
               >
                 Chọn gói
@@ -336,8 +337,8 @@ const Vps: React.FC = () => {
 
       {/* Order Confirmation Modal */}
       {showOrderModal && selectedPlan && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-          <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 relative z-[10000]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 relative z-50">
             <h3 className="text-lg font-semibold mb-4">Chọn chu kỳ & xác nhận mua VPS</h3>
             <div className="space-y-4 mb-6">
               <p className="text-sm text-slate-600">
@@ -356,19 +357,17 @@ const Vps: React.FC = () => {
                       <button
                         key={tab.code}
                         type="button"
-                        className={`px-4 py-2 rounded-md border text-xs md:text-sm whitespace-nowrap flex flex-col items-center justify-center ${
-                          isActive
-                            ? "bg-primary text-white border-primary"
-                            : "bg-white text-slate-700 border-slate-200"
-                        }`}
+                        className={`px-4 py-2 rounded-md border text-xs md:text-sm whitespace-nowrap flex flex-col items-center justify-center ${isActive
+                          ? "bg-yellow-500 text-white border-yellow-500"
+                          : "bg-white text-slate-700 border-slate-200"
+                          }`}
                         onClick={() => setSelectedTermCode(tab.code)}
                       >
                         <span className="font-semibold">{tab.label}</span>
                         {discount > 0 && (
                           <span
-                            className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-[11px] ${
-                              isActive ? "bg-white/20" : "bg-slate-100 text-slate-600"
-                            }`}
+                            className={`mt-1 inline-flex px-2 py-0.5 rounded-full text-[11px] ${isActive ? "bg-white/20" : "bg-slate-100 text-slate-600"
+                              }`}
                           >
                             -{discount}%
                           </span>
@@ -417,7 +416,7 @@ const Vps: React.FC = () => {
                     </span>
                   </div>
                   {selectedTerm && selectedTerm.discountPercent > 0 && (
-                    <div className="flex justify-between items-center text-sm text-emerald-600 dark:text-emerald-400">
+                    <div className="flex justify-between items-center text-sm text-yellow-600 dark:text-yellow-400">
                       <span>Giảm giá (-{selectedTerm.discountPercent}%)</span>
                       <span className="font-bold">
                         - {Math.round(selectedTerm.discountAmount).toLocaleString("vi-VN")} VNĐ
@@ -427,7 +426,7 @@ const Vps: React.FC = () => {
                   <div className="border-t border-dashed border-slate-200 dark:border-slate-700 my-2" />
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span className="text-slate-900 dark:text-slate-100">Thành tiền</span>
-                    <span className="text-primary text-xl">
+                    <span className="text-yellow-600 dark:text-yellow-500 text-xl font-bold">
                       {getTermPriceDisplay(selectedTerm).split(' VNĐ')[0]} VNĐ
                     </span>
                   </div>
@@ -443,7 +442,7 @@ const Vps: React.FC = () => {
                 </div>
               </div>
 
-              <p className="text-xs text-amber-600">
+              <p className="text-xs text-yellow-600">
                 Số tiền sẽ được trừ từ tài khoản của bạn. Sau khi thanh toán, vui lòng đợi admin
                 cấu hình VPS.
               </p>
@@ -461,7 +460,7 @@ const Vps: React.FC = () => {
                 Hủy
               </button>
               <button
-                className="btn bg-primary text-white flex-1"
+                className="btn bg-yellow-500 hover:bg-yellow-600 text-white flex-1 font-bold"
                 onClick={handleConfirmOrder}
                 disabled={ordering || !selectedTerm}
               >

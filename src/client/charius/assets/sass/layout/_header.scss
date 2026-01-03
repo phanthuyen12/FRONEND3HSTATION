@@ -409,7 +409,7 @@
 	.wpo-site-header .navbar-header {
 		float: none;
 		position: relative;
-		z-index: 99;
+		
 		text-align: center;
 	}
 
@@ -1050,7 +1050,7 @@
 	text-transform: uppercase;
 	color: #000;
 	letter-spacing: 2px;
-	z-index: 99;
+	
 }
 
 .header-search-area .close-form button:focus {
@@ -1363,7 +1363,7 @@
 
 		.menu-close {
 			display: block;
-			z-index: 99;
+			
 			background: none;
 			text-align: center;
 			color: $white;
@@ -1577,7 +1577,7 @@
 	left: 0;
 	top: 30px;
 	width: 100%;
-	z-index: 99;
+	
 	background: transparent;
 
 	.navigation {
@@ -1633,7 +1633,7 @@
 	left: 0;
 	top: 0;
 	width: 100%;
-	z-index: 99;
+	
 	background: #FBF8F2;
 	
 	@media (min-width: 1200px) {

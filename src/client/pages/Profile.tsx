@@ -18,6 +18,11 @@ const Profile: React.FC = () => {
     email: "",
     phone: "",
   });
+  const [refInfo, setRefInfo] = useState<{
+    refCode?: string | null;
+    refCount?: number;
+    refCommission?: number;
+  }>({});
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -44,6 +49,11 @@ const Profile: React.FC = () => {
             email: localUser.email || "",
             phone: localUser.phone || "",
           });
+          setRefInfo({
+            refCode: (localUser as any).refCode || (localUser as any).ref_code,
+            refCount: (localUser as any).refCount || (localUser as any).ref_count,
+            refCommission: (localUser as any).refCommission || (localUser as any).ref_commission,
+          });
         }
 
         // Nếu có API getProfile, gọi để lấy thông tin mới nhất
@@ -55,6 +65,11 @@ const Profile: React.FC = () => {
               name: profileData.name || "",
               email: profileData.email || "",
               phone: profileData.phone || "",
+            });
+            setRefInfo({
+              refCode: (profileData as any).refCode || (profileData as any).ref_code,
+              refCount: (profileData as any).refCount || (profileData as any).ref_count,
+              refCommission: (profileData as any).refCommission || (profileData as any).ref_commission,
             });
             // Cập nhật localStorage
             localStorage.setItem('auth_user', JSON.stringify(profileData));
@@ -299,6 +314,22 @@ const Profile: React.FC = () => {
                   </span>
                 </div>
               )}
+              {refInfo.refCode && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Mã giới thiệu:</span>
+                    <span className="font-mono text-xs break-all">{refInfo.refCode}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Số người đã giới thiệu:</span>
+                    <span className="font-medium">{refInfo.refCount ?? 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Tổng hoa hồng:</span>
+                    <span className="font-medium">{(refInfo.refCommission ?? 0).toLocaleString('vi-VN')} đ</span>
+                  </div>
+                </>
+              )}
             </div>
             <button
               type="button"
@@ -312,6 +343,128 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="lg:col-span-2 space-y-6">
+          {/* Card Tiếp thị liên kết */}
+          <div className="card border-2 border-primary/20">
+            <div className="card-header bg-gradient-to-r from-primary/10 to-purple-500/10">
+              <h4 className="card-title mb-0 flex items-center gap-2">
+                <i className="mgc_share_line text-primary text-xl"></i>
+                Tiếp thị liên kết
+              </h4>
+            </div>
+            <div className="p-6 space-y-4">
+              {/* Thống kê */}
+              <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Số tiền đã nhận</span>
+                    <i className="mgc_money_2_line text-green-600 text-lg"></i>
+                  </div>
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {(refInfo.refCommission ?? 0).toLocaleString('vi-VN')} đ
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Số người đã giới thiệu</span>
+                    <i className="mgc_user_group_line text-blue-600 text-lg"></i>
+                  </div>
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {refInfo.refCount ?? 0}
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Tỷ lệ hoa hồng</span>
+                    <i className="mgc_percent_line text-purple-600 text-lg"></i>
+                  </div>
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    30%
+                  </div>
+                </div>
+              </div>
+
+              {/* Chính sách */}
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <i className="mgc_info_line text-amber-600 text-xl mt-0.5"></i>
+                  <div className="flex-1">
+                    <h5 className="font-semibold text-amber-900 dark:text-amber-200 mb-1">Chính sách tiếp thị liên kết</h5>
+                    <ul className="text-sm text-amber-800 dark:text-amber-300 space-y-1 list-disc list-inside">
+                      <li>Bạn sẽ nhận <strong>30% giá trị đơn hàng</strong> khi người được giới thiệu phát sinh giao dịch thành công</li>
+                      <li>Hoa hồng được cộng trực tiếp vào số dư tài khoản của bạn</li>
+                      <li>Hoa hồng được tính ngay sau khi đơn hàng được thanh toán thành công</li>
+                      <li>Không giới hạn số lượng người giới thiệu</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Link giới thiệu */}
+              {refInfo.refCode ? (
+                <div className="space-y-2">
+                  <label className="text-slate-700 dark:text-slate-300 text-sm font-medium block">
+                    Link giới thiệu của bạn
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      className="form-input flex-1 text-sm font-mono"
+                      readOnly
+                      value={`${window.location.origin}/register?ref=${encodeURIComponent(refInfo.refCode)}`}
+                    />
+                    <button
+                      type="button"
+                      className="btn bg-primary text-white whitespace-nowrap"
+                      onClick={async () => {
+                        const refLink = `${window.location.origin}/register?ref=${encodeURIComponent(refInfo.refCode || '')}`;
+                        try {
+                          await navigator.clipboard.writeText(refLink);
+                          await Swal.fire({
+                            icon: 'success',
+                            title: 'Đã sao chép!',
+                            text: 'Link giới thiệu đã được sao chép vào clipboard',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            confirmButtonColor: '#10b981',
+                          });
+                        } catch (error) {
+                          // Fallback cho trình duyệt cũ
+                          const textArea = document.createElement('textarea');
+                          textArea.value = refLink;
+                          document.body.appendChild(textArea);
+                          textArea.select();
+                          document.execCommand('copy');
+                          document.body.removeChild(textArea);
+                          await Swal.fire({
+                            icon: 'success',
+                            title: 'Đã sao chép!',
+                            text: 'Link giới thiệu đã được sao chép',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            confirmButtonColor: '#10b981',
+                          });
+                        }
+                      }}
+                    >
+                      <i className="mgc_copy_line mr-1"></i>
+                      Sao chép link
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <i className="mgc_qr_code_line"></i>
+                    <span>Mã giới thiệu: <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono">{refInfo.refCode}</code></span>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
+                  <i className="mgc_loading_line text-2xl text-slate-400 mb-2"></i>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Đang tạo mã giới thiệu cho bạn...
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
           <div className="card">
             <div className="card-header">
               <h4 className="card-title mb-0">Thông tin cơ bản</h4>

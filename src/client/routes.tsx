@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
+import Landing1 from "./pages/Landing1";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
@@ -50,7 +51,7 @@ const ClientRoutes: React.FC = () => {
   return (
     <React.Fragment>
       <Routes>
-          <Route
+        <Route
           path="/admin1"
           element={
             <ProtectedRoute>
@@ -77,6 +78,14 @@ const ClientRoutes: React.FC = () => {
               <ClientVerticalLayout>
                 <Landing />
               </ClientVerticalLayout>
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing1"
+          element={
+            <PublicRoute>
+              <Landing1 />
             </PublicRoute>
           }
         />

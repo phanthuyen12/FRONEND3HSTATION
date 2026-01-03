@@ -10,6 +10,7 @@ interface Order {
   amount: number;
   payment_method: string;
   status: 'pending' | 'paid' | 'failed' | 'cancelled' | 'processing' | 'completed' | 'dang-cho-xu-ly' | 'dang-tao' | 'tao-thanh-cong';
+  download_link?: string;
   created_at: string;
   updated_at: string;
 }
@@ -350,9 +351,23 @@ const Orders: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-3 py-2 max-w-[200px]">
-                      <span className="text-slate-600 text-xs">
-                        {order.type === 'course' ? 'Khóa học' : order.type === 'workflow' ? 'Workflow' : 'VPS'}
-                      </span>
+                      {order.type === 'workflow' && order.download_link ? (
+                        <div className="flex flex-col gap-1">
+                          <a
+                            href={order.download_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline text-xs flex items-center gap-1"
+                          >
+                            <i className="mgc_download_line"></i>
+                            Link tải
+                          </a>
+                        </div>
+                      ) : (
+                        <span className="text-slate-600 text-xs">
+                          {order.type === 'course' ? 'Khóa học' : order.type === 'workflow' ? 'Workflow' : 'VPS'}
+                        </span>
+                      )}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       <span
@@ -569,6 +584,34 @@ const Orders: React.FC = () => {
                         <div>
                           <label className="text-xs text-slate-500">Giá</label>
                           <p className="font-semibold">{parseFloat(selectedOrder.item.price || 0).toLocaleString('vi-VN')}đ</p>
+                        </div>
+                      )}
+                      {(selectedOrder.downloadLink || selectedOrder.download_link) && (
+                        <div>
+                          <label className="text-xs text-slate-500 mb-1 block">Link tải Workflow</label>
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={selectedOrder.downloadLink || selectedOrder.download_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline text-sm flex items-center gap-1 font-medium"
+                            >
+                              <i className="mgc_download_line"></i>
+                              {selectedOrder.downloadLink || selectedOrder.download_link}
+                            </a>
+                            <button
+                              className="btn btn-sm bg-slate-100 text-slate-700"
+                              onClick={() => {
+                                const link = selectedOrder.downloadLink || selectedOrder.download_link;
+                                if (link) {
+                                  navigator.clipboard.writeText(link);
+                                  alert('Đã sao chép link!');
+                                }
+                              }}
+                            >
+                              <i className="mgc_copy_line"></i>
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>

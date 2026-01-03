@@ -1,21 +1,94 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { PageBreadcrumb } from "../../../components";
-import { expandWorkflowRegistrations } from "../../../client/data/workflowRegistrations";
-import { WorkflowRegistrationExpanded } from "../../../client/data/workflowRegistrations";
-import { workflows } from "../../../client/data/workflows";
+import { authService, API_URL } from "../../../config";
+
+type Registration = {
+  id: string;
+  user_id: string;
+  workflow_id: string;
+  status: string;
+  reason?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  user_name?: string;
+  user_email?: string;
+  workflow_name?: string;
+  category_name?: string;
+};
 
 const WorkflowsUsersAdmin: React.FC = () => {
-  const [registrations, setRegistrations] = useState<
-    WorkflowRegistrationExpanded[]
-  >(() => expandWorkflowRegistrations());
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [workflowFilter, setWorkflowFilter] = useState<string>("tat-ca");
   const [statusFilter, setStatusFilter] = useState<string>("tat-ca");
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const workflowOptions = useMemo(
-    () => [{ id: "tat-ca", name: "Tất cả workflows" }, ...workflows],
+    () => [{ id: "tat-ca", name: "Tất cả workflows" }],
     []
   );
+
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const token =
+          authService.getToken() ||
+          localStorage.getItem("auth_token") ||
+          sessionStorage.getItem("auth_token");
+        const params = new URLSearchParams();
+        if (statusFilter !== "tat-ca") params.set("status", statusFilter);
+        if (workflowFilter !== "tat-ca") params.set("workflowId", workflowFilter);
+        if (search.trim()) params.set("search", search.trim());
+
+        const isLocal =
+          typeof window !== "undefined" &&
+          (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+        const baseUrl = isLocal
+          ? "http://localhost:3000"
+          : API_URL || process.env.VITE_API_URL || "https://api.3hstation.com";
+        const res = await fetch(`${baseUrl}/api/workflows/registrations?${params.toString()}`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.message || "Không thể tải danh sách đăng ký");
+        }
+        const list = data?.data?.data || data?.data || [];
+        const normalized = (Array.isArray(list) ? list : []).map((item) => ({
+          id: item.id?.toString() ?? "",
+          userId: item.userId ?? item.user_id,
+          workflowId: item.workflowId ?? item.workflow_id,
+          status: item.status,
+          reason: item.reason ?? null,
+          createdAt: item.createdAt ?? item.created_at,
+          updatedAt: item.updatedAt ?? item.updated_at,
+          user:
+            item.user ||
+            (item.user_name || item.user_email
+              ? { name: item.user_name, email: item.user_email }
+              : undefined),
+          workflow:
+            item.workflow ||
+            (item.workflow_name
+              ? { name: item.workflow_name, category: item.category_name }
+              : undefined),
+        }));
+        setRegistrations(normalized);
+      } catch (err: any) {
+        setError(err?.message || "Không thể tải dữ liệu");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegistrations();
+  }, [workflowFilter, statusFilter, search]);
 
   const filtered = useMemo(() => {
     let items = registrations;
@@ -42,41 +115,8 @@ const WorkflowsUsersAdmin: React.FC = () => {
   }, [registrations, workflowFilter, statusFilter, search]);
 
   const totalRegistrations = registrations.length;
-  const totalWaiting = registrations.filter((r) => r.status === "cho-duyet")
-    .length;
-  const totalApproved = registrations.filter((r) => r.status === "da-duyet")
-    .length;
-
-  const handleApprove = (id: string) => {
-    setRegistrations((prev) =>
-      prev.map((r) =>
-        r.id === id
-          ? {
-              ...r,
-              status: "da-duyet",
-            }
-          : r
-      )
-    );
-  };
-
-  const handleReject = (id: string) => {
-    setRegistrations((prev) =>
-      prev.map((r) =>
-        r.id === id
-          ? {
-              ...r,
-              status: "da-huy",
-            }
-          : r
-      )
-    );
-  };
-
-  const handleRemove = (id: string) => {
-    if (!window.confirm("Xoá user khỏi workflow này?")) return;
-    setRegistrations((prev) => prev.filter((r) => r.id !== id));
-  };
+  const totalWaiting = registrations.filter((r) => r.status === "cho-duyet").length;
+  const totalApproved = registrations.filter((r) => r.status === "da-duyet").length;
 
   return (
     <>
@@ -101,46 +141,46 @@ const WorkflowsUsersAdmin: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-3 items-center">
-              <select
-                className="form-select text-xs w-56"
-                value={workflowFilter}
-                onChange={(e) => setWorkflowFilter(e.target.value)}
-              >
-                {workflowOptions.map((wf) => (
-                  <option key={wf.id} value={wf.id}>
-                    {wf.name}
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-3 items-center">
+                <select
+                  className="form-select text-xs w-56"
+                  value={workflowFilter}
+                  onChange={(e) => setWorkflowFilter(e.target.value)}
+                >
+                  {workflowOptions.map((wf) => (
+                    <option key={wf.id} value={wf.id}>
+                      {wf.name}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                className="form-select text-xs w-44"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="tat-ca">-- Trạng thái --</option>
-                <option value="cho-duyet">Chờ duyệt</option>
-                <option value="da-duyet">Đã duyệt</option>
-                <option value="da-huy">Đã huỷ</option>
-              </select>
-            </div>
+                <select
+                  className="form-select text-xs w-44"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="tat-ca">-- Trạng thái --</option>
+                  <option value="cho-duyet">Chờ duyệt</option>
+                  <option value="da-duyet">Đã duyệt</option>
+                  <option value="da-huy">Đã huỷ</option>
+                </select>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
-                  <i className="mgc_search_3_line" />
-                </span>
-                <input
-                  className="form-input pl-9 pr-3 py-2 text-xs w-64"
-                  placeholder="Tìm theo tên, email hoặc mã đăng ký"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
+                    <i className="mgc_search_3_line" />
+                  </span>
+                  <input
+                    className="form-input pl-9 pr-3 py-2 text-xs w-64"
+                    placeholder="Tìm theo tên, email hoặc mã đăng ký"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
           <div className="grid sm:grid-cols-3 grid-cols-1 gap-3 text-xs">
             <div className="rounded-xl bg-amber-50 px-3 py-2.5 text-amber-700">
@@ -233,32 +273,8 @@ const WorkflowsUsersAdmin: React.FC = () => {
                   <td className="px-3 py-3 text-xs text-slate-600">
                     {reg.createdAt}
                   </td>
-                  <td className="px-3 py-3 text-right whitespace-nowrap">
-                    {reg.status === "cho-duyet" && (
-                      <button
-                        type="button"
-                        className="btn btn-xs bg-emerald-50 text-emerald-600 text-[11px] mr-2"
-                        onClick={() => handleApprove(reg.id)}
-                      >
-                        Duyệt
-                      </button>
-                    )}
-                    {reg.status !== "da-huy" && (
-                      <button
-                        type="button"
-                        className="btn btn-xs bg-amber-50 text-amber-700 text-[11px] mr-2"
-                        onClick={() => handleReject(reg.id)}
-                      >
-                        Huỷ đăng ký
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      className="btn btn-xs bg-rose-50 text-rose-600 text-[11px]"
-                      onClick={() => handleRemove(reg.id)}
-                    >
-                      Xoá khỏi workflow
-                    </button>
+                  <td className="px-3 py-3 text-right whitespace-nowrap text-slate-500 text-[11px]">
+                    Xem chi tiết
                   </td>
                 </tr>
               ))}

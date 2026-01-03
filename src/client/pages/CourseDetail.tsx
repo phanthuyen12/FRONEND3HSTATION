@@ -69,7 +69,7 @@ const CourseDetail: React.FC = () => {
 
   const handleEnroll = async () => {
     if (!id || !course) return;
-    
+
     setEnrolling(true);
     try {
       await elearningService.enrollCourse(id);
@@ -91,22 +91,22 @@ const CourseDetail: React.FC = () => {
   // Helper function to get course price display
   const getCoursePriceDisplay = (course: Course | null): string => {
     if (!course) return "Liên hệ";
-    
+
     const isFree = [true, 1, '1'].includes(course.is_free as any);
-    const priceValue = typeof course.price === 'number' 
-      ? course.price 
-      : typeof course.price === 'string' 
-      ? parseFloat(course.price) || 0 
-      : 0;
-    
+    const priceValue = typeof course.price === 'number'
+      ? course.price
+      : typeof course.price === 'string'
+        ? parseFloat(course.price) || 0
+        : 0;
+
     if (isFree || priceValue === 0) {
       return "Miễn phí";
     }
-    
+
     if (isNaN(priceValue) || priceValue <= 0) {
       return "Liên hệ";
     }
-    
+
     // Format số nguyên (loại bỏ phần thập phân) và thêm định dạng VND
     const priceInt = Math.floor(priceValue);
     return `${priceInt.toLocaleString('vi-VN')}₫`;
@@ -115,14 +115,14 @@ const CourseDetail: React.FC = () => {
   // Helper function to check if course requires payment
   const requiresPayment = (course: Course | null): boolean => {
     if (!course) return false;
-    
+
     const isFree = [true, 1, '1'].includes(course.is_free as any);
-    const priceValue = typeof course.price === 'number' 
-      ? course.price 
-      : typeof course.price === 'string' 
-      ? parseFloat(course.price) || 0 
-      : 0;
-    
+    const priceValue = typeof course.price === 'number'
+      ? course.price
+      : typeof course.price === 'string'
+        ? parseFloat(course.price) || 0
+        : 0;
+
     return !isFree && !isNaN(priceValue) && priceValue > 0;
   };
 
@@ -238,11 +238,10 @@ const CourseDetail: React.FC = () => {
                               <button
                                 key={video.id}
                                 type="button"
-                                className={`w-full flex items-center justify-between rounded-md px-3 py-2 text-xs text-left transition ${
-                                  active
+                                className={`w-full flex items-center justify-between rounded-md px-3 py-2 text-xs text-left transition ${active
                                     ? "bg-amber-50 text-amber-700 border border-amber-200"
                                     : "bg-slate-50/60 text-slate-600 hover:bg-slate-100 border border-transparent"
-                                } ${locked ? "opacity-60 cursor-not-allowed" : ""}`}
+                                  } ${locked ? "opacity-60 cursor-not-allowed" : ""}`}
                                 onClick={() => {
                                   if (locked) return;
                                   setSelectedVideo(video);
@@ -250,11 +249,10 @@ const CourseDetail: React.FC = () => {
                               >
                                 <div className="flex items-center gap-2">
                                   <span
-                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${
-                                      active
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${active
                                         ? "bg-amber-500 text-white"
                                         : "bg-slate-200 text-slate-700"
-                                    }`}
+                                      }`}
                                   >
                                     ▶
                                   </span>
@@ -347,7 +345,7 @@ const CourseDetail: React.FC = () => {
             <div className="p-6 space-y-3">
               {isEnrolled ? (
                 <button
-                  className="btn bg-amber-500 text-white w-full"
+                  className="btn bg-amber-500 hover:bg-amber-600 text-white w-full transition-colors"
                   onClick={() => {
                     // User is enrolled, can continue learning
                   }}
@@ -356,7 +354,7 @@ const CourseDetail: React.FC = () => {
                 </button>
               ) : (
                 <button
-                  className="btn bg-amber-500 text-white w-full"
+                  className="btn bg-amber-500 hover:bg-amber-600 text-white w-full transition-colors"
                   onClick={() => setShowEnrollModal(true)}
                   disabled={enrolling}
                 >
@@ -378,13 +376,13 @@ const CourseDetail: React.FC = () => {
       {showEnrollModal && course && (() => {
         const displayPrice = getCoursePriceDisplay(course);
         const isFree = [true, 1, '1'].includes(course.is_free as any);
-        const priceValue = typeof course.price === 'number' 
-          ? course.price 
-          : typeof course.price === 'string' 
-          ? parseFloat(course.price) || 0 
-          : 0;
+        const priceValue = typeof course.price === 'number'
+          ? course.price
+          : typeof course.price === 'string'
+            ? parseFloat(course.price) || 0
+            : 0;
         const shouldShowPaymentWarning = !isFree && !isNaN(priceValue) && priceValue > 0;
-        
+
         return (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
@@ -411,7 +409,7 @@ const CourseDetail: React.FC = () => {
                   Hủy
                 </button>
                 <button
-                  className="btn bg-amber-500 text-white flex-1"
+                  className="btn bg-amber-500 hover:bg-amber-600 text-white flex-1 transition-colors"
                   onClick={handleEnroll}
                   disabled={enrolling}
                 >

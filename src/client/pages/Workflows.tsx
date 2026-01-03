@@ -89,11 +89,10 @@ const Workflows: React.FC = () => {
             {categoryNames.map((cat) => (
               <button
                 key={cat}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
-                  activeCategory === cat
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${activeCategory === cat
                     ? "bg-amber-500 border-amber-500 text-white shadow-sm"
                     : "bg-transparent border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
+                  }`}
                 onClick={() => setActiveCategory(cat)}
               >
                 {cat}
@@ -178,7 +177,7 @@ const Workflows: React.FC = () => {
                     </span>
                     <Link
                       to={`/workflows/${wf.id}`}
-                      className="btn btn-sm bg-amber-500 text-white"
+                      className="btn btn-sm bg-amber-500 hover:bg-amber-600 text-white transition-colors"
                     >
                       Đăng ký
                     </Link>

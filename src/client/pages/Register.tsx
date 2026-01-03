@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -17,6 +17,7 @@ interface UserData {
   name: string;
   email: string;
   password: string;
+  ref?: string;
 }
 
 /* bottom links */
@@ -33,13 +34,21 @@ const BottomLink = () => {
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [defaultRef, setDefaultRef] = useState<string>('');
 
   useEffect(() => {
     // Redirect if already logged in
     if (authService.isAuthenticated()) {
       navigate("/");
     }
-  }, [navigate]);
+    
+    // Đọc ref từ URL query parameter
+    const refFromUrl = searchParams.get('ref');
+    if (refFromUrl) {
+      setDefaultRef(refFromUrl);
+    }
+  }, [navigate, searchParams]);
 
   /*
    * form validation schema
@@ -52,6 +61,7 @@ const Register = () => {
         .required("Vui lòng nhập email")
         .email("Vui lòng nhập địa chỉ email hợp lệ"),
       password: yup.string().required("Vui lòng nhập mật khẩu"),
+      ref: yup.string().optional(),
     })
   );
 
@@ -64,6 +74,7 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        ref: formData.ref || undefined,
       });
       
       // Hiển thị thông báo thành công
@@ -141,6 +152,25 @@ const Register = () => {
             labelClassName="block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2"
             required
           />
+
+          <FormInput
+            label="Mã giới thiệu (nếu có)"
+            type="text"
+            name="ref"
+            placeholder="Nhập mã giới thiệu hoặc email người giới thiệu"
+            containerClass="mb-4"
+            className="form-input"
+            labelClassName="block text-sm font-medium text-gray-600 dark:text-gray-200 mb-2"
+            defaultValue={defaultRef}
+          />
+          {defaultRef && (
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <p className="text-sm text-green-800 dark:text-green-300">
+                <i className="mgc_info_line mr-1"></i>
+                Bạn đang đăng ký với mã giới thiệu: <strong>{defaultRef}</strong>
+              </p>
+            </div>
+          )}
 
           <div className="mb-4">
             <FormInput

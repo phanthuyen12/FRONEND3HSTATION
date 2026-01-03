@@ -1,11 +1,5 @@
 import { Link } from "react-router-dom";
 
-// images
-import logoLight from '../assets/images/logo-light.png';
-import logoDark from '../assets/images/logo-dark.png';
-
-//component
-
 interface AccountLayoutProps {
   pageImage?: any;
   authTitle?: string;
@@ -29,17 +23,6 @@ const AuthLayout = ({
   hasThirdPartyLogin,
   userImage,
 }: AccountLayoutProps) => {
-  // useEffect(() => {
-  //   if (document.body) {
-  //     document.body.classList.add('authentication-bg', 'position-relative')
-  //   }
-  //   return () => {
-  //     if (document.body) {
-  //       document.body.classList.remove('authentication-bg', 'position-relative')
-  //     }
-  //   }
-  // }, [])
-
   return (
     <>
       <div className="bg-gradient-to-r from-rose-100 to-teal-100 dark:from-gray-700 dark:via-gray-900 dark:to-black">
@@ -47,40 +30,40 @@ const AuthLayout = ({
           <div className="2xl:w-1/4 lg:w-1/3 md:w-1/2 w-full">
             <div className="card overflow-hidden sm:rounded-md rounded-none">
               <div className="p-6">
-                {/* {userImage ? (
-                  <div className="flex justify-between">
-                    <div className="flex flex-col gap-4 mb-6">
-                      <Link to="/" className="block">
-                        <img className="h-8 block dark:hidden" src={logoDark} />
-                        <img className="h-8 hidden dark:block" src={logoLight} />
-                      </Link>
-                      <h4 className="text-slate-900 dark:text-slate-200/50 font-semibold">Hi ! Adam </h4>
+                {/* Logo 3HSTATION */}
+                <div className="mb-8">
+                  <Link to="/" className="flex items-center gap-3 justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold">3H</span>
                     </div>
-                    <img src={userImage} alt="user-image" className="h-16 w-16 rounded-full shadow" />
-                  </div>
-                ) : (
-                  <Link to="/" className="block mb-8">
-                    <img className="h-8 block dark:hidden" src={logoDark} alt="" />
-                    <img className="h-8 hidden dark:block" src={logoLight} alt="" />
+                    <div className="text-left">
+                      <div className="text-2xl font-black text-slate-900 dark:text-white">3HSTATION</div>
+                      <div className="text-xs text-slate-600 dark:text-slate-400">Automation Platform</div>
+                    </div>
                   </Link>
-                )} */}
-
-                {children}
-
-                <div className="flex items-center my-6">
-                  <div className="flex-auto mt-px border-t border-dashed border-gray-200 dark:border-slate-700"></div>
-                  <div className="mx-4 text-secondary">Hoặc</div>
-                  <div className="flex-auto mt-px border-t border-dashed border-gray-200 dark:border-slate-700"></div>
                 </div>
 
-          
+                {/* Title & Help Text */}
+                {(authTitle || helpText) && (
+                  <div className="mb-6">
+                    {authTitle && (
+                      <h4 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{authTitle}</h4>
+                    )}
+                    {helpText && (
+                      <p className="text-slate-600 dark:text-slate-400">{helpText}</p>
+                    )}
+                  </div>
+                )}
 
+                {/* Form Content */}
+                {children}
+
+                {/* Bottom Links */}
                 {bottomLinks}
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </>
   );

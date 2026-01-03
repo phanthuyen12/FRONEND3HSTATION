@@ -41,7 +41,7 @@ class WorkflowsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
+    this.api = apiUrl; // ví dụ: 'http://localhost:3000'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -328,6 +328,52 @@ class WorkflowsService {
     } catch (error) {
       return { data: [] };
     }
+  }
+
+  // Workflow Links Management
+  async getWorkflowLinks(workflowId: string, status?: 'chua-ban' | 'da-ban'): Promise<any[]> {
+    const params = status ? `?status=${status}` : '';
+    const response = await this.request<{ data: any[] }>(`/api/workflows/${workflowId}/links${params}`);
+    return response.data || [];
+  }
+
+  async addWorkflowLinksBulk(workflowId: string, links: string[]): Promise<any[]> {
+    const response = await this.request<{ data: any[] }>(`/api/workflows/${workflowId}/links/bulk`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ links }),
+    });
+    return response.data || [];
+  }
+
+  async addWorkflowLink(workflowId: string, downloadLink: string): Promise<any> {
+    const response = await this.request<{ data: any }>(`/api/workflows/${workflowId}/links`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ downloadLink }),
+    });
+    return response.data;
+  }
+
+  async updateWorkflowLink(linkId: string, data: { downloadLink?: string; status?: 'chua-ban' | 'da-ban' }): Promise<any> {
+    const response = await this.request<{ data: any }>(`/api/workflows/links/${linkId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return response.data;
+  }
+
+  async deleteWorkflowLink(linkId: string): Promise<void> {
+    await this.request(`/api/workflows/links/${linkId}`, {
+      method: 'DELETE',
+    });
   }
 }
 
