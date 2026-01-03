@@ -1,5 +1,5 @@
 // Cấu hình chung cho frontend
-// - API_URL: base URL của backend (ví dụ: http://localhost:3000)
+// - API_URL: base URL của backend (ví dụ: https://api.3hstation.com)
 // - Có thể override bằng biến môi trường Vite: VITE_API_URL
 
 import ElearningService from './services/elearningService';
@@ -13,7 +13,7 @@ import AdminOrderService from './services/adminOrderService';
 import TopupService from './services/topupService';
 import BankService, { Bank } from './services/bankService';
 // Base URL cho backend
-export const API_URL: string ='http://localhost:3000';
+export const API_URL: string ='https://api.3hstation.com/';
 
 // Tạo instance ElearningService
 export const elearningService = new ElearningService();

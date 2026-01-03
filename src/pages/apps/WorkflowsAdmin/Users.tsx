@@ -4,16 +4,20 @@ import { authService, API_URL } from "../../../config";
 
 type Registration = {
   id: string;
-  user_id: string;
-  workflow_id: string;
+  userId: string;
+  workflowId: string;
   status: string;
   reason?: string | null;
-  created_at?: string;
-  updated_at?: string;
-  user_name?: string;
-  user_email?: string;
-  workflow_name?: string;
-  category_name?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  user?: {
+    name: string;
+    email: string;
+  };
+  workflow?: {
+    name: string;
+    category?: string;
+  };
 };
 
 const WorkflowsUsersAdmin: React.FC = () => {
@@ -47,7 +51,7 @@ const WorkflowsUsersAdmin: React.FC = () => {
           typeof window !== "undefined" &&
           (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
         const baseUrl = isLocal
-          ? "http://localhost:3000"
+          ? "https://api.3hstation.com"
           : API_URL || process.env.VITE_API_URL || "https://api.3hstation.com";
         const res = await fetch(`${baseUrl}/api/workflows/registrations?${params.toString()}`, {
           headers: {
@@ -141,46 +145,46 @@ const WorkflowsUsersAdmin: React.FC = () => {
             </div>
           </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap gap-3 items-center">
-                <select
-                  className="form-select text-xs w-56"
-                  value={workflowFilter}
-                  onChange={(e) => setWorkflowFilter(e.target.value)}
-                >
-                  {workflowOptions.map((wf) => (
-                    <option key={wf.id} value={wf.id}>
-                      {wf.name}
-                    </option>
-                  ))}
-                </select>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-3 items-center">
+              <select
+                className="form-select text-xs w-56"
+                value={workflowFilter}
+                onChange={(e) => setWorkflowFilter(e.target.value)}
+              >
+                {workflowOptions.map((wf) => (
+                  <option key={wf.id} value={wf.id}>
+                    {wf.name}
+                  </option>
+                ))}
+              </select>
 
-                <select
-                  className="form-select text-xs w-44"
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  <option value="tat-ca">-- Trạng thái --</option>
-                  <option value="cho-duyet">Chờ duyệt</option>
-                  <option value="da-duyet">Đã duyệt</option>
-                  <option value="da-huy">Đã huỷ</option>
-                </select>
-              </div>
+              <select
+                className="form-select text-xs w-44"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="tat-ca">-- Trạng thái --</option>
+                <option value="cho-duyet">Chờ duyệt</option>
+                <option value="da-duyet">Đã duyệt</option>
+                <option value="da-huy">Đã huỷ</option>
+              </select>
+            </div>
 
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
-                    <i className="mgc_search_3_line" />
-                  </span>
-                  <input
-                    className="form-input pl-9 pr-3 py-2 text-xs w-64"
-                    placeholder="Tìm theo tên, email hoặc mã đăng ký"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
+                  <i className="mgc_search_3_line" />
+                </span>
+                <input
+                  className="form-input pl-9 pr-3 py-2 text-xs w-64"
+                  placeholder="Tìm theo tên, email hoặc mã đăng ký"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
               </div>
             </div>
+          </div>
 
           <div className="grid sm:grid-cols-3 grid-cols-1 gap-3 text-xs">
             <div className="rounded-xl bg-amber-50 px-3 py-2.5 text-amber-700">
@@ -255,19 +259,18 @@ const WorkflowsUsersAdmin: React.FC = () => {
                   </td>
                   <td className="px-3 py-3">
                     <span
-                      className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                        reg.status === "da-duyet"
+                      className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${reg.status === "da-duyet"
                           ? "bg-emerald-100 text-emerald-700"
                           : reg.status === "cho-duyet"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-rose-100 text-rose-700"
-                      }`}
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-rose-100 text-rose-700"
+                        }`}
                     >
                       {reg.status === "da-duyet"
                         ? "Đã duyệt"
                         : reg.status === "cho-duyet"
-                        ? "Chờ duyệt"
-                        : "Đã huỷ"}
+                          ? "Chờ duyệt"
+                          : "Đã huỷ"}
                     </span>
                   </td>
                   <td className="px-3 py-3 text-xs text-slate-600">

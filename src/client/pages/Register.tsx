@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Resolver } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -42,7 +43,7 @@ const Register = () => {
     if (authService.isAuthenticated()) {
       navigate("/");
     }
-    
+
     // Đọc ref từ URL query parameter
     const refFromUrl = searchParams.get('ref');
     if (refFromUrl) {
@@ -76,7 +77,7 @@ const Register = () => {
         password: formData.password,
         ref: formData.ref || undefined,
       });
-      
+
       // Hiển thị thông báo thành công
       await Swal.fire({
         icon: 'success',
@@ -87,12 +88,12 @@ const Register = () => {
         timer: 2000,
         timerProgressBar: true,
       });
-      
+
       // Chuyển sang trang chủ sau khi hiển thị thông báo
       navigate("/");
     } catch (error: any) {
       console.error("Register failed", error);
-      
+
       // Hiển thị thông báo thất bại
       await Swal.fire({
         icon: 'error',
@@ -101,7 +102,7 @@ const Register = () => {
         confirmButtonText: 'Đã hiểu',
         confirmButtonColor: '#ef4444',
       });
-      
+
       throw error; // Let VerticalForm handle the error display
     }
   };
@@ -117,7 +118,7 @@ const Register = () => {
       >
         <VerticalForm<UserData>
           onSubmit={onSubmit}
-          resolver={schemaResolver}
+          resolver={schemaResolver as Resolver<UserData>}
         >
 
           <FormInput
