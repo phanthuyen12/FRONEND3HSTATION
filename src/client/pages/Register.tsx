@@ -174,7 +174,7 @@ const Register = () => {
           )}
 
           <div className="mb-4">
-            <FormInput
+            <FormInput 
               label="Tôi đồng ý"
               type="checkbox"
               name="checkbox"
