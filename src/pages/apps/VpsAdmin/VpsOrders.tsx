@@ -123,8 +123,8 @@ const VpsOrders: React.FC = () => {
       status: order.status || '',
       notes: inst.notes || '',
       description: inst.notes || '',
-      ipAddress: inst.ip_address || '',
-      hostname: inst.hostname || '',
+      ipAddress: inst.ip_address || inst.device_ip || '',
+      hostname: inst.hostname || inst.device_hostname || '',
       expiresAt: inst.expires_at ? String(inst.expires_at).split('T')[0] : '',
       password: inst.configuration?.password || ''
     });
@@ -139,18 +139,18 @@ const VpsOrders: React.FC = () => {
       if (formData.status !== selectedOrder.status) {
         await adminOrderService.updateOrderStatus(selectedOrder.id, formData.status);
       }
-      
+
       // Cập nhật notes
       if (formData.notes || formData.description) {
         await adminOrderService.updateOrderNotes(
-          selectedOrder.id, 
+          selectedOrder.id,
           formData.notes || formData.description || '',
           formData.description
         );
       }
 
-      // Cập nhật thông tin instance (IP/Hostname/Expire/Password)
-      if (selectedOrder.instance?.id) {
+      // Cập nhật thông tin instance (IP/Hostname/Expire/Password) chỉ dành cho VPS thường
+      if (selectedOrder.instance?.id && selectedOrder.type === 'vps') {
         await vpsService.updateInstance(String(selectedOrder.instance.id), {
           ipAddress: formData.ipAddress || undefined,
           hostname: formData.hostname || undefined,
@@ -162,14 +162,14 @@ const VpsOrders: React.FC = () => {
           notes: formData.notes || undefined
         });
       }
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Thành công!',
         text: 'Đã cập nhật đơn hàng thành công',
         confirmButtonText: 'Đóng',
       });
-      
+
       setShowModal(false);
       loadOrders();
     } catch (error: any) {
@@ -202,14 +202,14 @@ const VpsOrders: React.FC = () => {
         attachmentData.attachmentName,
         attachmentData.attachmentType
       );
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Thành công!',
         text: 'Đã thêm file/link đính kèm thành công',
         confirmButtonText: 'Đóng',
       });
-      
+
       setShowAttachmentModal(false);
       loadOrders();
     } catch (error: any) {
@@ -342,6 +342,36 @@ const VpsOrders: React.FC = () => {
                               <i className="mgc_edit_line mr-1" />
                               Cập nhật
                             </button>
+                            {(order.status === 'paid' || order.status === 'pending') && (
+                              <button
+                                className="btn btn-sm bg-indigo-500 text-white"
+                                onClick={async () => {
+                                  const result = await Swal.fire({
+                                    title: 'Xác nhận?',
+                                    text: 'Hệ thống sẽ chuyển trạng thái sang Hoàn thành và tự động khởi tạo VPS trên Nodeverse.',
+                                    icon: 'question',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Đồng ý',
+                                    cancelButtonText: 'Hủy'
+                                  });
+                                  if (result.isConfirmed) {
+                                    try {
+                                      setLoading(true);
+                                      await adminOrderService.updateOrderStatus(order.id, 'completed');
+                                      Swal.fire('Thành công', 'Đơn hàng đã được duyệt và đang khởi tạo...', 'success');
+                                      loadOrders();
+                                    } catch (err: any) {
+                                      Swal.fire('Lỗi', err.message, 'error');
+                                    } finally {
+                                      setLoading(false);
+                                    }
+                                  }
+                                }}
+                              >
+                                <i className="mgc_flash_line mr-1" />
+                                Phê duyệt & Khởi tạo
+                              </button>
+                            )}
                             <button
                               className="btn btn-sm bg-emerald-500 text-white"
                               onClick={() => handleAddAttachment(order)}
@@ -356,7 +386,7 @@ const VpsOrders: React.FC = () => {
                   </tbody>
                 </table>
               </div>
-              
+
               {/* Pagination */}
               {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4">
@@ -391,7 +421,7 @@ const VpsOrders: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Cập nhật đơn hàng #{selectedOrder.id}</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="form-label">Trạng thái</label>
@@ -546,11 +576,11 @@ const VpsOrders: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-4 text-sm mb-4 bg-slate-50 dark:bg-slate-900/60 p-3 rounded">
                 <div>
                   <p className="text-slate-500 text-xs mb-1">IP</p>
-                  <p className="font-semibold">{detailOrder.instance.ip_address || '-'}</p>
+                  <p className="font-semibold">{detailOrder.instance.ip_address || detailOrder.instance.device_ip || '-'}</p>
                 </div>
                 <div>
                   <p className="text-slate-500 text-xs mb-1">Hostname</p>
-                  <p className="font-semibold">{detailOrder.instance.hostname || '-'}</p>
+                  <p className="font-semibold">{detailOrder.instance.hostname || detailOrder.instance.device_hostname || '-'}</p>
                 </div>
                 <div>
                   <p className="text-slate-500 text-xs mb-1">Trạng thái VPS</p>
@@ -637,7 +667,7 @@ const VpsOrders: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold mb-4">Thêm file/link đính kèm</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="form-label">Loại</label>

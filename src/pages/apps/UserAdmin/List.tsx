@@ -18,7 +18,7 @@ const UsersAdminList: React.FC = () => {
     totalPages: number;
   }>({
     page: 1,
-    limit: 20,
+    limit: 10,
     total: 0,
     totalPages: 0,
   });
@@ -66,7 +66,7 @@ const UsersAdminList: React.FC = () => {
     loadUsers();
     loadStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.page, search, statusFilter]);
+  }, [pagination.page, pagination.limit, search, statusFilter]);
 
   const filtered = useMemo(() => {
     return users;
@@ -207,6 +207,19 @@ const UsersAdminList: React.FC = () => {
                 <option value="active">Hoạt động</option>
                 <option value="locked">Đang khóa</option>
               </select>
+              {/* Limit selector */}
+              <select
+                className="form-select text-xs w-28"
+                value={pagination.limit}
+                onChange={(e) => {
+                  setPagination((prev) => ({ ...prev, limit: Number(e.target.value), page: 1 }));
+                }}
+              >
+                <option value={10}>10 / trang</option>
+                <option value={20}>20 / trang</option>
+                <option value={50}>50 / trang</option>
+                <option value={100}>100 / trang</option>
+              </select>
               <button
                 type="button"
                 className="btn bg-emerald-500 text-white text-sm"
@@ -310,11 +323,10 @@ const UsersAdminList: React.FC = () => {
                       </td>
                       <td className="px-3 py-3">
                         <span
-                          className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                            user.status === "locked"
-                              ? "bg-rose-100 text-rose-700"
-                              : "bg-emerald-100 text-emerald-700"
-                          }`}
+                          className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${user.status === "locked"
+                            ? "bg-rose-100 text-rose-700"
+                            : "bg-emerald-100 text-emerald-700"
+                            }`}
                         >
                           {user.status === "locked" ? "Khoá" : "Hoạt động"}
                         </span>
@@ -363,54 +375,83 @@ const UsersAdminList: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="card-footer flex items-center justify-between px-4 py-3">
-            <div className="text-xs text-slate-500">
-              Hiển thị {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} của {pagination.total} users
-            </div>
-            <div className="flex gap-1">
-              <button
-                type="button"
-                className="btn btn-xs border"
-                onClick={() => handlePageChange(pagination.page - 1)}
-                disabled={pagination.page === 1}
-              >
-                Trước
-              </button>
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum: number;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (pagination.page <= 3) {
-                  pageNum = i + 1;
-                } else if (pagination.page >= pagination.totalPages - 2) {
-                  pageNum = pagination.totalPages - 4 + i;
-                } else {
-                  pageNum = pagination.page - 2 + i;
-                }
-                return (
-                  <button
-                    key={pageNum}
-                    type="button"
-                    className={`btn btn-xs ${pagination.page === pageNum ? 'bg-primary text-white' : 'border'}`}
-                    onClick={() => handlePageChange(pageNum)}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                className="btn btn-xs border"
-                onClick={() => handlePageChange(pagination.page + 1)}
-                disabled={pagination.page === pagination.totalPages}
-              >
-                Sau
-              </button>
-            </div>
+        {/* Pagination — always visible */}
+        <div className="card-footer flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3">
+          <div className="text-xs text-slate-500">
+            {loading ? (
+              <span>Đang tải...</span>
+            ) : (
+              <span>
+                Hiển thị{' '}
+                <strong>{pagination.total === 0 ? 0 : ((pagination.page - 1) * pagination.limit) + 1}</strong>
+                {' – '}
+                <strong>{Math.min(pagination.page * pagination.limit, pagination.total)}</strong>
+                {' '}của{' '}
+                <strong>{pagination.total}</strong> users
+              </span>
+            )}
           </div>
-        )}
+          <div className="flex gap-1">
+            <button
+              type="button"
+              className="btn btn-xs border"
+              onClick={() => handlePageChange(1)}
+              disabled={pagination.page === 1 || loading}
+              title="Trang đầu"
+            >
+              «
+            </button>
+            <button
+              type="button"
+              className="btn btn-xs border"
+              onClick={() => handlePageChange(pagination.page - 1)}
+              disabled={pagination.page === 1 || loading}
+            >
+              Trước
+            </button>
+            {Array.from({ length: Math.min(5, pagination.totalPages || 1) }, (_, i) => {
+              const total = pagination.totalPages || 1;
+              let pageNum: number;
+              if (total <= 5) {
+                pageNum = i + 1;
+              } else if (pagination.page <= 3) {
+                pageNum = i + 1;
+              } else if (pagination.page >= total - 2) {
+                pageNum = total - 4 + i;
+              } else {
+                pageNum = pagination.page - 2 + i;
+              }
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  className={`btn btn-xs ${pagination.page === pageNum ? 'bg-primary text-white' : 'border'}`}
+                  onClick={() => handlePageChange(pageNum)}
+                  disabled={loading}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              className="btn btn-xs border"
+              onClick={() => handlePageChange(pagination.page + 1)}
+              disabled={pagination.page === pagination.totalPages || pagination.totalPages === 0 || loading}
+            >
+              Sau
+            </button>
+            <button
+              type="button"
+              className="btn btn-xs border"
+              onClick={() => handlePageChange(pagination.totalPages)}
+              disabled={pagination.page === pagination.totalPages || pagination.totalPages === 0 || loading}
+              title="Trang cuối"
+            >
+              »
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );

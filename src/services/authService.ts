@@ -10,6 +10,7 @@ export interface User {
   refBy?: number | string | null;
   refCount?: number;
   refCommission?: number;
+  apiToken?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -63,7 +64,7 @@ class AuthService {
       // const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
 
       // Nếu token hết hạn (401), thử refresh token (nhưng không cho login/register)
-      if (res.status === 401 ) {
+      if (res.status === 401) {
         const refreshToken = this.getRefreshToken();
         if (refreshToken) {
           try {

@@ -19,6 +19,11 @@ export default function Nav({ setMobileToggle }) {
         </Link>
       </li>
       <li>
+        <Link to="/vps/nodeverse" onClick={() => setMobileToggle(false)}>
+          VPS Nodeverse
+        </Link>
+      </li>
+      <li>
         <Link to="/blog" onClick={() => setMobileToggle(false)}>
           Blog
         </Link>

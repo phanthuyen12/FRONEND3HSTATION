@@ -12,6 +12,7 @@ import CoursesAdminList from "../pages/apps/CoursesAdmin/List";
 import CourseDetailAdmin from "../pages/apps/CoursesAdmin/Detail";
 import VpsAdminList from "../pages/apps/VpsAdmin/List";
 import VpsAdminOrders from "../pages/apps/VpsAdmin/VpsOrders";
+import NodeverseDevicesAdmin from "../pages/apps/VpsAdmin/NodeverseDevices";
 import WorkflowsAdminList from "../pages/apps/WorkflowsAdmin/List";
 import WorkflowCategoriesAdmin from "../pages/apps/WorkflowsAdmin/Categories";
 import WorkflowDetailAdmin from "../pages/apps/WorkflowsAdmin/Detail";
@@ -23,6 +24,7 @@ import UserAdminDetail from "../pages/apps/UserAdmin/Detail";
 import DocumentsAdminList from "../pages/apps/DocumentsAdmin/List";
 import DocumentsAdminDetail from "../pages/apps/DocumentsAdmin/Detail";
 import BankAdminList from "../pages/apps/BankAdmin/List";
+import ConfigAdmin from "../pages/apps/ConfigAdmin";
 
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
@@ -110,6 +112,14 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <VpsAdminList />
+          </VerticalLayout>
+        }
+      />
+      <Route
+        path="vps/nodeverse"
+        element={
+          <VerticalLayout>
+            <NodeverseDevicesAdmin />
           </VerticalLayout>
         }
       />
@@ -232,6 +242,16 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <BankAdminList />
+          </VerticalLayout>
+        }
+      />
+
+      {/* Configs */}
+      <Route
+        path="configs"
+        element={
+          <VerticalLayout>
+            <ConfigAdmin />
           </VerticalLayout>
         }
       />

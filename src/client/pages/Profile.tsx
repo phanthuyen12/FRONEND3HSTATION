@@ -12,7 +12,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [changePasswordMode, setChangePasswordMode] = useState<boolean>(false);
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,6 +22,7 @@ const Profile: React.FC = () => {
     refCode?: string | null;
     refCount?: number;
     refCommission?: number;
+    apiToken?: string | null;
   }>({});
 
   const [passwordData, setPasswordData] = useState({
@@ -53,6 +54,7 @@ const Profile: React.FC = () => {
             refCode: (localUser as any).refCode || (localUser as any).ref_code,
             refCount: (localUser as any).refCount || (localUser as any).ref_count,
             refCommission: (localUser as any).refCommission || (localUser as any).ref_commission,
+            apiToken: (localUser as any).apiToken || (localUser as any).api_token,
           });
         }
 
@@ -70,6 +72,7 @@ const Profile: React.FC = () => {
               refCode: (profileData as any).refCode || (profileData as any).ref_code,
               refCount: (profileData as any).refCount || (profileData as any).ref_count,
               refCommission: (profileData as any).refCommission || (profileData as any).ref_commission,
+              apiToken: (profileData as any).apiToken || (profileData as any).api_token,
             });
             // Cập nhật localStorage
             localStorage.setItem('auth_user', JSON.stringify(profileData));
@@ -312,6 +315,28 @@ const Profile: React.FC = () => {
                   <span className="font-medium">
                     {user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
                   </span>
+                </div>
+              )}
+              {refInfo.apiToken && (
+                <div className="flex justify-between items-center mt-2 group">
+                  <span className="text-slate-500">API Token:</span>
+                  <div className="flex gap-1 items-center">
+                    <span className="font-mono text-[10px] break-all max-w-[120px] truncate" title={refInfo.apiToken}>
+                      {refInfo.apiToken.substring(0, 15)}...
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (refInfo.apiToken) {
+                          navigator.clipboard.writeText(refInfo.apiToken);
+                          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Đã copy', showConfirmButton: false, timer: 1500 });
+                        }
+                      }}
+                      className="text-primary hover:text-primary-dark transition-colors"
+                      title="Copy Token"
+                    >
+                      <i className="mgc_copy_line text-sm border p-0.5 rounded shadow-sm bg-slate-50"></i>
+                    </button>
+                  </div>
                 </div>
               )}
               {refInfo.refCode && (

@@ -47,7 +47,7 @@ function* login({
     setAuthorization(user["token"]);
     yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, user));
   } catch (error: any) {
-    yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, error));
+    yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, error?.message || String(error)));
     api.setLoggedInUser(null);
     setAuthorization(null);
   }
@@ -63,7 +63,10 @@ function* logout(): SagaIterator {
     setAuthorization(null);
     yield put(authApiResponseSuccess(AuthActionTypes.LOGOUT_USER, {}));
   } catch (error: any) {
-    yield put(authApiResponseError(AuthActionTypes.LOGOUT_USER, error));
+    // Logout API có thể 404 (mock) - vẫn clear auth và coi như thành công
+    api.setLoggedInUser(null);
+    setAuthorization(null);
+    yield put(authApiResponseSuccess(AuthActionTypes.LOGOUT_USER, {}));
   }
 }
 
@@ -77,7 +80,7 @@ function* signup({
     // setAuthorization(user['token']);
     yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, user));
   } catch (error: any) {
-    yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error));
+    yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error?.message || String(error)));
     api.setLoggedInUser(null);
     setAuthorization(null);
   }
@@ -90,7 +93,7 @@ function* forgotPassword({ payload: { username } }: UserData): SagaIterator {
       authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, response.data)
     );
   } catch (error: any) {
-    yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error));
+    yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error?.message || String(error)));
   }
 }
 export function* watchLoginUser() {

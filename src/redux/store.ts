@@ -20,7 +20,10 @@ export const store = configureStore({
   } as any,
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }).concat(middleware),
 });
 
 // run the saga

@@ -60,6 +60,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "apps-vps",
       },
       {
+        key: "vps-nodeverse",
+        label: "Nodeverse Plans",
+        url: "/admin/vps/nodeverse",
+        parentKey: "apps-vps",
+      },
+      {
         key: "vps-orders",
         label: "Đơn hàng VPS",
         url: "/admin/vps/orders",
@@ -154,6 +160,13 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "apps-users",
       },
     ],
+  },
+  {
+    key: "apps-configs",
+    label: "Cấu hình hệ thống",
+    isTitle: false,
+    icon: "mgc_settings_3_line",
+    url: "/admin/configs",
   },
   {
     key: 'elements',
@@ -549,9 +562,29 @@ const CLIENT_MENU_ITEMS: MenuItemTypes[] = [
   },
   {
     key: "client-vps",
-    label: "Gói VPS",
+    label: "VPS",
     icon: "mgc_cloud_line",
-    url: "/vps",
+    isTitle: false,
+    children: [
+      {
+        key: "client-vps-list",
+        label: "Gói VPS",
+        url: "/vps",
+        parentKey: "client-vps",
+      },
+      {
+        key: "client-vps-nodeverse",
+        label: "VPS Nodeverse",
+        url: "/vps/nodeverse",
+        parentKey: "client-vps",
+      },
+      {
+        key: "client-vps-manage",
+        label: "Quản lý VPS",
+        url: "/my-vps",
+        parentKey: "client-vps",
+      },
+    ],
   },
   {
     key: "client-orders",

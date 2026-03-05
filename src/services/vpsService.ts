@@ -42,7 +42,7 @@ class VpsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
+    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com/'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -109,7 +109,7 @@ class VpsService {
     search?: string;
   }): Promise<{ data: any[]; pagination?: any }> {
     // Get token from localStorage - try both possible keys
-    const token = localStorage.getItem('auth_token') 
+    const token = localStorage.getItem('auth_token')
       || localStorage.getItem('authToken')
       || sessionStorage.getItem('auth_token')
       || sessionStorage.getItem('authToken');
@@ -121,18 +121,18 @@ class VpsService {
 
     const queryString = queryParams.toString();
     const url = `${this.api}/api/vps/instances${queryString ? `?${queryString}` : ""}`;
-    
+
     if (!token) {
       throw new Error('Authorization token not found. Please login again.');
     }
-    
+
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     const data = await response.json();
     if (data.success && data.data) {
       return {
@@ -140,7 +140,7 @@ class VpsService {
         pagination: data.data.pagination || data.pagination
       };
     }
-    
+
     return { data: [] };
   }
 
@@ -151,7 +151,7 @@ class VpsService {
     status?: string;
     search?: string;
   }): Promise<{ data: any[]; pagination?: any }> {
-    const token = localStorage.getItem('auth_token') 
+    const token = localStorage.getItem('auth_token')
       || localStorage.getItem('authToken')
       || sessionStorage.getItem('auth_token')
       || sessionStorage.getItem('authToken');
@@ -192,15 +192,15 @@ class VpsService {
     configuration?: any;
   }): Promise<any> {
     // Get token from localStorage - try both possible keys
-    const token = localStorage.getItem('auth_token') 
+    const token = localStorage.getItem('auth_token')
       || localStorage.getItem('authToken')
       || sessionStorage.getItem('auth_token')
       || sessionStorage.getItem('authToken');
-    
+
     if (!token) {
       throw new Error('Authorization token not found. Please login again.');
     }
-    
+
     const url = `${this.api}/api/vps/instances/${id}`;
     const response = await fetch(url, {
       method: 'PUT',
@@ -221,16 +221,16 @@ class VpsService {
   async getMyVpsOrders(): Promise<any[]> {
     // Get token from localStorage - try both possible keys
     // authService uses 'auth_token' key
-    const token = localStorage.getItem('auth_token') 
+    const token = localStorage.getItem('auth_token')
       || localStorage.getItem('authToken')
       || sessionStorage.getItem('auth_token')
       || sessionStorage.getItem('authToken');
-    
+
     if (!token) {
       console.warn('No token found, returning empty orders list');
       return [];
     }
-    
+
     const url = `${this.api}/api/client/vps/my-orders`;
     const response = await fetch(url, {
       headers: {
@@ -250,20 +250,25 @@ class VpsService {
     planId: string,
     paymentMethod: string = 'balance',
     billingTermCode: string = '1m',
-    autoRenew: boolean = false
+    autoRenew: boolean = false,
+    extraParams?: {
+      osVersion?: string | null;
+      nodeverseDeviceId?: string | null;
+      nodeverseAgencyId?: string | null;
+    }
   ): Promise<{ order: any; instance: any }> {
     try {
       // Get token from localStorage - try both possible keys
       // authService uses 'auth_token' key
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       if (!token) {
         throw new Error('Authorization token not found. Please login again.');
       }
-      
+
       const url = `${this.api}/api/client/vps/orders`;
       const response = await fetch(url, {
         method: 'POST',
@@ -271,12 +276,62 @@ class VpsService {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ planId, paymentMethod, billingTermCode, autoRenew }),
+        body: JSON.stringify({
+          planId,
+          paymentMethod,
+          billingTermCode,
+          autoRenew,
+          ...extraParams
+        }),
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || 'Tạo đơn hàng VPS thất bại');
       }
+      return data.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  // Hybrid Nodeverse Order
+  async createNodeverseHybridVpsOrder(
+    planId: string,
+    paymentMethod: string = 'balance',
+    billingTermCode: string = '1m',
+    autoRenew: boolean = false,
+    extraParams?: {
+      osVersion?: string | null;
+      nodeverseDeviceId?: string | null;
+      nodeverseAgencyId?: string | null;
+    }
+  ): Promise<{ order: any; instance: any }> {
+    try {
+      const token = localStorage.getItem('auth_token')
+        || localStorage.getItem('authToken')
+        || sessionStorage.getItem('auth_token')
+        || sessionStorage.getItem('authToken');
+
+      if (!token) throw new Error('Authorization token not found.');
+
+      // Hit the nodeverse specific order endpoint
+      const url = `${this.api}/api/client/vps/nodeverse-plans/order`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          planId,
+          paymentMethod,
+          billingTermCode,
+          autoRenew,
+          ...extraParams
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Tạo đơn hàng Hybrid thất bại');
       return data.data;
     } catch (error: any) {
       throw error;
@@ -336,6 +391,255 @@ class VpsService {
 
     return body.data as VpsPlanPricingResponse;
   }
+
+  // ========== NODEVERSE THIRD-PARTY API ==========
+
+  private getToken(): string {
+    // 1. Client authService lưu vào localStorage['auth_token']
+    const fromLocal = localStorage.getItem('auth_token')
+      || localStorage.getItem('authToken');
+    if (fromLocal) return fromLocal;
+
+    // 2. Admin template (APICore) lưu vào sessionStorage['konrix_user'] dạng JSON { token, ... }
+    const konrixRaw = sessionStorage.getItem('konrix_user');
+    if (konrixRaw) {
+      try {
+        const parsed = JSON.parse(konrixRaw);
+        const t = parsed?.token || parsed?.data?.token;
+        if (t) return t;
+      } catch { /* ignore */ }
+    }
+
+    // 3. Fallback sessionStorage keys khác
+    const fromSession = sessionStorage.getItem('auth_token')
+      || sessionStorage.getItem('authToken');
+    if (fromSession) return fromSession;
+
+    throw new Error('Authorization token not found. Please login again.');
+  }
+
+  /**
+   * Lấy danh sách tất cả VPS devices từ Nodeverse bên thứ 3
+   */
+  async getNodeverseDevices(): Promise<{ total: number; devices: NodeverseDevice[] }> {
+    const token = this.getToken();
+    const url = `${this.api}/api/client/vps/nodeverse/devices`;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const body = await response.json();
+    if (!response.ok) {
+      throw new Error(body?.message || 'Không thể tải danh sách VPS Nodeverse');
+    }
+    return body.data || { total: 0, devices: [] };
+  }
+
+  /**
+   * Lấy chi tiết 1 VPS device từ Nodeverse
+   */
+  async getNodeverseDeviceById(deviceId: string): Promise<NodeverseDevice> {
+    const token = this.getToken();
+    const url = `${this.api}/api/client/vps/nodeverse/devices/${deviceId}`;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const body = await response.json();
+    if (!response.ok) {
+      throw new Error(body?.message || 'Không thể tải chi tiết VPS device');
+    }
+    return body.data;
+  }
+
+  /**
+   * Lấy thống kê VPS devices từ Nodeverse
+   */
+  async getNodeverseStats(): Promise<NodeverseStats> {
+    const token = this.getToken();
+    const url = `${this.api}/api/client/vps/nodeverse/stats`;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const body = await response.json();
+    if (!response.ok) {
+      throw new Error(body?.message || 'Không thể tải thống kê VPS Nodeverse');
+    }
+    return body.data;
+  }
+
+  // ========== NODEVERSE VPS PLANS (DB-backed, admin cài giá + user đặt hàng) ==========
+
+  async getNodeverseVpsPlans(): Promise<{ total: number; plans: NodeverseVpsPlan[] }> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải danh sách VPS plans');
+    return body.data || { total: 0, plans: [] };
+  }
+
+  async getNodeverseVpsPlanPricing(planId: string): Promise<{ plan: NodeverseVpsPlan; terms: any[] }> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/${planId}/pricing`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải bảng giá');
+    return body.data;
+  }
+
+  async createNodeverseVpsOrder(planId: string, billingTermCode: string = '1m', autoRenew: boolean = false): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ planId, paymentMethod: 'balance', billingTermCode, autoRenew })
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Đặt hàng thất bại');
+    return body.data;
+  }
+
+  async getMyNodeverseVpsOrders(): Promise<any[]> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/my-orders`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải đơn hàng');
+    return Array.isArray(body.data) ? body.data : [];
+  }
+
+  async getMyNodeverseVpsOrder(id: string): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/my-orders/${id}`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải chi tiết đơn hàng');
+    return body.data;
+  }
+
+  async changeNodeverseVpsContainerState(id: string, action: 'start' | 'stop' | 'restart'): Promise<{ message: string, status: string, containerStatus: string }> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/my-orders/${id}/${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || `Thao tác ${action} thất bại`);
+    return body.data;
+  }
+
+  // ADMIN methods
+  async adminGetNodeversePlans(search?: string): Promise<{ total: number; plans: NodeverseVpsPlan[] }> {
+    const token = this.getToken();
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans${qs}`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải plans');
+    return body.data || { total: 0, plans: [] };
+  }
+
+  async syncNodeversePlans(): Promise<{ synced: number }> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Sync thất bại');
+    return body.data;
+  }
+
+  async adminUpdateNodeversePlan(id: string, payload: Partial<NodeverseVpsPlan>): Promise<NodeverseVpsPlan> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(payload)
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Cập nhật thất bại');
+    return body.data;
+  }
+
+  async adminGetNodeverseInstances(params?: { status?: string; limit?: number; offset?: number }): Promise<{ total: number; data: any[] }> {
+    const token = this.getToken();
+    const qp = new URLSearchParams();
+    if (params?.status) qp.append('status', params.status);
+    if (params?.limit) qp.append('limit', String(params.limit));
+    if (params?.offset) qp.append('offset', String(params.offset));
+    const qs = qp.toString() ? `?${qp.toString()}` : '';
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/instances${qs}`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải instances');
+    return body.data || { total: 0, data: [] };
+  }
 }
+
+export interface NodeverseDevice {
+  id: string;
+  agencyId: string;
+  name: string;
+  ipAddress: string;
+  hostname: string;
+  status: 'online' | 'offline' | string;
+  operatingSystem: string;
+  cpuInfo: string;
+  totalMemory: number;
+  diskSpace: number;
+  isActive: boolean;
+  tag: string | null;
+  socketId: string | null;
+  lastConnectedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NodeverseStats {
+  total: number;
+  online: number;
+  offline: number;
+  totalMemoryGB: number;
+  totalDiskGB: number;
+}
+
+export interface NodeverseVpsPlan {
+  id: string;
+  nodeverseDeviceId: string | null;
+  nodeverseAgencyId: string | null;
+  name: string;
+  ipAddress: string | null;
+  hostname: string | null;
+  operatingSystem: string | null;
+  cpuInfo: string | null;
+  totalMemory: number | null;
+  diskSpace: number | null;
+  price: string;
+  unit: string;
+  discountLabel: string | null;
+  popular: boolean;
+  isActive: boolean;
+  tag: string | null;
+  nodeverseStatus: string | null;
+  nodeverseSyncedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default VpsService;
 

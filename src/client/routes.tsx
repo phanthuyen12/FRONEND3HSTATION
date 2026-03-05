@@ -32,6 +32,9 @@ import TopUp from "./pages/TopUp";
 import TopUpBank from "./pages/TopUpBank";
 import TopupDetail from "./pages/TopupDetail";
 import Vps from "./pages/Vps";
+import NodeverseVps from "./pages/NodeverseVps";
+import MyVps from "./pages/MyVps";
+import MyVpsDetail from "./pages/MyVpsDetail";
 const Dashboard = React.lazy(() => import("../pages/dashboard/"));
 import Orders from "./pages/Orders";
 const ClientRoutes: React.FC = () => {
@@ -263,6 +266,36 @@ const ClientRoutes: React.FC = () => {
             <ProtectedRoute>
               <ClientVerticalLayout>
                 <Vps />
+              </ClientVerticalLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vps/nodeverse"
+          element={
+            <ProtectedRoute>
+              <ClientVerticalLayout>
+                <NodeverseVps />
+              </ClientVerticalLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-vps"
+          element={
+            <ProtectedRoute>
+              <ClientVerticalLayout>
+                <MyVps />
+              </ClientVerticalLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-vps/:id"
+          element={
+            <ProtectedRoute>
+              <ClientVerticalLayout>
+                <MyVpsDetail />
               </ClientVerticalLayout>
             </ProtectedRoute>
           }
