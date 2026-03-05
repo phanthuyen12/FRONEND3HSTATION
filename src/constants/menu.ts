@@ -566,15 +566,15 @@ const CLIENT_MENU_ITEMS: MenuItemTypes[] = [
     icon: "mgc_cloud_line",
     isTitle: false,
     children: [
-      {
-        key: "client-vps-list",
-        label: "Gói VPS",
-        url: "/vps",
-        parentKey: "client-vps",
-      },
+      // {
+      //   key: "client-vps-list",
+      //   label: "Gói VPS",
+      //   url: "/vps",
+      //   parentKey: "client-vps",
+      // },
       {
         key: "client-vps-nodeverse",
-        label: "VPS Nodeverse",
+        label: "Đăng Ký VPS",
         url: "/vps/nodeverse",
         parentKey: "client-vps",
       },
