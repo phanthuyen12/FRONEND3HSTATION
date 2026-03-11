@@ -39,7 +39,7 @@ class AdminOrderService {
   }
 
   private getToken(): string | null {
-    return localStorage.getItem('auth_token') 
+    return localStorage.getItem('auth_token')
       || localStorage.getItem('authToken')
       || sessionStorage.getItem('auth_token')
       || sessionStorage.getItem('authToken');
@@ -65,20 +65,20 @@ class AdminOrderService {
 
     const queryString = queryParams.toString();
     const url = `${this.api}/api/orders/admin/vps${queryString ? `?${queryString}` : ""}`;
-    
+
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     const data: ApiResponse<{ data: Order[]; pagination?: any }> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể lấy danh sách đơn hàng VPS');
     }
-    
+
     // Handle nested data structure
     if (data.success && data.data) {
       // If data.data is an array directly
@@ -96,7 +96,7 @@ class AdminOrderService {
         };
       }
     }
-    
+
     return { data: [] };
   }
 
@@ -120,27 +120,27 @@ class AdminOrderService {
 
     const queryString = queryParams.toString();
     const url = `${this.api}/api/orders/admin/workflows${queryString ? `?${queryString}` : ""}`;
-    
+
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     const data: ApiResponse<{ data: Order[]; pagination?: any }> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể lấy danh sách đơn hàng workflows');
     }
-    
+
     if (data.success && data.data) {
       return {
         data: Array.isArray(data.data) ? data.data : data.data.data || [],
         pagination: data.pagination || data.data.pagination
       };
     }
-    
+
     return { data: [] };
   }
 
@@ -158,13 +158,13 @@ class AdminOrderService {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     const data: ApiResponse<Order> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể lấy chi tiết đơn hàng');
     }
-    
+
     return data.data;
   }
 
@@ -184,13 +184,13 @@ class AdminOrderService {
       },
       body: JSON.stringify({ status }),
     });
-    
+
     const data: ApiResponse<Order> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể cập nhật trạng thái đơn hàng');
     }
-    
+
     return data.data;
   }
 
@@ -210,21 +210,21 @@ class AdminOrderService {
       },
       body: JSON.stringify({ notes, description }),
     });
-    
+
     const data: ApiResponse<Order> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể cập nhật ghi chú đơn hàng');
     }
-    
+
     return data.data;
   }
 
   // POST /api/orders/admin/:id/attachment - Thêm file/link đính kèm
   async addOrderAttachment(
-    id: string, 
-    attachmentUrl: string, 
-    attachmentName?: string, 
+    id: string,
+    attachmentUrl: string,
+    attachmentName?: string,
     attachmentType: 'link' | 'file' = 'link'
   ): Promise<any> {
     const token = this.getToken();
@@ -241,13 +241,13 @@ class AdminOrderService {
       },
       body: JSON.stringify({ attachmentUrl, attachmentName, attachmentType }),
     });
-    
+
     const data: ApiResponse<any> = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.message || 'Không thể thêm file/link đính kèm');
     }
-    
+
     return data.data;
   }
 }

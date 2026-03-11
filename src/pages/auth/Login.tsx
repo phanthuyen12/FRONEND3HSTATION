@@ -24,7 +24,7 @@ const BottomLink = () => {
     <p className="text-gray-500 dark:text-gray-400 text-center">
       <Link to="/auth/register" className="text-primary ms-1">
         <b>
-          Đăng ký 
+          Đăng ký
         </b>
       </Link>
     </p>
@@ -67,7 +67,9 @@ const Login = () => {
   const location = useLocation();
 
   // redirection back to where user got redirected from
-  const redirectUrl = location?.search?.slice(6) || "/";
+  const queryParams = new URLSearchParams(location.search);
+  const returnUrl = queryParams.get('return');
+  const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/";
 
   return (
     <>

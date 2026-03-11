@@ -38,6 +38,9 @@ const VpsOrders: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'info' | 'history'>('info');
+  const [renewalHistory, setRenewalHistory] = useState<any[]>([]);
+  const [isFetchingHistory, setIsFetchingHistory] = useState(false);
   const [formData, setFormData] = useState({
     status: '',
     notes: '',
@@ -125,10 +128,39 @@ const VpsOrders: React.FC = () => {
       description: inst.notes || '',
       ipAddress: inst.ip_address || inst.device_ip || '',
       hostname: inst.hostname || inst.device_hostname || '',
-      expiresAt: inst.expires_at ? String(inst.expires_at).split('T')[0] : '',
+      expiresAt: inst.expires_at ? String(inst.expires_at).replace(' ', 'T').split('T')[0] : '',
       password: inst.configuration?.password || ''
     });
     setShowModal(true);
+  };
+
+  const handleViewDetail = async (order: Order) => {
+    setDetailOrder(order);
+    setShowDetail(true);
+    setActiveTab('info');
+    setRenewalHistory([]);
+
+    const orderType = order.type;
+    const instanceId = order.instance?.id || (orderType === 'nodeverse_vps' ? order.item_id : null);
+
+    if (instanceId && (orderType === 'vps' || orderType === 'nodeverse_vps')) {
+      try {
+        setIsFetchingHistory(true);
+        // Load detailed instance info and history
+        if (orderType === 'nodeverse_vps') {
+          const [detail, history] = await Promise.all([
+            vpsService.adminGetNodeverseInstanceDetail(instanceId),
+            vpsService.adminGetNodeverseInstanceHistory(instanceId)
+          ]);
+          setDetailOrder({ ...order, instance: detail });
+          setRenewalHistory(history);
+        }
+      } catch (err) {
+        console.error("Failed to load history:", err);
+      } finally {
+        setIsFetchingHistory(false);
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -149,18 +181,27 @@ const VpsOrders: React.FC = () => {
         );
       }
 
-      // Cập nhật thông tin instance (IP/Hostname/Expire/Password) chỉ dành cho VPS thường
-      if (selectedOrder.instance?.id && selectedOrder.type === 'vps') {
-        await vpsService.updateInstance(String(selectedOrder.instance.id), {
+      // Cập nhật thông tin instance (IP/Hostname/Expire/Password)
+      const instanceId = selectedOrder.instance?.id ||
+        (selectedOrder.type === 'nodeverse_vps' && !isNaN(Number(selectedOrder.item_id)) ? selectedOrder.item_id : null);
+
+      if (instanceId) {
+        const updateData = {
           ipAddress: formData.ipAddress || undefined,
           hostname: formData.hostname || undefined,
-          expiresAt: formData.expiresAt ? `${formData.expiresAt}T00:00:00` : undefined,
+          expiresAt: formData.expiresAt ? `${formData.expiresAt} 00:00:00` : undefined,
           configuration: {
             ...(selectedOrder.instance.configuration || {}),
             password: formData.password || undefined,
           },
           notes: formData.notes || undefined
-        });
+        };
+
+        if (selectedOrder.type === 'vps') {
+          await vpsService.updateInstance(String(instanceId), updateData);
+        } else {
+          await vpsService.updateNodeverseInstance(String(instanceId), updateData);
+        }
       }
 
       Swal.fire({
@@ -298,6 +339,7 @@ const VpsOrders: React.FC = () => {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">Số tiền</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">Trạng thái</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">Ngày tạo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">Ngày hết hạn</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600">Thao tác</th>
                     </tr>
                   </thead>
@@ -321,16 +363,20 @@ const VpsOrders: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-sm text-slate-500">
-                          {new Date(order.created_at).toLocaleDateString('vi-VN')}
+                          {new Date(order.orderCreatedAt || order.created_at).toLocaleDateString('vi-VN')}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {order.instance?.expires_at ? (
+                            <span className={new Date(order.instance.expires_at) < new Date() ? "text-red-500 font-bold" : "text-slate-600"}>
+                              {new Date(order.instance.expires_at).toLocaleDateString('vi-VN')}
+                            </span>
+                          ) : '-'}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex gap-2 justify-end">
                             <button
-                              className="btn btn-sm bg-white border text-slate-700"
-                              onClick={() => {
-                                setDetailOrder(order);
-                                setShowDetail(true);
-                              }}
+                              className="btn btn-sm bg-info text-white"
+                              onClick={() => handleViewDetail(order)}
                             >
                               <i className="mgc_eye_2_line mr-1" />
                               Xem chi tiết
@@ -537,103 +583,171 @@ const VpsOrders: React.FC = () => {
               </button>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Trạng thái đơn</p>
-                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder.status)}`}>
-                  {getStatusLabel(detailOrder.status)}
-                </span>
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Số tiền</p>
-                <p className="font-semibold text-emerald-600">
-                  {detailOrder.amount ? Number(detailOrder.amount).toLocaleString('vi-VN') : 0}đ
-                </p>
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Ngày tạo</p>
-                <p>{detailOrder.created_at ? new Date(detailOrder.created_at).toLocaleString('vi-VN') : '-'}</p>
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Cập nhật</p>
-                <p>{detailOrder.updated_at ? new Date(detailOrder.updated_at).toLocaleString('vi-VN') : '-'}</p>
-              </div>
+            <div className="flex border-b border-slate-200 dark:border-slate-700 mb-4">
+              <button
+                className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === 'info' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('info')}
+              >
+                Thông tin chung
+              </button>
+              {(detailOrder.type === 'vps' || detailOrder.type === 'nodeverse_vps') && (
+                <button
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === 'history' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                  onClick={() => setActiveTab('history')}
+                >
+                  Lịch sử gia hạn
+                </button>
+              )}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Khách hàng</p>
-                <p className="font-semibold">{detailOrder.user?.name || '-'}</p>
-                <p className="text-xs text-slate-500">{detailOrder.user?.email || ''}</p>
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Gói VPS</p>
-                <p className="font-semibold">{detailOrder.plan?.name || detailOrder.item_id}</p>
-              </div>
-            </div>
-
-            {detailOrder.instance && (
-              <div className="grid md:grid-cols-2 gap-4 text-sm mb-4 bg-slate-50 dark:bg-slate-900/60 p-3 rounded">
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">IP</p>
-                  <p className="font-semibold">{detailOrder.instance.ip_address || detailOrder.instance.device_ip || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Hostname</p>
-                  <p className="font-semibold">{detailOrder.instance.hostname || detailOrder.instance.device_hostname || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Trạng thái VPS</p>
-                  <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder.instance.status || detailOrder.status)}`}>
-                    {getStatusLabel(detailOrder.instance.status || detailOrder.status)}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Ngày hết hạn</p>
-                  <p>{detailOrder.instance.expires_at ? new Date(detailOrder.instance.expires_at).toLocaleDateString('vi-VN') : '-'}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Chu kỳ</p>
-                  <p className="font-semibold">
-                    {detailOrder.instance.billing_months ? `${detailOrder.instance.billing_months} tháng` : '-'}{" "}
-                    {detailOrder.instance.billing_discount_percent != null ? `( -${detailOrder.instance.billing_discount_percent}% )` : ''}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Auto renew</p>
-                  <p className="font-semibold">
-                    {detailOrder.instance.billing_auto_renew === 1 || detailOrder.instance.billing_auto_renew === true ? 'Có' : 'Không'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-500 text-xs mb-1">Số tiền chu kỳ</p>
-                  <p className="font-semibold text-emerald-600">
-                    {detailOrder.instance.billing_amount != null
-                      ? `${Number(detailOrder.instance.billing_amount).toLocaleString('vi-VN')}đ`
-                      : '-'}
-                  </p>
-                </div>
-                {detailOrder.instance.configuration?.billing && (
-                  <div className="md:col-span-2 text-xs text-slate-500">
-                    <p className="font-semibold text-slate-600 mb-1">Billing (raw)</p>
-                    <pre className="bg-white/60 dark:bg-slate-800/60 p-2 rounded text-[11px] overflow-auto">
-                      {JSON.stringify(detailOrder.instance.configuration.billing, null, 2)}
-                    </pre>
-                  </div>
-                )}
-                {detailOrder.instance.configuration?.password && (
+            {activeTab === 'info' ? (
+              <>
+                <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
                   <div>
-                    <p className="text-slate-500 text-xs mb-1">Mật khẩu VPS</p>
-                    <p className="font-semibold">{detailOrder.instance.configuration.password}</p>
+                    <p className="text-slate-500 text-xs mb-1">Trạng thái đơn</p>
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder.status)}`}>
+                      {getStatusLabel(detailOrder.status)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 text-xs mb-1">Số tiền</p>
+                    <p className="font-semibold text-emerald-600">
+                      {detailOrder.amount ? Number(detailOrder.amount).toLocaleString('vi-VN') : 0}đ
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 text-xs mb-1">Ngày tạo</p>
+                    <p>{detailOrder.created_at ? new Date(detailOrder.created_at).toLocaleString('vi-VN') : '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 text-xs mb-1">Cập nhật</p>
+                    <p>{detailOrder.updated_at ? new Date(detailOrder.updated_at).toLocaleString('vi-VN') : '-'}</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
+                  <div>
+                    <p className="text-slate-500 text-xs mb-1">Khách hàng</p>
+                    <p className="font-semibold">{detailOrder.user?.name || '-'}</p>
+                    <p className="text-xs text-slate-500">{detailOrder.user?.email || ''}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 text-xs mb-1">Gói VPS</p>
+                    <p className="font-semibold">{detailOrder.plan?.name || detailOrder.item_id}</p>
+                  </div>
+                </div>
+
+                {detailOrder.instance && (
+                  <div className="grid md:grid-cols-2 gap-4 text-sm mb-4 bg-slate-50 dark:bg-slate-900/60 p-3 rounded">
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">IP</p>
+                      <p className="font-semibold">{detailOrder.instance.ip_address || detailOrder.instance.device_ip || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Hostname</p>
+                      <p className="font-semibold">{detailOrder.instance.hostname || detailOrder.instance.device_hostname || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Trạng thái VPS</p>
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder.instance.status || detailOrder.status)}`}>
+                        {getStatusLabel(detailOrder.instance.status || detailOrder.status)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Ngày hết hạn</p>
+                      <p>{detailOrder.instance.expires_at ? new Date(detailOrder.instance.expires_at).toLocaleDateString('vi-VN') : '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Chu kỳ</p>
+                      <p className="font-semibold">
+                        {detailOrder.instance.billing_months ? `${detailOrder.instance.billing_months} tháng` : '-'}{" "}
+                        {detailOrder.instance.billing_discount_percent != null ? `( -${detailOrder.instance.billing_discount_percent}% )` : ''}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Auto renew</p>
+                      <p className="font-semibold">
+                        {detailOrder.instance.billing_auto_renew === 1 || detailOrder.instance.billing_auto_renew === true ? 'Có' : 'Không'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-xs mb-1">Số tiền chu kỳ</p>
+                      <p className="font-semibold text-emerald-600">
+                        {detailOrder.instance.billing_amount != null
+                          ? `${Number(detailOrder.instance.billing_amount).toLocaleString('vi-VN')}đ`
+                          : '-'}
+                      </p>
+                    </div>
+                    {detailOrder.instance.configuration?.password && (
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">Mật khẩu VPS</p>
+                        <p className="font-semibold">{detailOrder.instance.configuration.password}</p>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {detailOrder.instance?.notes && (
-              <div className="mb-4">
-                <p className="text-slate-500 text-xs mb-1">Ghi chú</p>
-                <p className="text-sm whitespace-pre-wrap">{detailOrder.instance.notes}</p>
+                {detailOrder.instance?.notes && (
+                  <div className="mb-4">
+                    <p className="text-slate-500 text-xs mb-1">Ghi chú</p>
+                    <p className="text-sm border border-slate-200 dark:border-slate-700 p-2 rounded bg-white dark:bg-slate-800 whitespace-pre-wrap max-h-40 overflow-y-auto italic">
+                      {detailOrder.instance.notes}
+                    </p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="space-y-4">
+                {isFetchingHistory ? (
+                  <div className="flex justify-center py-10">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : renewalHistory.length === 0 ? (
+                  <div className="text-center py-10 text-slate-500">
+                    Chưa có lịch sử gia hạn.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-900/50">
+                          <th className="px-3 py-2 text-left">Ngày</th>
+                          <th className="px-3 py-2 text-left">Loại</th>
+                          <th className="px-3 py-2 text-right">Số tiền</th>
+                          <th className="px-3 py-2 text-center">Thanh toán</th>
+                          <th className="px-3 py-2 text-center">Trạng thái</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                        {renewalHistory.map(h => (
+                          <tr key={h.id}>
+                            <td className="px-3 py-2">
+                              {new Date(h.created_at).toLocaleString('vi-VN')}
+                            </td>
+                            <td className="px-3 py-2">
+                              {h.historyType === 'purchase' ? (
+                                <span className="text-primary font-medium">Mua mới</span>
+                              ) : (
+                                <span className="text-indigo-600 font-medium">Gia hạn</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2 text-right font-medium text-emerald-600">
+                              {Number(h.amount).toLocaleString('vi-VN')}đ
+                            </td>
+                            <td className="px-3 py-2 text-center text-xs uppercase">
+                              {h.payment_method}
+                            </td>
+                            <td className="px-3 py-2 text-center">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${getStatusColor(h.status)}`}>
+                                {getStatusLabel(h.status)}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
 

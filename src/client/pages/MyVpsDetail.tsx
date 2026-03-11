@@ -8,6 +8,9 @@ const MyVpsDetail: React.FC = () => {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
+    const [renewLoading, setRenewLoading] = useState(false);
+    const [showRenewModal, setShowRenewModal] = useState(false);
+    const [selectedTerm, setSelectedTerm] = useState('1m');
 
     useEffect(() => {
         if (id) {
@@ -83,6 +86,26 @@ const MyVpsDetail: React.FC = () => {
         }
     };
 
+    const handleRenew = async () => {
+        if (!data || !data.id) return;
+        if (!confirm(`Bạn có chắc chắn muốn gia hạn VPS này với gói ${selectedTerm}?`)) return;
+
+        setRenewLoading(true);
+        try {
+            const res = await vpsService.renewNodeverseVps(data.id, selectedTerm);
+            alert(`Gia hạn thành công! Ngày hết hạn mới: ${new Date(res.newExpiresAt).toLocaleDateString('vi-VN')}`);
+            setShowRenewModal(false);
+            loadData(data.id);
+        } catch (error: any) {
+            console.error(error);
+            alert(error.message || 'Lỗi khi gia hạn');
+        } finally {
+            setRenewLoading(false);
+        }
+    };
+
+    const isExpired = data && data.expiresAt ? new Date(data.expiresAt) < new Date() : false;
+
     const parseNotes = (notes: string) => {
         if (!notes) return {};
         const extract = (key: string) => {
@@ -115,10 +138,17 @@ const MyVpsDetail: React.FC = () => {
                             <h4 className="card-title mb-0">
                                 <i className="mgc_settings_1_line mr-1 text-amber-500"></i> Thông tin cấu hình
                             </h4>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${data.status === "active" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"
-                                }`}>
-                                {data.status === "active" ? "Đang hoạt động" : data.status}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                {isExpired && (
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase bg-red-100 text-red-700 animate-pulse">
+                                        Đã hết hạn
+                                    </span>
+                                )}
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${data.status === "active" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"
+                                    }`}>
+                                    {data.status === "active" ? "Đang hoạt động" : data.status}
+                                </span>
+                            </div>
                         </div>
                         <div className="p-0">
                             <div className="overflow-x-auto">
@@ -168,7 +198,7 @@ const MyVpsDetail: React.FC = () => {
                             <div className="flex flex-wrap gap-4">
                                 <button
                                     onClick={() => handleAction('start')}
-                                    disabled={actionLoading === 'start' || data.status === 'active' || data.containerStatus === 'running'}
+                                    disabled={actionLoading === 'start' || data.status === 'active' || data.containerStatus === 'running' || isExpired}
                                     className="flex-1 min-w-[120px] btn bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-6 flex flex-col items-center gap-3 transition-all shadow-sm relative overflow-hidden"
                                 >
                                     {actionLoading === 'start' ? (
@@ -180,7 +210,7 @@ const MyVpsDetail: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={() => handleAction('stop')}
-                                    disabled={actionLoading === 'stop' || data.status === 'suspended' || data.containerStatus === 'exited'}
+                                    disabled={actionLoading === 'stop' || data.status === 'suspended' || data.containerStatus === 'exited' || isExpired}
                                     className="flex-1 min-w-[120px] btn bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-6 flex flex-col items-center gap-3 transition-all shadow-sm relative overflow-hidden"
                                 >
                                     {actionLoading === 'stop' ? (
@@ -192,7 +222,7 @@ const MyVpsDetail: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={() => handleAction('stop')}
-                                    disabled={actionLoading === 'stop' || data.status === 'suspended'}
+                                    disabled={actionLoading === 'stop' || data.status === 'suspended' || isExpired}
                                     className="flex-1 min-w-[120px] btn bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-6 flex flex-col items-center gap-3 transition-all shadow-sm"
                                 >
                                     <i className="mgc_stop_circle_line text-2xl"></i>
@@ -200,7 +230,7 @@ const MyVpsDetail: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={() => handleAction('restart')}
-                                    disabled={actionLoading === 'restart'}
+                                    disabled={actionLoading === 'restart' || isExpired}
                                     className="flex-1 min-w-[120px] btn bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-6 flex flex-col items-center gap-3 transition-all shadow-sm"
                                 >
                                     {actionLoading === 'restart' ? (
@@ -212,7 +242,7 @@ const MyVpsDetail: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={() => handleAction('restart')}
-                                    disabled={actionLoading === 'restart'}
+                                    disabled={actionLoading === 'restart' || isExpired}
                                     className="flex-1 min-w-[120px] btn bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-6 flex flex-col items-center gap-3 transition-all shadow-sm"
                                 >
                                     <i className="mgc_cpu_line text-2xl"></i>
@@ -253,8 +283,80 @@ const MyVpsDetail: React.FC = () => {
                                     <span className="text-xs text-slate-400 font-normal ml-1">({data.billingMonths} thg)</span>
                                 </span>
                             </div>
+
+                            <div className="pt-4">
+                                <button
+                                    onClick={() => setShowRenewModal(true)}
+                                    className={`w-full btn ${isExpired ? 'bg-red-500 hover:bg-red-600' : 'bg-primary hover:bg-primary-600'} text-white flex items-center justify-center gap-2 py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-95`}
+                                >
+                                    <i className="mgc_refresh_4_line text-lg"></i>
+                                    <span className="font-bold">GIA HẠN VPS</span>
+                                </button>
+                                {isExpired && (
+                                    <p className="mt-3 text-[11px] text-red-500 text-center font-medium flex items-center justify-center gap-1">
+                                        <i className="mgc_warning_line"></i> VPS đã hết hạn, vui lòng gia hạn để tiếp tục sử dụng.
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
+
+                    {/* RENEW MODAL */}
+                    {showRenewModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-200">
+                                <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                                        <i className="mgc_refresh_4_line text-primary"></i> Gia hạn dịch vụ
+                                    </h3>
+                                    <button onClick={() => setShowRenewModal(false)} className="text-slate-400 hover:text-slate-600">
+                                        <i className="mgc_close_line text-xl"></i>
+                                    </button>
+                                </div>
+                                <div className="p-6 space-y-5">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Chọn thời gian gia hạn</label>
+                                        <select
+                                            value={selectedTerm}
+                                            onChange={(e) => setSelectedTerm(e.target.value)}
+                                            className="w-full form-select rounded-xl border-slate-200 dark:bg-slate-900 dark:border-slate-700"
+                                        >
+                                            <option value="1m">1 tháng</option>
+                                            <option value="3m">3 tháng (Giảm 5%)</option>
+                                            <option value="6m">6 tháng (Giảm 10%)</option>
+                                            <option value="12m">1 năm (Giảm 20%)</option>
+                                            <option value="24m">2 năm (Giảm 25%)</option>
+                                            <option value="36m">3 năm (Giảm 30%)</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 space-y-3">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Gói hiện tại:</span>
+                                            <span className="font-semibold">{data.planName}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Thời hạn mới:</span>
+                                            <span className="font-semibold text-primary">+{selectedTerm.replace('m', ' tháng').replace('y', ' năm')}</span>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={handleRenew}
+                                        disabled={renewLoading}
+                                        className="w-full btn bg-primary hover:bg-primary-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {renewLoading ? (
+                                            <i className="mgc_loading_line animate-spin"></i>
+                                        ) : (
+                                            <i className="mgc_check_line"></i>
+                                        )}
+                                        XÁC NHẬN THANH TOÁN
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="card">
                         <div className="card-header">

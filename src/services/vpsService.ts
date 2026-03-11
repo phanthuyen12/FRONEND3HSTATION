@@ -42,7 +42,7 @@ class VpsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
+    this.api = apiUrl; // ví dụ: 'http://localhost:3000'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -540,6 +540,18 @@ class VpsService {
     return body.data;
   }
 
+  async renewNodeverseVps(id: string, billingTermCode: string = '1m', paymentMethod: string = 'balance'): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/client/vps/nodeverse-plans/my-orders/${id}/renew`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ billingTermCode, paymentMethod })
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Gia hạn thất bại');
+    return body.data;
+  }
+
   // ADMIN methods
   async adminGetNodeversePlans(search?: string): Promise<{ total: number; plans: NodeverseVpsPlan[] }> {
     const token = this.getToken();
@@ -588,6 +600,45 @@ class VpsService {
     const body = await res.json();
     if (!res.ok) throw new Error(body?.message || 'Không thể tải instances');
     return body.data || { total: 0, data: [] };
+  }
+
+  async updateNodeverseInstance(id: string, payload: {
+    status?: string;
+    ipAddress?: string;
+    hostname?: string;
+    expiresAt?: string | null;
+    notes?: string;
+    configuration?: any;
+  }): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/instances/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(payload)
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Cập nhật VPS instance thất bại');
+    return body.data;
+  }
+
+  async adminGetNodeverseInstanceDetail(id: string): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/instances/${id}`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải chi tiết VPS');
+    return body.data;
+  }
+
+  async adminGetNodeverseInstanceHistory(id: string): Promise<any[]> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/instances/${id}/history`, {
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Không thể tải lịch sử gia hạn');
+    return Array.isArray(body.data) ? body.data : [];
   }
 }
 

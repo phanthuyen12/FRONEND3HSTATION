@@ -5,7 +5,7 @@ import { userService } from "../../config";
 interface Order {
   id: number;
   user_id: number;
-  type: 'course' | 'workflow' | 'vps';
+  type: 'course' | 'workflow' | 'vps' | 'nodeverse_vps';
   item_id: string;
   amount: number;
   payment_method: string;
@@ -366,14 +366,14 @@ const Orders: React.FC = () => {
                       ) : (
                         <span className="text-slate-600 text-xs">
                           {order.type === 'course' ? 'Khóa học' : order.type === 'workflow' ? 'Workflow' : 'VPS'}
+                          {order.type === 'nodeverse_vps' && ' (Nodeverse)'}
                         </span>
                       )}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                          statusColor[order.status] || "bg-slate-100 text-slate-700"
-                        }`}
+                        className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${statusColor[order.status] || "bg-slate-100 text-slate-700"
+                          }`}
                       >
                         {statusLabel[order.status] || order.status}
                       </span>
@@ -390,7 +390,7 @@ const Orders: React.FC = () => {
                       {new Date(order.updated_at).toLocaleString('vi-VN')}
                     </td>
                     <td className="px-3 py-2 text-center">
-                      <button 
+                      <button
                         className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
                         onClick={() => handleViewDetail(order)}
                       >
@@ -467,9 +467,8 @@ const Orders: React.FC = () => {
                   <div>
                     <label className="text-xs text-slate-500">Trạng thái</label>
                     <p>
-                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        statusColor[selectedOrder.status] || "bg-slate-100 text-slate-700"
-                      }`}>
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor[selectedOrder.status] || "bg-slate-100 text-slate-700"
+                        }`}>
                         {statusLabel[selectedOrder.status] || selectedOrder.status}
                       </span>
                     </p>
@@ -495,7 +494,7 @@ const Orders: React.FC = () => {
                 </div>
 
                 {/* Thông tin VPS Instance */}
-                {selectedOrder.type === 'vps' && selectedOrder.instance && (
+                {(selectedOrder.type === 'vps' || selectedOrder.type === 'nodeverse_vps') && selectedOrder.instance && (
                   <div className="border-t pt-4">
                     <h4 className="font-semibold mb-3">Thông tin VPS</h4>
                     <div className="grid grid-cols-2 gap-4">
@@ -515,33 +514,33 @@ const Orders: React.FC = () => {
                         <label className="text-xs text-slate-500">Ngày hết hạn</label>
                         <p>{selectedOrder.instance.expires_at ? new Date(selectedOrder.instance.expires_at).toLocaleDateString('vi-VN') : '-'}</p>
                       </div>
-              {(() => {
-                const billing = selectedOrder.instance.configuration?.billing || {};
-                const months = selectedOrder.instance.billing_months || billing.months;
-                const discount = selectedOrder.instance.billing_discount_percent ?? billing.discountPercent;
-                const autoRenew = selectedOrder.instance.billing_auto_renew === 1 || selectedOrder.instance.billing_auto_renew === true || billing.autoRenew;
-                const amount = selectedOrder.instance.billing_amount ?? billing.finalAmount;
-                return (
-                  <>
-                    <div>
-                      <label className="text-xs text-slate-500">Chu kỳ</label>
-                      <p className="font-semibold">
-                        {months ? `${months} tháng` : '-'} {discount != null ? `( -${discount}% )` : ''}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-xs text-slate-500">Tự động gia hạn</label>
-                      <p className="font-semibold">{autoRenew ? 'Có' : 'Không'}</p>
-                    </div>
-                    <div>
-                      <label className="text-xs text-slate-500">Số tiền chu kỳ</label>
-                      <p className="font-semibold text-emerald-600">
-                        {amount != null ? `${Number(amount).toLocaleString('vi-VN')}đ` : '-'}
-                      </p>
-                    </div>
-                  </>
-                );
-              })()}
+                      {(() => {
+                        const billing = selectedOrder.instance.configuration?.billing || {};
+                        const months = selectedOrder.instance.billing_months || billing.months;
+                        const discount = selectedOrder.instance.billing_discount_percent ?? billing.discountPercent;
+                        const autoRenew = selectedOrder.instance.billing_auto_renew === 1 || selectedOrder.instance.billing_auto_renew === true || billing.autoRenew;
+                        const amount = selectedOrder.instance.billing_amount ?? billing.finalAmount;
+                        return (
+                          <>
+                            <div>
+                              <label className="text-xs text-slate-500">Chu kỳ</label>
+                              <p className="font-semibold">
+                                {months ? `${months} tháng` : '-'} {discount != null ? `( -${discount}% )` : ''}
+                              </p>
+                            </div>
+                            <div>
+                              <label className="text-xs text-slate-500">Tự động gia hạn</label>
+                              <p className="font-semibold">{autoRenew ? 'Có' : 'Không'}</p>
+                            </div>
+                            <div>
+                              <label className="text-xs text-slate-500">Số tiền chu kỳ</label>
+                              <p className="font-semibold text-emerald-600">
+                                {amount != null ? `${Number(amount).toLocaleString('vi-VN')}đ` : '-'}
+                              </p>
+                            </div>
+                          </>
+                        );
+                      })()}
                       {selectedOrder.instance.notes && (
                         <div className="col-span-2">
                           <label className="text-xs text-slate-500">Ghi chú</label>

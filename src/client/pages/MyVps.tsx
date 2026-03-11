@@ -210,8 +210,13 @@ const MyVps: React.FC = () => {
                                                 </div>
                                             </td>
 
-                                            <td className="px-3 py-2 text-slate-600 dark:text-slate-400 font-medium whitespace-nowrap">
-                                                {item.expiresAt ? new Date(item.expiresAt).toLocaleDateString('vi-VN') : "-"}
+                                            <td className="px-3 py-2 font-medium whitespace-nowrap">
+                                                {item.expiresAt ? (
+                                                    <span className={new Date(item.expiresAt) < new Date() ? "text-red-500 flex items-center gap-1" : "text-slate-600 dark:text-slate-400"}>
+                                                        {new Date(item.expiresAt) < new Date() && <i className="mgc_warning_line text-sm" />}
+                                                        {new Date(item.expiresAt).toLocaleDateString('vi-VN')}
+                                                    </span>
+                                                ) : "-"}
                                             </td>
 
                                             {/* Giới hạn độ dài cột Notes */}
@@ -227,8 +232,8 @@ const MyVps: React.FC = () => {
                                             {/* 2. Trạng thái bật mạnh lên để rõ UI Hierarchy */}
                                             <td className="px-3 py-2 text-center whitespace-nowrap">
                                                 <span className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${isRunning ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" :
-                                                        isPending ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" :
-                                                            "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                                                    isPending ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" :
+                                                        "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     }`}>
                                                     {isRunning && (
                                                         <span className="relative flex h-1.5 w-1.5">
