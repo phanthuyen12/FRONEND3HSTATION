@@ -39,7 +39,7 @@ const NodeverseVps: React.FC = () => {
                 let nvList: NodeverseVpsPlan[] = [];
                 if (Array.isArray(nvData)) nvList = nvData;
                 else if (nvData?.plans) nvList = nvData.plans;
-                else if (nvData?.data?.plans) nvList = nvData.data.plans;
+
                 setNvPlans(nvList.filter(p => p.isActive));
 
                 // 2. Fetch Standard plans (from http://localhost:5173/vps)
