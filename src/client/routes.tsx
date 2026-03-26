@@ -35,6 +35,8 @@ import Vps from "./pages/Vps";
 import NodeverseVps from "./pages/NodeverseVps";
 import MyVps from "./pages/MyVps";
 import MyVpsDetail from "./pages/MyVpsDetail";
+import SoftwareKeys from "./pages/SoftwareKeys";
+import MySoftwareKeys from "./pages/MySoftwareKeys";
 const Dashboard = React.lazy(() => import("../pages/dashboard/"));
 import Orders from "./pages/Orders";
 const ClientRoutes: React.FC = () => {
@@ -306,6 +308,26 @@ const ClientRoutes: React.FC = () => {
             <ProtectedRoute>
               <ClientVerticalLayout>
                 <Orders />
+              </ClientVerticalLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/software-keys"
+          element={
+            <ProtectedRoute>
+              <ClientVerticalLayout>
+                <SoftwareKeys />
+              </ClientVerticalLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-software-keys"
+          element={
+            <ProtectedRoute>
+              <ClientVerticalLayout>
+                <MySoftwareKeys />
               </ClientVerticalLayout>
             </ProtectedRoute>
           }

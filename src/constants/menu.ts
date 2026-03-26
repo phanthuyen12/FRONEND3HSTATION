@@ -162,6 +162,26 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
   {
+    key: "apps-tools",
+    label: "Phần mềm & Key",
+    isTitle: false,
+    icon: "mgc_key_line",
+    children: [
+      {
+        key: "tools-packages",
+        label: "Dịch vụ phần mềm",
+        url: "/admin/tools",
+        parentKey: "apps-tools",
+      },
+      {
+        key: "tools-keys",
+        label: "Lịch sử Key",
+        url: "/admin/tools/keys",
+        parentKey: "apps-tools",
+      },
+    ],
+  },
+  {
     key: "apps-configs",
     label: "Cấu hình hệ thống",
     isTitle: false,
@@ -596,6 +616,18 @@ const CLIENT_MENU_ITEMS: MenuItemTypes[] = [
     key: "client-tools-title",
     label: "Tool",
     isTitle: true,
+  },
+  {
+    key: "client-software-keys",
+    label: "Mua Key phần mềm",
+    icon: "mgc_key_line",
+    url: "/software-keys",
+  },
+  {
+    key: "client-my-software-keys",
+    label: "Key của tôi",
+    icon: "mgc_safe_line",
+    url: "/my-software-keys",
   },
   {
     key: "client-my-workflows",

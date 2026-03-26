@@ -9,7 +9,7 @@ const VPSList = () => {
     const [error, setError] = useState(null);
 
     // API base URL - có thể config sau
-    const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.3hstation.comapi';
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://api.3hstation.comapi';
 
     useEffect(() => {
         const fetchVPSPlans = async () => {

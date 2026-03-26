@@ -25,6 +25,8 @@ import DocumentsAdminList from "../pages/apps/DocumentsAdmin/List";
 import DocumentsAdminDetail from "../pages/apps/DocumentsAdmin/Detail";
 import BankAdminList from "../pages/apps/BankAdmin/List";
 import ConfigAdmin from "../pages/apps/ConfigAdmin";
+import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
+import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
 
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
@@ -242,6 +244,24 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <BankAdminList />
+          </VerticalLayout>
+        }
+      />
+
+      {/* Tools/Software Keys */}
+      <Route
+        path="tools"
+        element={
+          <VerticalLayout>
+            <ToolPackagesAdmin />
+          </VerticalLayout>
+        }
+      />
+      <Route
+        path="tools/keys"
+        element={
+          <VerticalLayout>
+            <ToolKeysAdmin />
           </VerticalLayout>
         }
       />
