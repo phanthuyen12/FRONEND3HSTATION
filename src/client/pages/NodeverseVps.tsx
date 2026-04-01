@@ -18,6 +18,7 @@ const NodeverseVps: React.FC = () => {
     const [pricingMap, setPricingMap] = useState<Record<string, VpsBillingTerm[]>>({});
 
     // Selection States
+    const [selectedNvPlanId, setSelectedNvPlanId] = useState<string | null>(null);
     const [selectedOsVersion, setSelectedOsVersion] = useState<string | null>(null);
     const [selectedOsDeviceId, setSelectedOsDeviceId] = useState<string | null>(null);
     const [selectedOsAgencyId, setSelectedOsAgencyId] = useState<string | null>(null);
@@ -34,7 +35,7 @@ const NodeverseVps: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                // 1. Fetch Nodeverse plans to get the OS list (from http://localhost:5173/admin/vps/nodeverse)
+                // 1. Fetch Nodeverse plans to get the OS list (from http://localhost:3000/admin/vps/nodeverse)
                 const nvData = await vpsService.getNodeverseVpsPlans();
                 let nvList: NodeverseVpsPlan[] = [];
                 if (Array.isArray(nvData)) nvList = nvData;
@@ -42,7 +43,7 @@ const NodeverseVps: React.FC = () => {
 
                 setNvPlans(nvList.filter(p => p.isActive));
 
-                // 2. Fetch Standard plans (from http://localhost:5173/vps)
+                // 2. Fetch Standard plans (from http://localhost:3000/vps)
                 const stdData = await vpsService.fetchClientPlans();
                 setStdPlans(stdData || []);
 
@@ -56,14 +57,6 @@ const NodeverseVps: React.FC = () => {
         void load();
     }, []);
 
-    // STEP 1 DATA: Unique OS Versions from Nodeverse
-    const uniqueVersions = useMemo(() => {
-        const versions = new Set<string>();
-        nvPlans.forEach(p => {
-            if (p.operatingSystem) versions.add(p.operatingSystem.trim());
-        });
-        return Array.from(versions).sort();
-    }, [nvPlans]);
 
     // STEP 2 DATA: All Standard Plans
     const selectedStdPlan = useMemo(() => {
@@ -128,12 +121,11 @@ const NodeverseVps: React.FC = () => {
     }, [selectedStdPlan, selectedOsVersion, billingTerm, quantity, pricingMap]);
 
     // Handlers
-    const handleOsVersionChange = (ver: string) => {
-        setSelectedOsVersion(ver);
-        // Find the nodeverse_device_id and agency_id and link them
-        const device = nvPlans.find(p => p.operatingSystem === ver);
-        setSelectedOsDeviceId(device?.nodeverseDeviceId || null);
-        setSelectedOsAgencyId(device?.nodeverseAgencyId || null);
+    const handleNvPlanChange = (plan: NodeverseVpsPlan) => {
+        setSelectedNvPlanId(plan.id);
+        setSelectedOsVersion(plan.operatingSystem);
+        setSelectedOsDeviceId(plan.nodeverseDeviceId || null);
+        setSelectedOsAgencyId(plan.nodeverseAgencyId || null);
     };
 
     const handleOrder = async () => {
@@ -200,23 +192,31 @@ const NodeverseVps: React.FC = () => {
                             <div className="py-4 animate-pulse space-y-2">
                                 <div className="h-10 bg-slate-100 rounded w-full" />
                             </div>
-                        ) : uniqueVersions.length === 0 ? (
-                            <p className="text-sm text-slate-400">Không có HĐH nào được bật ở trang Admin Nodeverse.</p>
+                        ) : nvPlans.length === 0 ? (
+                            <p className="text-sm text-slate-400">Không có máy chủ Nodeverse nào khả dụng.</p>
                         ) : (
                             <div className="space-y-4">
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">🔽 Các phiên bản HĐH đang hiện hành</p>
-                                <div className="flex flex-wrap gap-3">
-                                    {uniqueVersions.map((ver) => (
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">🔽 Các máy chủ đang trực tuyến ({nvPlans.length})</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {nvPlans.map((plan) => (
                                         <button
-                                            key={ver}
-                                            onClick={() => handleOsVersionChange(ver)}
-                                            className={`px-4 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all flex items-center gap-2 ${selectedOsVersion === ver
-                                                ? "border-primary bg-primary text-white shadow-md"
-                                                : "border-slate-100 bg-white text-slate-600 hover:border-slate-200"
+                                            key={plan.id}
+                                            onClick={() => handleNvPlanChange(plan)}
+                                            className={`p-4 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${selectedNvPlanId === plan.id
+                                                ? "border-primary bg-primary/5 shadow-md ring-2 ring-primary/10"
+                                                : "border-slate-100 bg-white hover:border-slate-200"
                                                 }`}
                                         >
-                                            <i className={ver.toLowerCase().includes("win") ? "mgc_windows_line" : "mgc_linux_line"} />
-                                            {ver}
+                                            <div className="flex items-center gap-2">
+                                                <i className={(plan.operatingSystem || "").toLowerCase().includes("win") ? "mgc_windows_line text-lg" : "mgc_linux_line text-lg"} />
+                                                <span className="font-bold text-sm">{plan.operatingSystem || "Unknown OS"}</span>
+                                                {selectedNvPlanId === plan.id && <i className="mgc_check_circle_fill text-primary ml-auto" />}
+                                            </div>
+                                            <div className="text-[11px] text-slate-500 flex flex-wrap gap-x-3 gap-y-1">
+                                                <span className="flex items-center gap-1"><i className="mgc_cpu_line" /> {plan.cpuInfo}</span>
+                                                <span className="flex items-center gap-1"><i className="mgc_box_line" /> {plan.totalMemory}GB RAM</span>
+                                            </div>
+                                            {plan.tag && <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 w-fit mt-1">{plan.tag}</span>}
                                         </button>
                                     ))}
                                 </div>

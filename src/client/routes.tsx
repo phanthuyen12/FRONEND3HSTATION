@@ -10,7 +10,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
-import Landing1 from "./pages/Landing1";
+import Landing1 from "./landing/page/index";
+import ProductMMOPage from "./landing/page/product";
+import LandingCoursesPage from "./landing/page/courses";
+import LandingToolsPage from "./landing/page/tools";
+import LandingWorkflowsPage from "./landing/page/workflows";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
@@ -91,6 +95,38 @@ const ClientRoutes: React.FC = () => {
           element={
             <PublicRoute>
               <Landing1 />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/product-mmo"
+          element={
+            <PublicRoute>
+              <ProductMMOPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing-courses"
+          element={
+            <PublicRoute>
+              <LandingCoursesPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing-tools"
+          element={
+            <PublicRoute>
+              <LandingToolsPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing-workflows"
+          element={
+            <PublicRoute>
+              <LandingWorkflowsPage />
             </PublicRoute>
           }
         />

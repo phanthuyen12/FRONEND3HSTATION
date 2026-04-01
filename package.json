@@ -38,6 +38,7 @@
     "caniuse-lite": "^1.0.30001757",
     "cors": "^2.8.5",
     "feather-icons-react": "^0.6.2",
+    "framer-motion": "^12.38.0",
     "google-maps-react": "^2.0.6",
     "gridjs": "^5.1.0",
     "gridjs-react": "5.1.0",
