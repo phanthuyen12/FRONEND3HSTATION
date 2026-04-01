@@ -63,6 +63,7 @@ const VpsOrders: React.FC = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Handle search debouncing
   useEffect(() => {
@@ -115,6 +116,7 @@ const VpsOrders: React.FC = () => {
         } as Order;
       });
       setOrders(mapped);
+      setSelectedIds([]); // Clear selection when data reloads
       if (data.pagination) {
         setPagination(prev => ({ ...prev, ...data.pagination }));
       }
@@ -275,6 +277,83 @@ const VpsOrders: React.FC = () => {
     }
   };
 
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.length === orders.length && orders.length > 0) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(orders.map(o => o.id));
+    }
+  };
+
+  const handleBulkProvision = async () => {
+    if (selectedIds.length === 0) return;
+
+    const result = await Swal.fire({
+      title: 'Bulk Provision?',
+      text: `Xác nhận khởi tạo ${selectedIds.length} VPS đã chọn trên Nodeverse?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Bắt đầu khởi tạo',
+      cancelButtonText: 'Hủy'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setLoading(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        for (const id of selectedIds) {
+          try {
+            await adminOrderService.autoProvisionOrder(id);
+            successCount++;
+          } catch (err) {
+            console.error(`Failed to provision order ${id}:`, err);
+            failCount++;
+          }
+        }
+
+        Swal.fire('Hoàn tất', `Khởi tạo xong: ${successCount} thành công, ${failCount} thất bại.`, 'info');
+        loadOrders();
+      } catch (err: any) {
+        Swal.fire('Lỗi', err.message, 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleClearAllHistory = async () => {
+    const result = await Swal.fire({
+      title: 'Xoá TOÀN BỘ lịch sử?',
+      text: 'Hành động này sẽ xoá sạch tất cả đơn hàng trong hệ thống. Không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Vẫn xoá sạch',
+      cancelButtonText: 'Hủy'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setLoading(true);
+        await adminOrderService.clearAllHistory();
+        Swal.fire('Đã xoá', 'Toàn bộ lịch sử đơn hàng đã được dọn sạch.', 'success');
+        loadOrders();
+      } catch (err: any) {
+        Swal.fire('Lỗi', err.message, 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       'pending': 'Đang chờ',
@@ -339,7 +418,6 @@ const VpsOrders: React.FC = () => {
                 </button>
               )}
             </div>
-
             <select
               className="form-select w-40 shadow-sm"
               value={statusFilter}
@@ -357,8 +435,40 @@ const VpsOrders: React.FC = () => {
               <option value="completed">Hoàn thành</option>
               <option value="cancelled">Đã hủy</option>
             </select>
+
+            <button
+              className="btn bg-rose-500 text-white shadow-sm flex items-center gap-2"
+              onClick={handleClearAllHistory}
+              title="Xoá sạch lịch sử đơn hàng"
+            >
+              <i className="mgc_delete_2_line" />
+              <span className="hidden md:inline">Xoá lịch sử</span>
+            </button>
           </div>
         </div>
+
+        {selectedIds.length > 0 && (
+          <div className="bg-primary/5 border-y border-primary/10 px-4 py-3 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
+             <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-primary">
+                  Đã chọn {selectedIds.length} đơn hàng
+                </span>
+                <button 
+                  className="btn btn-sm bg-primary text-white flex items-center gap-2"
+                  onClick={handleBulkProvision}
+                >
+                  <i className="mgc_flash_line" />
+                  Khởi tạo hàng loạt ({selectedIds.length})
+                </button>
+             </div>
+             <button 
+               className="text-slate-500 hover:text-slate-700 text-sm font-medium"
+               onClick={() => setSelectedIds([])}
+             >
+               Hủy chọn
+             </button>
+          </div>
+        )}
 
         <div className="card-body">
           {loading ? (
@@ -372,6 +482,14 @@ const VpsOrders: React.FC = () => {
                   <table className="min-w-full table-fixed border-separate border-spacing-0">
                     <thead className="bg-slate-50 dark:bg-slate-700/50">
                       <tr>
+                        <th className="px-4 py-3 text-center border-b border-slate-100 dark:border-slate-600 w-12">
+                          <input 
+                            type="checkbox" 
+                            className="form-checkbox rounded text-primary" 
+                            checked={selectedIds.length === orders.length && orders.length > 0}
+                            onChange={handleSelectAll}
+                          />
+                        </th>
                         <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 sticky left-0 bg-slate-50 dark:bg-slate-700 z-10 border-b border-slate-100 dark:border-slate-600 w-16">ID</th>
                         <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 border-b border-slate-100 dark:border-slate-600 min-w-[200px]">Khách hàng</th>
                         <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 border-b border-slate-100 dark:border-slate-600 min-w-[250px]">Gói / Cấu hình</th>
@@ -384,7 +502,15 @@ const VpsOrders: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                       {orders.map((order) => (
-                        <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <tr key={order.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 ${selectedIds.includes(order.id) ? 'bg-primary/5' : ''}`}>
+                          <td className="px-4 py-3 text-center border-b border-slate-50 dark:border-slate-700">
+                             <input 
+                               type="checkbox" 
+                               className="form-checkbox rounded text-primary" 
+                               checked={selectedIds.includes(order.id)}
+                               onChange={() => toggleSelect(order.id)}
+                             />
+                          </td>
                           <td className="px-4 py-3 text-sm sticky left-0 bg-white dark:bg-slate-800 border-b border-slate-50 dark:border-slate-700 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">#{order.id}</td>
                           <td className="px-4 py-3 border-b border-slate-50 dark:border-slate-700">
                             <div className="text-sm">
@@ -760,8 +886,8 @@ const VpsOrders: React.FC = () => {
                 <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
                   <div>
                     <p className="text-slate-500 text-xs mb-1">Trạng thái đơn</p>
-                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder?.status)}`}>
-                      {getStatusLabel(detailOrder?.status)}
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder?.status || 'pending')}`}>
+                      {getStatusLabel(detailOrder?.status || 'pending')}
                     </span>
                   </div>
                   <div>
@@ -772,11 +898,11 @@ const VpsOrders: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-slate-500 text-xs mb-1">Ngày tạo</p>
-                    <p>{detailOrder?.created_at ? new Date(detailOrder?.created_at).toLocaleString('vi-VN') : '-'}</p>
+                    <p>{detailOrder?.created_at ? new Date(detailOrder.created_at).toLocaleString('vi-VN') : '-'}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 text-xs mb-1">Cập nhật</p>
-                    <p>{detailOrder?.updated_at ? new Date(detailOrder?.updated_at).toLocaleString('vi-VN') : '-'}</p>
+                    <p>{detailOrder?.updated_at ? new Date(detailOrder.updated_at).toLocaleString('vi-VN') : '-'}</p>
                   </div>
                 </div>
 
@@ -804,8 +930,8 @@ const VpsOrders: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-slate-500 text-xs mb-1">Trạng thái VPS</p>
-                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder?.instance.status || detailOrder?.status)}`}>
-                        {getStatusLabel(detailOrder?.instance.status || detailOrder?.status)}
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(detailOrder?.instance.status || detailOrder?.status || 'pending')}`}>
+                        {getStatusLabel(detailOrder?.instance.status || detailOrder?.status || 'pending')}
                       </span>
                     </div>
                     <div>

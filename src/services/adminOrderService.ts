@@ -275,6 +275,31 @@ class AdminOrderService {
 
     return data.data;
   }
+
+  // DELETE /api/orders/admin/clear-all - Xoá toàn bộ lịch sử đơn hàng
+  async clearAllHistory(): Promise<any> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Authorization token not found. Please login again.');
+    }
+
+    const url = `${this.api}/api/orders/admin/clear-all`;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const data: ApiResponse<any> = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Không thể xoá lịch sử đơn hàng');
+    }
+
+    return data;
+  }
 }
 
 export default AdminOrderService;
