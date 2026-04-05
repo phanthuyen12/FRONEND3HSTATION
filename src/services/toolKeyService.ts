@@ -1,6 +1,6 @@
-import config from "../config";
+import { API_URL as BASE_URL } from "../constants/api";
 
-const API_URL = `${config.API_URL}/api/client/tool-keys`;
+const API_URL = `${BASE_URL}/api/client/tool-keys`;
 
 const getToken = (): string | null => {
     return localStorage.getItem('auth_token')

@@ -98,7 +98,7 @@ const SoftwareSection = () => {
         </p>
 
         <div className="pt-4 md:pt-6 mt-auto">
-          <button className="w-full py-3 md:py-4 rounded-2xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-[#00ff9d] hover:text-[#060a09] hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95">
+          <button className="w-full py-3 md:py-4 rounded-2xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-[#00ff9d] hover:text-force-white hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95">
             Tải phần mềm
           </button>
         </div>
@@ -135,17 +135,17 @@ const SoftwareSection = () => {
 
             {/* Tabs Container */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-6">
-              <div className="bg-[#0a0f0d]/80 backdrop-blur-md p-1.5 rounded-[10px] border border-white/[0.05] flex flex-wrap justify-center items-center gap-1">
+              <div className="bg-[#0a0f0d]/80 backdrop-blur-md p-1.5 rounded-[7px] border border-white/[0.05] flex flex-wrap justify-center items-center gap-1">
                 {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => handleTabChange(cat)}
-                    className={`px-5 py-2 rounded-[10px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-blue-500 to-[#00ff9d] text-white shadow-[0_10px_20px_rgba(59,130,246,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
-                  >
-                    {cat === 'All' ? 'Tất cả' : cat}
-                  </button>
-                ))}
-              </div>
+                   <button
+                     key={cat}
+                     onClick={() => handleTabChange(cat)}
+                     className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-blue-500 to-[#00ff9d] text-black shadow-[0_10px_20px_rgba(59,130,246,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                   >
+                     {cat === 'All' ? 'Tất cả' : cat}
+                   </button>
+                 ))}
+               </div>
             </div>
           </div>
         </ScrollReveal>

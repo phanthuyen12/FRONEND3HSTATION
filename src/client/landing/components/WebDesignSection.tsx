@@ -36,31 +36,6 @@ const WebDesignSection = () => {
                   className="w-full h-auto object-contain relative z-10 drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] transform transition-transform duration-700 group-hover:scale-[1.03]"
                 />
 
-                {/* Floating Element 1 - Top Left */}
-                <div className="absolute top-4 -left-4 md:-left-8 p-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-[#00ff9d]/20 shadow-2xl animate-float z-20 hidden sm:block">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-[#00ff9d]/10 flex items-center justify-center border border-[#00ff9d]/20">
-                      <FeatherIcon icon="layout" className="text-[#00ff9d]" size={16} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-white uppercase tracking-wider">Thiết Kế UI/UX</p>
-                      <p className="text-[8px] text-gray-400 font-bold uppercase">Công Nghệ Hiện Đại</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Element 2 - Bottom Right */}
-                <div className="absolute bottom-4 -right-4 md:-right-8 p-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-blue-500/20 shadow-2xl animate-float [animation-delay:2s] z-20 hidden sm:block">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                      <FeatherIcon icon="zap" className="text-blue-400" size={16} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-white uppercase tracking-wider">Tải Trang Siêu Tốc</p>
-                      <p className="text-[8px] text-gray-400 font-bold uppercase">Tối Ưu Chuẩn SEO</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </ScrollReveal>
           </div>
@@ -93,7 +68,7 @@ const WebDesignSection = () => {
                 </ul>
 
                 <div className="pt-4">
-                  <button className="px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-xs flex items-center gap-3 group">
+                  <button className="px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-xs flex items-center gap-3 group">
                     Dùng thử ngay
                     <FeatherIcon icon="arrow-right" size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>

@@ -17,24 +17,14 @@ const ThemeContext = createContext<ThemeContextType>({
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    try {
-      return (localStorage.getItem('landing-theme') as Theme) || 'dark';
-    } catch {
-      return 'dark';
-    }
-  });
-
+  // Mặc định ép dùng giao diện sáng (Light Mode) theo yêu cầu của người dùng
+  const theme: Theme = 'light';
   const toggleTheme = () => {
-    setTheme(prev => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      try { localStorage.setItem('landing-theme', next); } catch {}
-      return next;
-    });
+    console.log("Tính năng chuyển đổi giao diện đã bị vô hiệu hóa. Mặc định là Light Mode.");
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === 'dark' }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: false }}>
       {children}
     </ThemeContext.Provider>
   );

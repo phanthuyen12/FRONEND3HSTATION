@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 import Header from '../components/header';
 import Footer from '../components/Footer';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
+import { Link } from 'react-router-dom';
+import FeatherIcon from 'feather-icons-react';
 
 interface HostingLayoutProps {
   children: ReactNode;
@@ -37,12 +39,12 @@ const lightCSS = `
   .theme-light .bg-black\\/50,
   .theme-light .bg-black\\/60,
   .theme-light .bg-black {
-    background-color: #ffffff !important;
+
   }
 
   /* ══ CARDS (course / software / workflow) ══ */
   .theme-light .group.relative.flex.flex-col {
-    background-color: #ffffff !important;
+
     border-color: rgba(0,186,74,0.12) !important;
     box-shadow: 0 2px 20px rgba(0,80,40,0.06) !important;
   }
@@ -61,10 +63,11 @@ const lightCSS = `
   }
 
   /* ══ TEXT ═══════════════════════════════════ */
-  .theme-light .text-white        { color: #0B0B0B !important; }
+  .theme-light .text-force-white  { color: #ffffff !important; }
+  .theme-light .text-white        { color: #ffffffff !important; }
   .theme-light .text-white\\/90   { color: #1a2e1f !important; }
   .theme-light .text-white\\/70   { color: #374151 !important; }
-  .theme-light .text-white\\/60   { color: #4B5563 !important; }
+  .theme-light .text-white\\/60   { color: #ffffffff !important; }
   .theme-light .text-white\\/50   { color: #6B7280 !important; }
   .theme-light .text-gray-100     { color: #111827 !important; }
   .theme-light .text-gray-200     { color: #1f2937 !important; }
@@ -118,7 +121,7 @@ const lightCSS = `
   /* ══ INPUTS ════════════════════════════════ */
   .theme-light input,
   .theme-light textarea {
-    background-color: #ffffff !important;
+
     border-color: rgba(0,186,74,0.18) !important;
     color: #0B0B0B !important;
   }
@@ -156,7 +159,7 @@ const lightCSS = `
 
   /* ══ HERO dark overlay ═══════════════════════ */
   .theme-light .min-h-screen.relative { background: transparent !important; }
-  .theme-light .absolute.inset-0 { opacity: 0.4 !important; }
+  .theme-light .absolute.inset-0 {  }
 `;
 
 // ── Layout Inner ─────────────────────────────────────────────────────────────
@@ -165,9 +168,8 @@ const LayoutInner = ({ children }: HostingLayoutProps) => {
 
   return (
     <div
-      className={`min-h-screen font-sans overflow-x-hidden flex flex-col transition-colors duration-500 ${
-        isDark ? 'bg-[#060a09] text-white theme-dark' : 'bg-[#F5FCF8] text-[#0B0B0B] theme-light'
-      }`}
+      className={`min-h-screen font-sans overflow-x-hidden flex flex-col transition-colors duration-500 ${isDark ? 'bg-[#060a09] text-white theme-dark' : 'bg-[#F5FCF8] text-[#0B0B0B] theme-light'
+        }`}
       style={{ fontFamily: "'Inter', 'Plus Jakarta Sans', 'Outfit', sans-serif" }}
     >
       {/* Soft bg glows */}
@@ -182,13 +184,16 @@ const LayoutInner = ({ children }: HostingLayoutProps) => {
 
       <Header />
 
-      <main className="flex-grow pt-[76px] relative">
+      <main className="flex-grow pt-[70px] md:pt-[84px] pb-24 md:pb-32 relative">
         {children}
       </main>
 
+
+
       <Footer />
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
         @keyframes float {

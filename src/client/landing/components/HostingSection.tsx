@@ -63,11 +63,11 @@ const HostingSection = () => {
                     {categories.map((cat, idx) => (
                       <div key={idx} className="relative group">
                         {cat.recommended && (
-                          <span className="absolute -top-2 left-4 px-2 py-0.5 bg-[#00ff9d] text-[#060a09] text-[8px] font-black uppercase rounded-full z-10 shadow-[0_0_15px_#00ff9d]">
+                          <span className="absolute -top-2 left-4 px-2 py-0.5 bg-[#00ff9d] text-force-white text-[8px] font-black uppercase rounded-full z-10 shadow-[0_0_15px_#00ff9d]">
                             Nổi Bật
                           </span>
                         )}
-                        <button className={`w-full py-4 px-4 rounded-2xl text-[10px] md:text-xs font-black transition-all duration-500 border uppercase tracking-widest ${cat.recommended ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] border-[#00ff9d] shadow-[0_10px_30px_rgba(0,255,157,0.2)] hover:shadow-[0_15px_40px_rgba(0,255,157,0.35)]' : 'bg-white/5 text-white border-white/10 hover:border-[#00ff9d]/50 hover:bg-white/10 hover:shadow-2xl'}`}>
+                        <button className={`w-full py-4 px-4 rounded-2xl text-[10px] md:text-xs font-black transition-all duration-500 border uppercase tracking-widest ${cat.recommended ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white border-[#00ff9d] shadow-[0_10px_30px_rgba(0,255,157,0.2)] hover:shadow-[0_15px_40px_rgba(0,255,157,0.35)]' : 'bg-white/5 text-white border-white/10 hover:border-[#00ff9d]/50 hover:bg-white/10 hover:shadow-2xl'}`}>
                           {cat.name}
                         </button>
                       </div>
@@ -90,14 +90,6 @@ const HostingSection = () => {
                     className="w-full h-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_50px_rgba(0,0,0,0.6)] transform transition-transform duration-700 group-hover:scale-105" 
                   />
                   
-                  {/* Floating Performance Indicator */}
-                  <div className="absolute top-1/4 -right-4 md:-right-8 p-4 rounded-2xl bg-[#060a09]/80 backdrop-blur-xl border border-[#00ff9d]/30 shadow-2xl animate-float">
-                    <div className="flex flex-col items-center gap-1">
-                      <p className="text-[10px] font-black text-[#00ff9d] uppercase tracking-widest leading-none">Tốc Độ</p>
-                      <p className="text-3xl font-black text-white leading-none">10X</p>
-                      <p className="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">Nhanh Hơn Với NVMe</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </ScrollReveal>

@@ -159,7 +159,7 @@ class AdminElearningService {
   private AUTH_SESSION_KEY = 'konrix_user';
 
   constructor() {
-    this.api = 'https://api.3hstation.com';
+    this.api = 'http://api.3hstation.com';
   }
 
   // Helper để lấy token từ sessionStorage
@@ -234,14 +234,14 @@ class AdminElearningService {
     console.log('🔵 Calling API:', url);
 
     const response = await this.request<{ success: boolean; data: Course[]; pagination: any }>(url);
-    
+
     if (response.success && response.data) {
       return {
         data: Array.isArray(response.data) ? response.data : [],
         pagination: response.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 },
       };
     }
-    
+
     return {
       data: [],
       pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
@@ -256,7 +256,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/courses/${id}`;
       const response = await this.request<{ success: boolean; data: { data: Course } | Course }>(url);
-      
+
       if (response.success && response.data) {
         if ('data' in response.data) {
           return response.data.data as Course;
@@ -281,7 +281,7 @@ class AdminElearningService {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         if ('data' in response.data) {
           return response.data.data as Course;
@@ -306,7 +306,7 @@ class AdminElearningService {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         if ('data' in response.data) {
           return response.data.data as Course;
@@ -345,7 +345,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/courses/stats`;
       const response = await this.request<{ success: boolean; data: CourseStats }>(url);
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -366,7 +366,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/categories`;
       const response = await this.request<{ success: boolean; data: Category[] | { data: Category[]; total: number } }>(url);
-      
+
       if (response.success && response.data) {
         if (Array.isArray(response.data)) {
           return response.data;
@@ -410,7 +410,7 @@ class AdminElearningService {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -432,7 +432,7 @@ class AdminElearningService {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -468,7 +468,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/categories/stats`;
       const response = await this.request<{ success: boolean; data: { totalCourses: number; totalCategories: number; avgPerCategory: number } }>(url);
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -495,7 +495,7 @@ class AdminElearningService {
       }
       const url = `${this.api}/api/elearning/courses/${courseId}/videos${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
       const response = await this.request<{ success: boolean; data: CourseVideo[] }>(url);
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         return (Array.isArray(response.data) ? response.data : []).map((video: any) => {
@@ -531,12 +531,12 @@ class AdminElearningService {
       if (payload.sectionId !== undefined) {
         apiPayload.sectionId = payload.sectionId;
       }
-      
+
       const response = await this.request<{ success: boolean; data: CourseVideo; message?: string }>(url, {
         method: 'POST',
         body: JSON.stringify(apiPayload),
       });
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         const video = response.data as any;
@@ -566,12 +566,12 @@ class AdminElearningService {
         apiPayload.section_id = payload.sectionId;
         delete apiPayload.sectionId;
       }
-      
+
       const response = await this.request<{ success: boolean; data: CourseVideo; message?: string }>(url, {
         method: 'PUT',
         body: JSON.stringify(apiPayload),
       });
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         const video = response.data as any;
@@ -625,10 +625,10 @@ class AdminElearningService {
       const url = `${this.api}/api/elearning/courses/${courseId}/sections`;
       console.log('🔵 [getSectionsByCourse] Calling API:', url);
       console.log('🔵 [getSectionsByCourse] Course ID:', courseId, 'Type:', typeof courseId);
-      
+
       const response = await this.request<{ success: boolean; data: CourseSection[] }>(url);
       console.log('🔵 [getSectionsByCourse] Raw response:', JSON.stringify(response, null, 2));
-      
+
       if (response && response.success !== undefined) {
         if (response.success && response.data) {
           let sections: any[] = [];
@@ -662,7 +662,7 @@ class AdminElearningService {
           console.warn('⚠️ [getSectionsByCourse] API returned success: false');
         }
       }
-      
+
       // Nếu response không có format chuẩn, thử parse trực tiếp
       if (Array.isArray(response)) {
         console.log('✅ [getSectionsByCourse] Response is direct array:', response.length);
@@ -674,7 +674,7 @@ class AdminElearningService {
           return section as CourseSection;
         });
       }
-      
+
       console.warn('⚠️ [getSectionsByCourse] No sections found or invalid response format');
       console.warn('⚠️ [getSectionsByCourse] Response type:', typeof response);
       console.warn('⚠️ [getSectionsByCourse] Response keys:', response ? Object.keys(response) : 'null');
@@ -695,7 +695,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/sections/${sectionId}`;
       const response = await this.request<{ success: boolean; data: CourseSection }>(url);
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         const section = response.data as any;
@@ -733,7 +733,7 @@ class AdminElearningService {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -755,7 +755,7 @@ class AdminElearningService {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         return response.data;
       }
@@ -793,7 +793,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/sections/${sectionId}/lessons`;
       const response = await this.request<{ success: boolean; data: CourseLesson[] }>(url);
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         return (Array.isArray(response.data) ? response.data : []).map((lesson: any) => {
@@ -819,7 +819,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/courses/${courseId}/lessons`;
       const response = await this.request<{ success: boolean; data: CourseLesson[] }>(url);
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         return (Array.isArray(response.data) ? response.data : []).map((lesson: any) => {
@@ -845,7 +845,7 @@ class AdminElearningService {
     try {
       const url = `${this.api}/api/elearning/lessons/${lessonId}`;
       const response = await this.request<{ success: boolean; data: CourseLesson }>(url);
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         const lesson = response.data as any;
@@ -875,12 +875,12 @@ class AdminElearningService {
         apiPayload.section_id = payload.sectionId;
         delete apiPayload.sectionId;
       }
-      
+
       const response = await this.request<{ success: boolean; data: CourseLesson; message?: string }>(url, {
         method: 'POST',
         body: JSON.stringify(apiPayload),
       });
-      
+
       if (response.success && response.data) {
         // Convert snake_case to camelCase
         const lesson = response.data as any;
@@ -908,7 +908,7 @@ class AdminElearningService {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
-      
+
       if (response.success && response.data) {
         return response.data;
       }

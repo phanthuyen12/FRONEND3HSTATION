@@ -12,9 +12,30 @@ import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import Landing1 from "./landing/page/index";
 import ProductMMOPage from "./landing/page/product";
+import ProductMMODetailPage from "./landing/page/product-detail";
 import LandingCoursesPage from "./landing/page/courses";
 import LandingToolsPage from "./landing/page/tools";
 import LandingWorkflowsPage from "./landing/page/workflows";
+import LandingCourseDetailPage from "./landing/page/course-detail";
+import LandingWorkflowDetailPage from "./landing/page/workflow-detail";
+import LandingCartPage from "./landing/page/cart";
+import LandingProfilePage from "./landing/page/profile";
+import LandingDepositPage from "./landing/page/deposit";
+import LandingToolDetailPage from "./landing/page/tool-detail";
+import LandingVpsPage from "./landing/page/vps";
+import LandingHostingPage from "./landing/page/hosting";
+import LandingVpsManagementPage from "./landing/page/vps-management";
+import LandingVpsDetailPage from "./landing/page/vps-detail";
+import LandingLoginPage from "./landing/page/login";
+import LandingRegisterPage from "./landing/page/register";
+import LandingForgotPasswordPage from "./landing/page/forgot-password";
+import LandingResetPasswordPage from "./landing/page/reset-password";
+import LandingSoftwareManagementPage from "./landing/page/software-management";
+import MyCoursesLandingPage from "./landing/page/my-courses";
+import LandingWorkflowManagementPage from "./landing/page/workflow-management";
+import LandingTopupDetailPage from './landing/page/topup-detail';
+import HostingLayout from './landing/layouts/HostingLayout';
+import RechargePage from "./landing/page/recharge";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
@@ -72,13 +93,7 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/"
-          element={
-            <ProtectedRoute>
-              <ClientVerticalLayout>
-                <Home />
-              </ClientVerticalLayout>
-            </ProtectedRoute>
-          }
+          element={<Landing1 />}
         />
         <Route
           path="/landing"
@@ -92,41 +107,112 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/landing1"
-          element={
-            <PublicRoute>
-              <Landing1 />
-            </PublicRoute>
-          }
+          element={<Landing1 />}
         />
         <Route
           path="/product-mmo"
-          element={
-            <PublicRoute>
-              <ProductMMOPage />
-            </PublicRoute>
-          }
+          element={<ProductMMOPage />}
+        />
+        <Route
+          path="/product-mmo/:id"
+          element={<ProductMMODetailPage />}
         />
         <Route
           path="/landing-courses"
-          element={
-            <PublicRoute>
-              <LandingCoursesPage />
-            </PublicRoute>
-          }
+          element={<LandingCoursesPage />}
         />
         <Route
           path="/landing-tools"
+          element={<LandingToolsPage />}
+        />
+        <Route
+          path="/landing-tool-detail/:id"
+          element={<LandingToolDetailPage />}
+        />
+        <Route
+          path="/landing-workflows"
+          element={<LandingWorkflowsPage />}
+        />
+        <Route
+          path="/landing-courses/:id"
+          element={<LandingCourseDetailPage />}
+        />
+        <Route
+          path="/landing-workflows/:id"
+          element={<LandingWorkflowDetailPage />}
+        />
+        <Route
+          path="/cart"
+          element={<LandingCartPage />}
+        />
+        <Route
+          path="/landing-profile"
+          element={<LandingProfilePage />}
+        />
+        <Route
+          path="/landing-vps"
+          element={<LandingVpsPage />}
+        />
+        <Route
+          path="/landing-vps-management"
+          element={<LandingVpsManagementPage />}
+        />
+        <Route
+          path="/landing-vps-detail/:id"
+          element={<LandingVpsDetailPage />}
+        />
+        <Route
+          path="/landing-hosting"
+          element={<LandingHostingPage />}
+        />
+        <Route
+          path="/landing-deposit"
+          element={<LandingDepositPage />}
+        />
+        <Route
+          path="/landing-software-management"
+          element={<LandingSoftwareManagementPage />}
+        />
+        <Route
+          path="/landing-my-courses"
+          element={<MyCoursesLandingPage />}
+        />
+        <Route
+          path="/landing-my-workflows"
+          element={<LandingWorkflowManagementPage />}
+        />
+        <Route path="/landing-recharge" element={<RechargePage />} />
+        <Route path="/landing-recharge-crypto" element={<RechargePage />} />
+        <Route path="/landing-topup/:code" element={<LandingTopupDetailPage />} />
+        <Route
+          path="/landing-login"
           element={
             <PublicRoute>
-              <LandingToolsPage />
+              <LandingLoginPage />
             </PublicRoute>
           }
         />
         <Route
-          path="/landing-workflows"
+          path="/landing-register"
           element={
             <PublicRoute>
-              <LandingWorkflowsPage />
+              <LandingRegisterPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing-forgot-password"
+          element={
+            <PublicRoute>
+              <LandingForgotPasswordPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/landing-reset-password"
+          element={
+            <PublicRoute>
+              <LandingResetPasswordPage />
             </PublicRoute>
           }
         />

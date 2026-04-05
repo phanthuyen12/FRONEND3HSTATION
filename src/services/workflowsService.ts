@@ -41,7 +41,7 @@ class WorkflowsService {
   private api: string;
 
   constructor(apiUrl: string = "") {
-    this.api = apiUrl; // ví dụ: 'https://api.3hstation.com'
+    this.api = apiUrl; // ví dụ: 'http://api.3hstation.com'
   }
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -116,14 +116,14 @@ class WorkflowsService {
 
     const queryString = queryParams.toString();
     const url = `/api/workflows${queryString ? `?${queryString}` : ""}`;
-    
+
     const response = await this.request<{ data: Workflow[]; pagination: { page: number; limit: number; total: number; totalPages: number } } | { data: Workflow[]; pagination?: { page: number; limit: number; total: number; totalPages: number } }>(url);
-    
+
     // Xử lý response có thể không có pagination (stub)
     if (response.pagination) {
       return response as { data: Workflow[]; pagination: { page: number; limit: number; total: number; totalPages: number } };
     }
-    
+
     // Nếu không có pagination, tạo pagination mặc định
     const data = response.data || [];
     return {
@@ -220,9 +220,9 @@ class WorkflowsService {
 
     const queryString = queryParams.toString();
     const url = `/api/client/workflows${queryString ? `?${queryString}` : ""}`;
-    
+
     const response = await this.request<{ data: Workflow[]; pagination?: { page: number; limit: number; total: number; totalPages: number } } | Workflow[]>(url);
-    
+
     if (Array.isArray(response)) {
       return {
         data: response,
@@ -234,7 +234,7 @@ class WorkflowsService {
         },
       };
     }
-    
+
     return response as { data: Workflow[]; pagination?: { page: number; limit: number; total: number; totalPages: number } };
   }
 
@@ -251,15 +251,15 @@ class WorkflowsService {
     try {
       // Get token from localStorage - check all possible keys
       // authService uses 'auth_token' key
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       if (!token) {
         throw new Error('Bạn cần đăng nhập để đăng ký workflow. Vui lòng đăng nhập lại.');
       }
-      
+
       const url = `${this.api}/api/client/workflows/${id}/register`;
       const response = await fetch(url, {
         method: 'POST',
@@ -268,16 +268,16 @@ class WorkflowsService {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
         }
         throw new Error(data.message || 'Đăng ký workflow thất bại');
       }
-      
+
       if (data.success && data.data) {
         return data.data;
       }
@@ -295,15 +295,15 @@ class WorkflowsService {
   }): Promise<{ data: any[]; pagination?: { page: number; limit: number; total: number; totalPages: number } }> {
     try {
       // Try multiple token keys to find the correct one
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       if (!token) {
         return { data: [] };
       }
-      
+
       const queryParams = new URLSearchParams();
       if (params?.status) queryParams.append('status', params.status);
       if (params?.page) queryParams.append('page', params.page.toString());

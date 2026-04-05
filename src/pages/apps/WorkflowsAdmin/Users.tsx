@@ -51,8 +51,8 @@ const WorkflowsUsersAdmin: React.FC = () => {
           typeof window !== "undefined" &&
           (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
         const baseUrl = isLocal
-          ? "https://api.3hstation.com"
-          : API_URL || process.env.VITE_API_URL || "https://api.3hstation.com";
+          ? "http://api.3hstation.com"
+          : API_URL || process.env.VITE_API_URL || "http://api.3hstation.com";
         const res = await fetch(`${baseUrl}/api/workflows/registrations?${params.toString()}`, {
           headers: {
             "Content-Type": "application/json",
@@ -260,10 +260,10 @@ const WorkflowsUsersAdmin: React.FC = () => {
                   <td className="px-3 py-3">
                     <span
                       className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-medium ${reg.status === "da-duyet"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : reg.status === "cho-duyet"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-rose-100 text-rose-700"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : reg.status === "cho-duyet"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-rose-100 text-rose-700"
                         }`}
                     >
                       {reg.status === "da-duyet"

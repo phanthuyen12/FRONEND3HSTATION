@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import HostingLayout from '../layouts/HostingLayout';
 
 // ─── BRANDS ─────────────────────────────────────────────────────────────────
 const brands = [
-  { name: 'Duolingo',      logo: 'https://logo.clearbit.com/duolingo.com',      accent: '#58CC02' },
-  { name: 'Grammarly',     logo: 'https://logo.clearbit.com/grammarly.com',     accent: '#15c39a' },
-  { name: 'Quizlet',       logo: 'https://logo.clearbit.com/quizlet.com',       accent: '#4255FF' },
-  { name: 'Datacamp',      logo: 'https://logo.clearbit.com/datacamp.com',      accent: '#03EF62' },
-  { name: 'QuillBot',      logo: 'https://logo.clearbit.com/quillbot.com',      accent: '#00A67E' },
-  { name: 'Mate',          logo: 'https://logo.clearbit.com/gikken.co',         accent: '#FF6B35' },
-  { name: 'HelloChinese',  logo: 'https://logo.clearbit.com/hellochinese.cc',   accent: '#E84B3A' },
-  { name: 'Busuu',         logo: 'https://logo.clearbit.com/busuu.com',         accent: '#00B4D8' },
-  { name: 'Coursera',      logo: 'https://logo.clearbit.com/coursera.org',      accent: '#0056D2' },
-  { name: 'Turnitin',      logo: 'https://logo.clearbit.com/turnitin.com',      accent: '#E9002D' },
-  { name: 'Mathway',       logo: 'https://logo.clearbit.com/mathway.com',       accent: '#A020F0' },
-  { name: 'LinkedIn',      logo: 'https://logo.clearbit.com/linkedin.com',      accent: '#0A66C2' },
-  { name: 'JetBrains',     logo: 'https://logo.clearbit.com/jetbrains.com',     accent: '#FF318C' },
-  { name: 'Ginger',        logo: 'https://logo.clearbit.com/gingersoftware.com',accent: '#FF7A00' },
-  { name: 'Monkey',        logo: 'https://logo.clearbit.com/monkey.edu.vn',     accent: '#F5A623' },
+  { name: 'Duolingo', logo: 'https://logo.clearbit.com/duolingo.com', accent: '#58CC02' },
+  { name: 'Grammarly', logo: 'https://logo.clearbit.com/grammarly.com', accent: '#15c39a' },
+  { name: 'Quizlet', logo: 'https://logo.clearbit.com/quizlet.com', accent: '#4255FF' },
+  { name: 'Datacamp', logo: 'https://logo.clearbit.com/datacamp.com', accent: '#03EF62' },
+  { name: 'QuillBot', logo: 'https://logo.clearbit.com/quillbot.com', accent: '#00A67E' },
+  { name: 'Mate', logo: 'https://logo.clearbit.com/gikken.co', accent: '#FF6B35' },
+  { name: 'HelloChinese', logo: 'https://logo.clearbit.com/hellochinese.cc', accent: '#E84B3A' },
+  { name: 'Busuu', logo: 'https://logo.clearbit.com/busuu.com', accent: '#00B4D8' },
+  { name: 'Coursera', logo: 'https://logo.clearbit.com/coursera.org', accent: '#0056D2' },
+  { name: 'Turnitin', logo: 'https://logo.clearbit.com/turnitin.com', accent: '#E9002D' },
+  { name: 'Mathway', logo: 'https://logo.clearbit.com/mathway.com', accent: '#A020F0' },
+  { name: 'LinkedIn', logo: 'https://logo.clearbit.com/linkedin.com', accent: '#0A66C2' },
+  { name: 'JetBrains', logo: 'https://logo.clearbit.com/jetbrains.com', accent: '#FF318C' },
+  { name: 'Ginger', logo: 'https://logo.clearbit.com/gingersoftware.com', accent: '#FF7A00' },
+  { name: 'Monkey', logo: 'https://logo.clearbit.com/monkey.edu.vn', accent: '#F5A623' },
 ];
 
 // ─── CATEGORIES ─────────────────────────────────────────────────────────────
@@ -110,107 +111,92 @@ const products = [
 const fmt = (n: number) => n.toLocaleString('vi-VN') + 'đ';
 
 // ─── PRODUCT CARD (PREMIUM) ──────────────────────────────────────────────────
-const ProductCard = ({ p }: { p: typeof products[0] }) => (
-  <div
-    className="group relative flex flex-col rounded-[20px] overflow-hidden border border-white/[0.07] hover:border-white/20 transition-all duration-500 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 bg-[#060a09]"
-  >
-    {/* Cover image */}
-    <div className="relative h-44 overflow-hidden">
-      <img
-        src={p.cover}
-        alt={p.name}
-        className="w-full h-full object-cover opacity-50 group-hover:opacity-75 group-hover:scale-105 transition-all duration-700"
-      />
-      {/* Gradient overlay */}
-      <div
-        className="absolute inset-0"
-        style={{ background: `linear-gradient(180deg, transparent 30%, ${p.dark} 100%)` }}
-      />
-      {/* Discount pill */}
-      <div
-        className="absolute top-3 right-3 flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-black shadow-lg backdrop-blur-md"
-        style={{ background: `${p.accent}22`, border: `1px solid ${p.accent}60`, color: p.accent }}
-      >
-        -{p.discount}%
-      </div>
-      {/* Tag pill */}
-      <div
-        className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest"
-        style={{ background: p.tagColor, color: '#fff' }}
-      >
-        {p.tag}
-      </div>
-      {/* Brand logo floating */}
-      <div className="absolute bottom-3 left-3 flex items-center gap-2">
-        <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-xl overflow-hidden border-2 border-white/20 flex-shrink-0">
-          <img
-            src={p.logo}
-            alt={p.brand}
-            className="w-7 h-7 object-contain"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
+const ProductCard = ({ p }: { p: typeof products[0] }) => {
+  const formatSold = (s: number) => s >= 1000 ? (s / 1000).toFixed(1) + 'k' : s;
+  const navigate = useNavigate();
+
+  return (
+    <div
+      onClick={() => navigate('/product-mmo/' + p.id)}
+      className="group relative flex flex-col bg-white dark:bg-[#060a09] rounded-xl md:rounded-2xl overflow-hidden border border-gray-100 dark:border-white/[0.05] hover:border-[#00ff9d]/40 transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-none hover:shadow-xl cursor-pointer"
+    >
+
+      {/* ── IMAGE AREA ── */}
+      <div className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden bg-gray-50 dark:bg-[#0a100d]">
+        <img
+          src={p.cover}
+          alt={p.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        />
+        {/* Dark gradient for text visibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0" />
+
+        {/* Top Badges */}
+        <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
+          <div className="px-1.5 py-0.5 rounded-[4px] text-[9px] font-black uppercase text-white shadow-sm" style={{ background: p.tagColor }}>
+            {p.tag}
+          </div>
+          <div className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-black bg-[#ff3b30] text-white shadow-sm">
+            -{p.discount}%
+          </div>
         </div>
-        <span className="text-xs font-black text-white/90 drop-shadow">{p.brand}</span>
+
+        {/* Brand overlay at bottom */}
+        <div className="absolute bottom-2 left-2 right-2 flex items-center pr-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center p-0.5 shadow-sm shrink-0">
+              <img src={p.logo} alt={p.brand} className="w-full h-full object-contain rounded-full" />
+            </div>
+            <span className="text-[10px] md:text-[11px] font-bold text-white tracking-wide drop-shadow-md truncate">
+              {p.brand}
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    {/* Body */}
-    <div className="p-4 flex flex-col flex-grow gap-3">
-      <h3 className="font-black text-white text-sm leading-snug group-hover:text-[#00ff9d] transition-colors duration-300 line-clamp-1">
-        {p.name}
-      </h3>
-      <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2 flex-grow">{p.desc}</p>
+      {/* ── INFO AREA ── */}
+      <div className="p-2.5 md:p-3 flex flex-col flex-grow gap-1.5">
+        <h3 className="font-bold text-gray-800 dark:text-gray-100 text-[13px] md:text-sm leading-snug line-clamp-2 md:line-clamp-1 min-h-[38px] md:min-h-0 group-hover:text-rose-500 dark:group-hover:text-[#00ff9d] transition-colors">
+          {p.name}
+        </h3>
 
-      {/* Stars + sold */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          {[...Array(5)].map((_, i) => (
-            <svg key={i} className="w-3 h-3" viewBox="0 0 20 20" fill={i < Math.floor(p.rating) ? '#FACC15' : '#374151'}>
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        {/* Rating & Sold inline */}
+        <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 font-medium whitespace-nowrap">
+          <div className="flex items-center gap-0.5 text-amber-500">
+            <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-          ))}
-          <span className="text-[10px] text-gray-500 ml-0.5">{p.rating}</span>
+            <span>{p.rating}</span>
+          </div>
+          <span className="w-[1px] h-2 bg-gray-300 dark:bg-gray-700" />
+          <span className="truncate">Đã bán {formatSold(p.sold)}</span>
         </div>
-        <span className="text-[10px] text-gray-600 font-bold">
-          Đã bán {p.sold.toLocaleString()}
-        </span>
-      </div>
 
-      {/* Price */}
-      <div>
-        <p className="text-[10px] font-bold mb-0.5" style={{ color: p.accent }}>
-          Giảm đến {p.discount}%
-        </p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-black text-white">{fmt(p.price)}</span>
-          <span className="text-xs text-gray-600 line-through">{fmt(p.originalPrice)}</span>
+        {/* Price & Cart button */}
+        <div className="mt-auto pt-2 flex items-end justify-between gap-1">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] md:text-[11px] text-gray-400 line-through leading-none mb-0.5 truncate">
+              {fmt(p.originalPrice)}
+            </span>
+            <span className="text-sm md:text-base font-black text-rose-500 dark:text-[#00ff9d] leading-none truncate">
+              {fmt(p.price)}
+            </span>
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              // handle add to cart
+            }}
+            className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 dark:from-[#00ff9d] dark:to-[#01c67c] flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-white dark:text-[#060a09] shadow-md dark:shadow-none shrink-0"
+          >
+            <FeatherIcon icon="shopping-cart" size={13} className="ml-[-1px] md:w-3.5 md:h-3.5" />
+          </button>
         </div>
       </div>
-
-      {/* CTA */}
-      <button
-        className="mt-1 w-full py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center transition-all duration-300 border"
-        style={{
-          border: `1px solid ${p.accent}40`,
-          color: p.accent,
-          background: `${p.accent}0d`,
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = p.accent;
-          (e.currentTarget as HTMLButtonElement).style.color = '#060a09';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 24px ${p.accent}50`;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = `${p.accent}0d`;
-          (e.currentTarget as HTMLButtonElement).style.color = p.accent;
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
-        }}
-      >
-        Mua ngay
-      </button>
     </div>
-  </div>
-);
+  );
+};
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 const ProductMMOPage = () => {
@@ -242,7 +228,7 @@ const ProductMMOPage = () => {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00ff9d] animate-pulse" />
                   Kho sản phẩm MMO — giảm đến 90%
                 </div>
-                <h1 className="text-3xl md:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08]">
+                <h1 className="text-[28px] md:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.1]">
                   Phần mềm{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">Premium</span>
                   <br />
@@ -262,7 +248,7 @@ const ProductMMOPage = () => {
                 </div>
               </div>
               {/* Stats cards */}
-              <div className="flex gap-4">
+              <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {[
                   { value: '50+', label: 'Sản phẩm', color: '#00ff9d' },
                   { value: '18K+', label: 'Đã bán', color: '#60a5fa' },
@@ -270,7 +256,7 @@ const ProductMMOPage = () => {
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="flex flex-col items-center justify-center text-center bg-[#050807] border border-[rgba(255,255,255,0.06)] rounded-2xl w-24 h-24 gap-1 hover:border-[rgba(255,255,255,0.15)] transition-all duration-300"
+                    className="flex-shrink-0 flex flex-col items-center justify-center text-center bg-[#050807] border border-[rgba(255,255,255,0.06)] rounded-2xl w-24 md:w-24 h-20 md:h-24 gap-1 hover:border-[rgba(255,255,255,0.15)] transition-all duration-300"
                   >
                     <span className="text-2xl font-black leading-none" style={{ color: s.color }}>{s.value}</span>
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{s.label}</span>
@@ -285,7 +271,7 @@ const ProductMMOPage = () => {
         <div className="container mx-auto px-4 md:px-6 py-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-black text-white leading-none">Chọn sản phẩm bạn quan tâm</h2>
+              <h2 className="text-lg font-black  leading-none">Chọn sản phẩm bạn quan tâm</h2>
               <p className="text-[11px] text-gray-500 mt-1">Click vào thương hiệu để lọc sản phẩm</p>
             </div>
             {selectedBrand && (
@@ -299,16 +285,14 @@ const ProductMMOPage = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-15 gap-2.5"
-            style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(88px, 1fr))' }}
-          >
+          <div className="flex overflow-x-auto gap-2.5 pb-3 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {brands.map((b) => {
               const isActive = selectedBrand === b.name;
               return (
                 <button
                   key={b.name}
                   onClick={() => setSelectedBrand(isActive ? null : b.name)}
-                  className="group relative flex flex-col items-center justify-center gap-2.5 py-4 px-3 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5"
+                  className="flex-shrink-0 snap-center w-[88px] group relative flex flex-col items-center justify-center gap-2.5 py-3 md:py-4 px-2 md:px-3 rounded-[16px] md:rounded-2xl border transition-all duration-300 hover:-translate-y-0.5"
                   style={{
                     background: isActive ? `${b.accent}12` : 'rgba(8,13,12,1)',
                     borderColor: isActive ? `${b.accent}60` : 'rgba(255,255,255,0.07)',
@@ -355,7 +339,7 @@ const ProductMMOPage = () => {
         <div className="container mx-auto px-4 md:px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-black text-white leading-none">Sản phẩm bán chạy</h2>
+              <h2 className="text-lg font-black  leading-none">Sản phẩm bán chạy</h2>
               <p className="text-[11px] text-gray-500 mt-1">Được hàng nghìn khách hàng tin dùng.</p>
             </div>
             <button className="hidden md:flex items-center text-[11px] font-black text-gray-500 hover:text-[#00ff9d] transition-colors uppercase tracking-widest">
@@ -368,11 +352,11 @@ const ProductMMOPage = () => {
         </div>
 
         {/* ── All Products ─────────────────────────────────── */}
-        <div className="container mx-auto px-4 md:px-6 py-8">
+        <div className="container mx-auto px-3 md:px-6 py-4 md:py-8">
           {/* Sticky filter bar */}
-          <div className="sticky top-4 z-10 flex flex-col sm:flex-row gap-3 mb-8 bg-[#060a09]/80 backdrop-blur-xl p-3 rounded-2xl border border-white/[0.06] shadow-2xl">
+          <div className="sticky top-[72px] md:top-4 z-40 flex flex-col gap-3 mb-6 md:mb-8 bg-[#060a09]/95 backdrop-blur-xl p-3 md:p-4 rounded-xl md:rounded-2xl border border-white/[0.06] shadow-2xl">
             {/* Search */}
-            <div className="relative flex-1">
+            <div className="relative w-full">
               <FeatherIcon icon="search" size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
                 value={search}
@@ -382,16 +366,15 @@ const ProductMMOPage = () => {
               />
             </div>
             {/* Category pills */}
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex overflow-x-auto flex-nowrap gap-2 items-center pb-1 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {categories.map((cat) => (
                 <button
                   key={cat.label}
                   onClick={() => setSelectedCategory(cat.label)}
-                  className={`px-4 py-2 rounded-[10px] text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
-                    selectedCategory === cat.label
+                  className={`flex-shrink-0 whitespace-nowrap px-4 py-2 text-[11px] md:text-[10px] rounded-[10px] font-black uppercase tracking-wider transition-all duration-300 ${selectedCategory === cat.label
                       ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] shadow-[0_4px_20px_rgba(0,255,157,0.25)]'
                       : 'text-gray-500 hover:text-white hover:bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.05)]'
-                  }`}
+                    }`}
                 >
                   {cat.label}
                 </button>
@@ -436,8 +419,8 @@ const ProductMMOPage = () => {
         </div>
 
         {/* ── Trust / Guarantee Banner ─────────────────────── */}
-        <div className="container mx-auto px-4 md:px-6 py-10 mb-8">
-          <div className="relative rounded-[28px] border border-white/[0.07] overflow-hidden p-8 md:p-12 bg-[#060a09]">
+        <div className="container mx-auto px-4 md:px-6 py-6 md:py-10 mb-8 md:mb-12">
+          <div className="relative rounded-[20px] md:rounded-[28px] border border-white/[0.07] overflow-hidden p-6 md:p-12 bg-[#060a09]">
             {/* Decorative bg */}
             <div className="absolute inset-0 -z-10 pointer-events-none">
               <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#00ff9d]/8 rounded-full blur-[100px]" />
@@ -473,7 +456,7 @@ const ProductMMOPage = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 w-full md:w-auto">
                 {[
                   { label: 'Bảo hành', value: 'Vĩnh viễn', color: '#00ff9d' },
                   { label: 'Hỗ trợ', value: '24/7', color: '#60a5fa' },
@@ -481,7 +464,8 @@ const ProductMMOPage = () => {
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="flex flex-col items-center justify-center text-center p-6 rounded-3xl border bg-[#050807] transition-all hover:bg-[#060a09]"
+                    className="flex flex-row md:flex-col items-center justify-between md:justify-center text-center p-4 md:p-6 rounded-[16px] md:rounded-3xl border bg-[#050807] transition-all hover:bg-[#060a09]"
+
                     style={{ borderColor: `${s.color}20` }}
                   >
                     <p className="text-2xl font-black mb-1 leading-none" style={{ color: s.color }}>{s.value}</p>

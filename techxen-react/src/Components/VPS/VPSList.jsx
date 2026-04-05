@@ -9,20 +9,20 @@ const VPSList = () => {
     const [error, setError] = useState(null);
 
     // API base URL - có thể config sau
-    const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.3hstation.comapi';
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://api.3hstation.comapi';
 
     useEffect(() => {
         const fetchVPSPlans = async () => {
             try {
                 setLoading(true);
                 const response = await fetch(`${API_BASE_URL}/client/vps/plans`);
-                
+
                 if (!response.ok) {
                     throw new Error('Không thể tải danh sách VPS');
                 }
-                
+
                 const result = await response.json();
-                
+
                 if (result.success && result.data) {
                     setVpsPlans(result.data.data || result.data || []);
                 } else {
@@ -43,7 +43,7 @@ const VPSList = () => {
 
     // Cấu hình slider - chỉ dùng khi có hơn 3 items
     const shouldUseSlider = vpsPlans.length > 3;
-    
+
     const sliderSettings = {
         dots: false,
         infinite: true,
@@ -123,14 +123,14 @@ const VPSList = () => {
                 </div>
 
                 <div className="space30"></div>
-                
+
                 {shouldUseSlider ? (
                     <div className="row">
                         <div className="vps-slider cs_slider_gap_30">
                             <Slider {...sliderSettings}>
                                 {vpsPlans.map((plan) => (
                                     <div key={plan.id} className="single-slider">
-                                        <VPSCard 
+                                        <VPSCard
                                             plan={plan}
                                             inSlider={true}
                                         />
@@ -142,7 +142,7 @@ const VPSList = () => {
                 ) : (
                     <div className="row">
                         {vpsPlans.map((plan) => (
-                            <VPSCard 
+                            <VPSCard
                                 key={plan.id}
                                 plan={plan}
                                 addClass={vpsPlans.length === 1 ? "col-lg-12" : vpsPlans.length === 2 ? "col-lg-6" : "col-lg-4"}

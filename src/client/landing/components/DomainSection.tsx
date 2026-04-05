@@ -49,7 +49,7 @@ const DomainSection = () => {
                 </ul>
 
                 <div className="pt-6">
-                  <button className="relative px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 uppercase tracking-wider text-xs overflow-hidden group">
+                  <button className="relative px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 uppercase tracking-wider text-xs overflow-hidden group">
                     <span className="relative z-10">Đăng ký ngay</span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                   </button>

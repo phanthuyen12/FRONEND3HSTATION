@@ -7,28 +7,28 @@ const FAQSection = () => {
 
   const faqs = [
     {
-      q: "Web Hosting là gì và tại sao tôi cần nó?",
-      a: "Web Hosting là dịch vụ lưu trữ dữ liệu website trên máy chủ kết nối internet. Bạn cần hosting để website của mình có thể hiển thị trực tuyến 24/7 cho khách hàng truy cập."
+      q: "Cloud VPS tại 3HSTATION có gì đặc biệt cho việc chạy n8n?",
+      a: "VPS của chúng tôi được tối ưu hóa đặc biệt cho Docker và n8n Automation. Với ổ cứng NVMe U.2 thế hệ mới, các workflows phức tạp của bạn sẽ vận hành mượt mà với độ trễ cực thấp."
     },
     {
-      q: "Làm thế nào để đăng ký tên miền?",
-      a: "Bạn có thể đăng ký tên miền bằng cách tìm kiếm tên mong muốn trên hệ thống của chúng tôi, chọn đuôi phù hợp (.com, .vn...) và hoàn tất quy trình thanh toán."
+      q: "Tôi có được hỗ trợ cài đặt các công cụ MMO và Automation không?",
+      a: "Có, 3HSTATION cung cấp hệ thống Script tự động cài đặt sẵn n8n, Docker, và các môi trường lập trình. Bạn chỉ cần 1 click là có thể bắt đầu xây dựng workflows ngay."
     },
     {
-      q: "Tôi có thể chuyển tên miền hiện có về dịch vụ của bạn không?",
-      a: "Hoàn toàn được. Chúng tôi hỗ trợ chuyển tên miền về 3HSTATION một cách nhanh chóng và an toàn kèm theo ưu đãi gia hạn miễn phí 1 năm."
+      q: "Hệ sinh thái 3HSTATION bao gồm những dịch vụ gì?",
+      a: "Chúng tôi cung cấp giải pháp toàn diện: Cloud VPS hiệu năng cao, Kho Workflows n8n mẫu, Tool Marketing chuyên nghiệp và các Khóa học đào tạo tư duy Automation thực chiến."
     },
     {
-      q: "Bạn có cung cấp chứng chỉ SSL miễn phí không?",
-      a: "Có, tất cả các gói hosting của chúng tôi đều được tích hợp sẵn chứng chỉ SSL Let's Encrypt miễn phí và tự động gia hạn hàng năm."
+      q: "Hệ thống có hỗ trợ nạp tiền tự động không?",
+      a: "Hoàn toàn tự động. Bạn có thể nạp tiền 24/7 qua Ngân hàng (VietQR) hoặc Crypto. Số dư sẽ được cập nhật ngay lập tức giúp bạn không bị gián đoạn dịch vụ."
     },
     {
-      q: "Tôi có thể nâng cấp gói hosting sau này không?",
-      a: "Chắc chắn rồi. Bạn có thể nâng cấp gói hosting bất cứ lúc nào khi nhu cầu website tăng trưởng mà không làm gián đoạn dịch vụ."
+      q: "Tôi có thể nâng cấp cấu hình VPS khi workflows phình to không?",
+      a: "Chắc chắn rồi. Bạn có thể nâng cấp RAM, CPU hoặc dung lượng ổ cứng bất cứ lúc nào ngay trên bảng điều khiển mà không cần phải cài đặt lại hệ điều hành."
     },
     {
-      q: "Bạn có chính sách hoàn tiền không?",
-      a: "Chúng tôi cam kết hoàn tiền trong vòng 30 ngày nếu dịch vụ không đạt chất lượng như cam kết hoặc bạn không hài lòng."
+      q: "Đội ngũ kỹ thuật có hỗ trợ sửa lỗi luồng n8n không?",
+      a: "Chúng tôi có đội ngũ chuyên gia về Automation sẵn sàng tư vấn và hỗ trợ xử lý các lỗi kỹ thuật liên quan đến hạ tầng và môi trường vận hành workflows cho khách hàng."
     }
   ];
 
@@ -51,9 +51,9 @@ const FAQSection = () => {
                   <span className="inline-flex px-3 py-1.5 bg-[#00ff9d]/10 border border-[#00ff9d]/20 rounded-full text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
                     FAQ's
                   </span>
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1]">
-                    Got questions?<br/>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">We've got answers!</span>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]">
+                    Bạn có thắc mắc?<br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">Chúng tôi có lời giải!</span>
                   </h2>
                   <p className="text-gray-400 text-base leading-relaxed">
                     Không tìm thấy câu trả lời bạn cần? Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7.
@@ -63,7 +63,7 @@ const FAQSection = () => {
                 <div className="p-8 rounded-[28px] bg-gradient-to-br from-[#00ff9d]/10 to-blue-500/5 border border-[#00ff9d]/20 space-y-6 backdrop-blur-sm">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-[#00ff9d] to-[#01c67c] rounded-2xl flex items-center justify-center shadow-[0_10px_30px_rgba(0,255,157,0.3)] flex-shrink-0">
-                      <FeatherIcon icon="headphones" className="text-[#060a09]" size={24} />
+                      <FeatherIcon icon="headphones" className="text-force-white" size={24} />
                     </div>
                     <div>
                       <p className="font-black text-white text-base">Hỗ trợ 24/7</p>
@@ -75,7 +75,7 @@ const FAQSection = () => {
                   </p>
                   <button className="flex items-center gap-3 text-[#00ff9d] text-sm font-black group mt-2 hover:gap-4 transition-all duration-300">
                     Liên hệ ngay
-                    <div className="w-7 h-7 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/30 flex items-center justify-center group-hover:bg-[#00ff9d] group-hover:text-[#060a09] group-hover:border-[#00ff9d] transition-all duration-500">
+                    <div className="w-7 h-7 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/30 flex items-center justify-center group-hover:bg-[#00ff9d] group-hover:text-force-white group-hover:border-[#00ff9d] transition-all duration-500">
                       <FeatherIcon icon="arrow-right" size={14} />
                     </div>
                   </button>
@@ -100,7 +100,7 @@ const FAQSection = () => {
                     <span className={`text-base md:text-lg font-bold transition-colors duration-300 leading-snug ${activeIndex === idx ? 'text-[#00ff9d]' : 'text-gray-200 group-hover:text-white'}`}>
                       {faq.q}
                     </span>
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${activeIndex === idx ? 'bg-[#00ff9d] text-[#060a09] rotate-180 shadow-[0_0_20px_#00ff9d]' : 'bg-white/5 text-gray-400 border border-white/10 group-hover:border-white/30'}`}>
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${activeIndex === idx ? 'bg-[#00ff9d] text-force-white rotate-180 shadow-[0_0_20px_#00ff9d]' : 'bg-white/5 text-gray-400 border border-white/10 group-hover:border-white/30'}`}>
                       <FeatherIcon icon="chevron-down" size={16} strokeWidth={3} />
                     </div>
                   </div>

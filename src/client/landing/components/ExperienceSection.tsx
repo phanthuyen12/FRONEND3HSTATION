@@ -57,10 +57,6 @@ const ExperienceSection = () => {
                   className="w-full h-auto object-contain relative z-10 transition-transform duration-700 group-hover:scale-[1.02] drop-shadow-2xl"
                 />
                 
-                {/* Floating Badge */}
-                <div className="absolute bottom-10 right-0 md:-right-10 px-6 py-4 bg-gradient-to-br from-[#00ff9d] to-blue-500 text-[#060a09] font-black rounded-[20px] shadow-2xl transform hover:-rotate-6 transition-transform cursor-pointer z-20 text-[10px] uppercase tracking-widest hidden md:block">
-                   10+ Năm Kinh Nghiệm
-                </div>
               </div>
             </ScrollReveal>
           </div>

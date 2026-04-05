@@ -250,56 +250,6 @@ class AdminOrderService {
 
     return data.data;
   }
-
-  // POST /api/orders/admin/:id/auto-provision - Tự động khởi tạo VPS qua Nodeverse API
-  async autoProvisionOrder(id: string): Promise<any> {
-    const token = this.getToken();
-    if (!token) {
-      throw new Error('Authorization token not found. Please login again.');
-    }
-
-    const url = `${this.api}/api/orders/admin/${id}/auto-provision`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const data: ApiResponse<any> = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Không thể tự động khởi tạo VPS qua Nodeverse');
-    }
-
-    return data.data;
-  }
-
-  // DELETE /api/orders/admin/clear-all - Xoá toàn bộ lịch sử đơn hàng
-  async clearAllHistory(): Promise<any> {
-    const token = this.getToken();
-    if (!token) {
-      throw new Error('Authorization token not found. Please login again.');
-    }
-
-    const url = `${this.api}/api/orders/admin/clear-all`;
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const data: ApiResponse<any> = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Không thể xoá lịch sử đơn hàng');
-    }
-
-    return data;
-  }
 }
 
 export default AdminOrderService;

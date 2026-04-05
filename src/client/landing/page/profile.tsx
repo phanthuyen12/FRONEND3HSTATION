@@ -1,0 +1,803 @@
+import React, { useEffect, useState } from 'react';
+import FeatherIcon from 'feather-icons-react';
+import HostingLayout from '../layouts/HostingLayout';
+import { useTheme } from '../context/ThemeContext';
+import { authService, userService, topupService, vpsService, workflowsService, elearningService } from '../../../config';
+import { NodeverseVpsPlan, VpsPlan, VpsBillingTerm } from '../../../services/vpsService';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+const LandingProfilePage = () => {
+   const { isDark } = useTheme();
+   const navigate = useNavigate();
+   const [searchParams, setSearchParams] = useSearchParams();
+   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'info');
+
+   // Sync tab with URL
+   useEffect(() => {
+      const tab = searchParams.get('tab');
+      if (tab && tab !== activeTab) {
+         setActiveTab(tab);
+      }
+   }, [searchParams]);
+
+   const handleTabChange = (tabId: string) => {
+      setActiveTab(tabId);
+      setSearchParams({ tab: tabId });
+   };
+   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+   const [loading, setLoading] = useState(true);
+   const [saving, setSaving] = useState(false);
+   const [user, setUser] = useState<any>(null);
+   const [orders, setOrders] = useState<any[]>([]);
+   const [topups, setTopups] = useState<any[]>([]);
+   const [banks, setBanks] = useState<any[]>([]);
+   const [myVps, setMyVps] = useState<any[]>([]);
+   const [myWorkflows, setMyWorkflows] = useState<any[]>([]);
+   const [myCourses, setMyCourses] = useState<any[]>([]);
+
+   // VPS States
+   const [nvPlans, setNvPlans] = useState<NodeverseVpsPlan[]>([]);
+   const [stdPlans, setStdPlans] = useState<VpsPlan[]>([]);
+   const [selectedNvPlanId, setSelectedNvPlanId] = useState<string | null>(null);
+   const [selectedOsVersion, setSelectedOsVersion] = useState<string | null>(null);
+   const [selectedOsDeviceId, setSelectedOsDeviceId] = useState<string | null>(null);
+   const [selectedOsAgencyId, setSelectedOsAgencyId] = useState<string | null>(null);
+   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+   const [pricingMap, setPricingMap] = useState<Record<string, VpsBillingTerm[]>>({});
+   const [vpsBillingTerm, setVpsBillingTerm] = useState("1m");
+   const [vpsQuantity, setVpsQuantity] = useState(1);
+   const [vpsAutoRenew, setVpsAutoRenew] = useState(false);
+   const [vpsAcceptedTerms, setVpsAcceptedTerms] = useState(false);
+   const [vpsOrdering, setVpsOrdering] = useState(false);
+
+   // Pagination & Filter States
+   const [orderSearch, setOrderSearch] = useState('');
+   const [orderStatusFilter, setOrderStatusFilter] = useState('tat-ca');
+   const [orderCurrentPage, setOrderCurrentPage] = useState(1);
+   const orderPageSize = 5;
+   const [visibleTopups, setVisibleTopups] = useState(10);
+
+   // Deposit state
+   const [depositAmount, setDepositAmount] = useState(50000);
+   const [selectedBank, setSelectedBank] = useState<any>(null);
+   const [createdTopup, setCreatedTopup] = useState<any>(null);
+
+   // States for forms
+   const [formData, setFormData] = useState({ name: '', phone: '', email: '' });
+   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+   useEffect(() => {
+      if (!authService.isAuthenticated()) {
+         navigate('/landing-login');
+         return;
+      }
+      loadAllData();
+   }, [navigate]);
+
+   const loadAllData = async () => {
+      setLoading(true);
+      try {
+         const [profile, ordersData, topupData, banksData, vpsData, workflowsData, coursesData] = await Promise.all([
+            authService.getProfile().catch(() => null),
+            userService.getMyOrders({ limit: 100 }).catch(() => ({ data: [] })),
+            topupService.getHistory({ limit: 100 }).catch(() => ({ data: [] })),
+            topupService.getBanks().catch(() => []),
+            vpsService.getMyNodeverseVpsOrders().catch(() => []),
+            workflowsService.getMyWorkflows().catch(() => ({ data: [] })),
+            elearningService.getMyCourses().catch(() => [])
+         ]);
+
+         if (profile) {
+            setUser(profile);
+            setFormData({
+               name: profile.name || '',
+               phone: profile.phone || '',
+               email: profile.email || ''
+            });
+         }
+
+         setOrders(ordersData?.data || []);
+         setTopups(topupData?.data || []);
+         setBanks(banksData || []);
+         setMyVps(vpsData || []);
+         setMyWorkflows(workflowsData?.data || []);
+         setMyCourses(coursesData || []);
+         if (banksData && banksData.length > 0) setSelectedBank(banksData[0]);
+      } catch (err) {
+         console.error("Failed to load profile data", err);
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   const handleEditProfile = () => {
+      Swal.fire({
+         title: 'Chỉnh sửa hồ sơ',
+         text: 'Tính năng tự động cập nhật thông tin đang được đồng bộ hóa. Vui lòng liên hệ quản trị viên nếu cần thay đổi gấp.',
+         icon: 'info',
+         confirmButtonText: 'Đã hiểu',
+         confirmButtonColor: '#00BA4A'
+      });
+   };
+
+   const totals = React.useMemo(() => {
+      const deposited = topups.filter(t => t.status === 'da-duyet').reduce((sum, t) => sum + parseFloat(String(t.amount || 0)), 0);
+      const spent = orders.filter(o => ['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(o.status)).reduce((sum, o) => sum + parseFloat(String(o.amount || 0)), 0);
+      return { deposited, spent };
+   }, [topups, orders]);
+
+   // Load VPS Plans
+   useEffect(() => {
+      if (activeTab === 'vps-register') {
+         const loadVpsPlans = async () => {
+            try {
+               const nvData = await vpsService.getNodeverseVpsPlans();
+               let nvList: NodeverseVpsPlan[] = [];
+               if (Array.isArray(nvData)) nvList = nvData; else if (nvData?.plans) nvList = nvData.plans;
+               setNvPlans(nvList.filter(p => p.isActive));
+
+               const stdData = await vpsService.fetchClientPlans();
+               setStdPlans(stdData || []);
+            } catch (err) {
+               console.error("Load VPS plans error", err);
+            }
+         };
+         loadVpsPlans();
+      }
+      if (activeTab === 'vps-manage') {
+         vpsService.getMyNodeverseVpsOrders().then(setMyVps).catch(console.error);
+      }
+   }, [activeTab]);
+
+   // Load Pricing for selected VPS plan
+   useEffect(() => {
+      if (selectedPlanId && !pricingMap[selectedPlanId]) {
+         vpsService.fetchPlanPricing(selectedPlanId)
+            .then(res => setPricingMap(prev => ({ ...prev, [selectedPlanId]: res.terms || [] })))
+            .catch(console.error);
+      }
+   }, [selectedPlanId, pricingMap]);
+
+   const vpsBillingDetails = React.useMemo(() => {
+      const plan = stdPlans.find(p => p.id === selectedPlanId);
+      if (!plan) return null;
+      const terms = pricingMap[plan.id] || [];
+      const termNode = terms.find(t => t.code === vpsBillingTerm) || terms[0];
+      const isWindows = selectedOsVersion?.toLowerCase().includes("windows");
+      const osSurcharge = isWindows ? 120000 : 0;
+
+      if (!termNode) return { planPrice: parseFloat(plan.price || '0'), osSurcharge, total: (parseFloat(plan.price || '0') + osSurcharge) * vpsQuantity, availableTerms: [] };
+
+      const totalSurcharge = osSurcharge * termNode.months * vpsQuantity;
+      const subtotal = termNode.subtotal * vpsQuantity + totalSurcharge;
+      const discountAmount = (termNode.subtotal * termNode.discountPercent / 100) * vpsQuantity;
+      return {
+         planPrice: termNode.baseMonthlyPrice,
+         osSurcharge,
+         subtotal,
+         discountPercent: termNode.discountPercent,
+         discountAmount,
+         total: subtotal - discountAmount,
+         termLabel: termNode.label,
+         availableTerms: terms
+      };
+   }, [stdPlans, selectedPlanId, selectedOsVersion, vpsBillingTerm, vpsQuantity, pricingMap]);
+
+   const filteredOrders = React.useMemo(() => {
+      let result = orders;
+      if (orderStatusFilter !== 'tat-ca') {
+         result = result.filter(o => {
+            if (orderStatusFilter === 'cho-xu-ly') return ['pending', 'dang-cho-xu-ly', 'cho-duyet'].includes(o.status);
+            if (orderStatusFilter === 'dang-xu-ly') return ['processing', 'dang-tao'].includes(o.status);
+            if (orderStatusFilter === 'hoan-thanh') return ['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(o.status);
+            if (orderStatusFilter === 'da-huy') return ['cancelled', 'da-huy'].includes(o.status);
+            return true;
+         });
+      }
+      if (orderSearch.trim()) {
+         const kw = orderSearch.toLowerCase();
+         result = result.filter(o => String(o.id).toLowerCase().includes(kw) || (o.type && o.type.toLowerCase().includes(kw)) || String(o.item_id).toLowerCase().includes(kw));
+      }
+      return result;
+   }, [orders, orderStatusFilter, orderSearch]);
+
+   const totalOrderPages = Math.ceil(filteredOrders.length / orderPageSize);
+   const paginatedOrders = filteredOrders.slice((orderCurrentPage - 1) * orderPageSize, orderCurrentPage * orderPageSize);
+
+   const handleUpdateProfile = async () => {
+      if (!formData.name.trim()) {
+         Swal.fire('Lỗi', 'Vui lòng nhập tên của bạn', 'error');
+         return;
+      }
+      setSaving(true);
+      try {
+         await authService.updateProfile({
+            name: formData.name,
+            phone: formData.phone
+         });
+         await loadAllData();
+         Swal.fire({ icon: 'success', title: 'Thành công', text: 'Cập nhật thông tin thành công', timer: 2000, showConfirmButton: false });
+      } catch (err: any) {
+         Swal.fire('Lỗi', err.message || 'Không thể cập nhật thông tin', 'error');
+      } finally {
+         setSaving(false);
+      }
+   };
+
+   const handleChangePassword = async () => {
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+         Swal.fire('Lỗi', 'Mật khẩu xác nhận không khớp', 'error');
+         return;
+      }
+      if (passwordData.newPassword.length < 6) {
+         Swal.fire('Lỗi', 'Mật khẩu phải từ 6 ký tự', 'error');
+         return;
+      }
+      setSaving(true);
+      try {
+         await authService.changePassword({
+            currentPassword: passwordData.currentPassword,
+            newPassword: passwordData.newPassword
+         });
+         Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đổi mật khẩu thành công', timer: 2000, showConfirmButton: false });
+         setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } catch (err: any) {
+         Swal.fire('Lỗi', err.message || 'Không thể đổi mật khẩu', 'error');
+      } finally {
+         setSaving(false);
+      }
+   };
+
+   const handleCreateTopup = async () => {
+      if (!selectedBank) return;
+      setSaving(true);
+      try {
+         const res = await topupService.createTopup(depositAmount, selectedBank.id);
+         setCreatedTopup(res);
+         Swal.fire({ icon: 'success', title: 'Giao dịch đã tạo', text: 'Vui lòng thực hiện chuyển khoản theo hướng dẫn', timer: 2000, showConfirmButton: false });
+      } catch (err: any) {
+         Swal.fire('Lỗi', err.message || 'Không thể tạo yêu cầu nạp tiền', 'error');
+      } finally {
+         setSaving(false);
+      }
+   };
+
+   const handleVpsAction = async (id: string, action: 'start' | 'stop' | 'restart') => {
+      try {
+         const res = await vpsService.changeNodeverseVpsContainerState(id, action);
+         Swal.fire({ icon: 'success', title: 'Thành công', text: res.message, timer: 2000, showConfirmButton: false });
+         vpsService.getMyNodeverseVpsOrders().then(setMyVps);
+      } catch (err: any) {
+         Swal.fire('Lỗi', err.message || 'Không thể thực hiện thao tác', 'error');
+      }
+   };
+
+   const handleOrderVps = async () => {
+      if (!selectedPlanId || !vpsBillingDetails) return;
+      setVpsOrdering(true);
+      try {
+         await vpsService.createNodeverseHybridVpsOrder(
+            selectedPlanId, "balance", vpsBillingTerm, vpsAutoRenew,
+            { osVersion: selectedOsVersion, nodeverseDeviceId: selectedOsDeviceId, nodeverseAgencyId: selectedOsAgencyId }
+         );
+         Swal.fire({ icon: 'success', title: 'Thành công', text: 'VPS đang được tạo, vui lòng đợi trong giây lát', timer: 3000 });
+         handleTabChange('vps-manage');
+      } catch (err: any) {
+         Swal.fire('Lỗi', err.message || 'Không thể đặt hàng', 'error');
+      } finally {
+         setVpsOrdering(false);
+      }
+   };
+
+   const handleViewOrderDetail = async (id: string) => {
+      setLoading(true);
+      try {
+         const detail = await userService.getOrderById(id);
+         setSelectedOrder(detail);
+         handleTabChange('order-detail');
+      } catch (err) {
+         Swal.fire('Lỗi', 'Không thể tải chi tiết đơn hàng', 'error');
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   const handleLogout = async () => {
+      const result = await Swal.fire({
+         title: 'Đăng xuất?',
+         text: "Bạn có chắc chắn muốn thoát phiên làm việc?",
+         icon: 'question',
+         showCancelButton: true,
+         confirmButtonColor: '#00BA4A',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Đăng xuất ngay',
+         cancelButtonText: 'Hủy'
+      });
+      if (result.isConfirmed) {
+         await authService.logout();
+         navigate('/landing-login');
+      }
+   };
+
+   const fmt = (n: any) => {
+      const num = typeof n === 'string' ? parseFloat(n) : n;
+      return (num || 0).toLocaleString('vi-VN') + 'đ';
+   };
+
+   const menuGroups = [
+      {
+         items: [
+            { id: 'info', icon: 'user', label: 'Thông tin cá nhân' },
+            { id: 'password', icon: 'lock', label: 'Mật khẩu & Bảo mật' },
+            { id: 'orders', icon: 'shopping-bag', label: 'Đơn hàng của tôi' },
+            { id: 'balance', icon: 'credit-card', label: 'Biến động số dư' },
+         ]
+      }
+   ];
+
+   const InfoItem = ({ label, value, icon, copy, status, action }: any) => (
+      <div className="flex items-center justify-between p-6 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+         <div className="flex items-center gap-5">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${status === 'warning' ? 'bg-amber-500/10 text-amber-500' : 'bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-[#00BA4A]/10 group-hover:text-[#00BA4A]'}`}>
+               <FeatherIcon icon={icon} size={18} />
+            </div>
+            <div className="space-y-0.5">
+               <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">{label}</p>
+               <div className="flex items-center gap-2">
+                  <span className={`text-[15px] font-black tracking-tight ${status === 'warning' ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
+                     {value}
+                  </span>
+                  {copy && (
+                     <button onClick={() => { navigator.clipboard.writeText(value); Swal.fire({ toast: true, position: 'bottom-end', icon: 'success', title: 'Đã sao chép!', showConfirmButton: false, timer: 1500 }); }} className="text-gray-300 hover:text-[#00BA4A] transition-colors p-1">
+                        <FeatherIcon icon="copy" size={12} />
+                     </button>
+                  )}
+               </div>
+            </div>
+         </div>
+         {action}
+      </div>
+   );
+
+   const getStatusStyle = (status: string) => {
+      if (['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(status)) return { bg: 'rgba(0,186,74,0.1)', text: '#00BA4A', icon: 'check-circle' };
+      if (['pending', 'dang-cho-xu-ly', 'cho-duyet'].includes(status)) return { bg: 'rgba(245,158,11,0.1)', text: '#F59E0B', icon: 'clock' };
+      if (['cancelled', 'da-huy'].includes(status)) return { bg: 'rgba(239,68,68,0.1)', text: '#EF4444', icon: 'x-circle' };
+      return { bg: 'rgba(107,114,128,0.1)', text: '#6B7280', icon: 'info' };
+   };
+
+   const renderContent = () => {
+      if (loading && !user) return <div className="text-center p-20 animate-pulse font-black dark:text-white uppercase tracking-widest text-xs">Đang nạp dữ liệu hệ thống...</div>;
+
+      switch (activeTab) {
+         case 'info':
+            return (
+               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+
+                  <div className="bg-gradient-to-br from-[#032030] to-[#245853] p-10 rounded-[16px] text-white shadow-xl relative overflow-hidden group">
+                     <div className="absolute -right-16 -bottom-16 opacity-[0.03] group-hover:scale-110 group-hover:rotate-6 transition-all duration-1000">
+                        <FeatherIcon icon="pocket" size={300} />
+                     </div>
+                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+                        <div className="space-y-4">
+                           <div className="flex items-center gap-2 text-white/60">
+                              <FeatherIcon icon="credit-card" size={14} />
+                              <span className="text-[10px] font-black uppercase tracking-[3px]">Số dư tài khoản hiện tại</span>
+                           </div>
+                           <div className="flex items-baseline gap-3">
+                              <h1 className="text-5xl font-black tracking-tighter">{fmt(user?.balance || 0)}</h1>
+                              <span className="text-white/40 font-bold uppercase tracking-widest text-[13px]">VNĐ</span>
+                           </div>
+                           <div className="flex gap-4 pt-2">
+                              <button onClick={() => handleTabChange('deposit')} className="bg-[#00BA4A] text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest hover:bg-[#009a3d] transition-all shadow-lg active:scale-95 flex items-center gap-3">
+                                 <FeatherIcon icon="plus-circle" size={18} /> Nạp tiền ngay
+                              </button>
+                              <button onClick={() => Swal.fire({ title: 'Rút tiền', text: 'Chức năng rút tiền về ngân hàng đang trong quá trình bảo trì nâng cấp.', icon: 'info', confirmButtonText: 'Đã hiểu' })} className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest transition-all border border-white/20 flex items-center gap-3 backdrop-blur-md">
+                                 <FeatherIcon icon="arrow-up-right" size={18} /> Rút tiền
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                     <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/30 dark:bg-black/20">
+                        <div className="flex items-center gap-4">
+                           <div className="w-12 h-12 bg-white dark:bg-white/5 shadow-sm rounded-[12px] flex items-center justify-center border border-gray-100 dark:border-white/10">
+                              <FeatherIcon icon="file-text" size={20} className="text-[#00BA4A]" />
+                           </div>
+                           <div>
+                              <h3 className="text-sm font-black uppercase tracking-[2px] dark:text-white">Chi tiết hồ sơ</h3>
+                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Thông tin định danh tài khoản hệ thống</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="p-0 divide-y divide-gray-100 dark:divide-white/5">
+                        <InfoItem label="Tên đăng nhập" value={user?.name} icon="user" />
+                        <InfoItem label="Địa chỉ Email" value={user?.email} icon="mail" copy />
+                        <InfoItem label="Số điện thoại" value={user?.phone || 'Chưa cập nhật'} icon="phone" copy={!!user?.phone} status={!user?.phone ? 'warning' : ''} />
+                        <InfoItem label="Ngày tham gia" value={new Date(user?.createdAt || '').toLocaleString('vi-VN')} icon="calendar" />
+                     </div>
+                  </div>
+               </div>
+            );
+         case 'password':
+            return (
+               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                     <div className="bg-[#032030] dark:bg-black/40 px-6 py-4 flex items-center gap-3 text-white">
+                        <div className="bg-[#00BA4A] w-7 h-7 rounded-full flex items-center justify-center">
+                           <FeatherIcon icon="lock" size={14} />
+                        </div>
+                        <span className="text-xs font-black uppercase tracking-widest">Thay đổi mật khẩu hệ thống</span>
+                     </div>
+                     <div className="p-10 space-y-8">
+                        <div className="space-y-2">
+                           <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Mật khẩu hiện tại</label>
+                           <input
+                              type="password"
+                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              placeholder="••••••••"
+                              value={passwordData.currentPassword}
+                              onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Mật khẩu mới</label>
+                           <input
+                              type="password"
+                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              placeholder="Tối thiểu 6 ký tự"
+                              value={passwordData.newPassword}
+                              onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                           />
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Xác nhận mật khẩu mới</label>
+                           <input
+                              type="password"
+                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              placeholder="Nhập lại mật khẩu mới"
+                              value={passwordData.confirmPassword}
+                              onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                           />
+                        </div>
+                        <button
+                           onClick={handleChangePassword}
+                           disabled={saving}
+                           className="w-full h-14 bg-[#00BA4A] text-white rounded-[12px] font-black text-xs uppercase tracking-widest shadow-xl shadow-[#00BA4A]/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                        >
+                           {saving ? 'ĐANG CẬP NHẬT...' : 'XÁC NHẬN ĐỔI MẬT KHẨU'}
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            );
+         case 'orders':
+            return (
+               <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                     <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 bg-[#00BA4A]/10 text-[#00BA4A] rounded-xl flex items-center justify-center shadow-sm"><FeatherIcon icon="file-text" size={16} /></div>
+                        <div>
+                           <h2 className="text-[15px] font-black dark:text-white uppercase tracking-tight">Đơn hàng của tôi</h2>
+                           <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Tổng cộng {orders.length} đơn hàng</p>
+                        </div>
+                     </div>
+                     <div className="flex w-full md:w-[320px] items-center gap-3 h-10 px-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 focus-within:border-[#00BA4A]/30 transition-all">
+                        <FeatherIcon icon="search" size={13} className="text-gray-400" />
+                        <input type="text" placeholder="Tìm theo mã hoặc loại sản phẩm..." value={orderSearch} onChange={(e) => { setOrderSearch(e.target.value); setOrderCurrentPage(1); }} className="bg-transparent flex-1 text-[10px] font-bold outline-none dark:text-white placeholder:text-gray-400/50" />
+                     </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                     <div className="flex gap-1.5 p-1 bg-white dark:bg-[#0d1412] border border-gray-100 dark:border-white/5 rounded-2xl w-full md:w-auto">
+                        {[
+                           { id: 'tat-ca', label: 'Tất cả', count: orders.length },
+                           { id: 'cho-xu-ly', label: 'Chờ thanh toán', count: orders.filter(o => ['pending', 'dang-cho-xu-ly', 'cho-duyet'].includes(o.status)).length },
+                           { id: 'dang-xu-ly', label: 'Đang xử lý', count: orders.filter(o => ['processing', 'dang-tao'].includes(o.status)).length },
+                           { id: 'hoan-thanh', label: 'Hoàn thành', count: orders.filter(o => ['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(o.status)).length },
+                           { id: 'da-huy', label: 'Đã hủy', count: orders.filter(o => ['cancelled', 'da-huy'].includes(o.status)).length },
+                        ].map((tab) => (
+                           <button
+                              key={tab.id}
+                              onClick={() => { setOrderStatusFilter(tab.id); setOrderCurrentPage(1); }}
+                              className={`relative group px-4 py-2 rounded-xl text-[8.5px] font-black uppercase tracking-[2px] flex items-center justify-center text-center gap-2 transition-all min-h-[48px] ${orderStatusFilter === tab.id
+                                    ? 'bg-[#032030] text-white shadow-xl shadow-[#032030]/20'
+                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                                 }`}
+                              style={{ color: orderStatusFilter === tab.id ? '#ffffff' : undefined }}
+                           >
+                              <span className="max-w-[80px] leading-tight">{tab.label}</span>
+                              <span className={`px-1.5 py-0.5 rounded-lg text-[8px] font-black transition-colors ${orderStatusFilter === tab.id
+                                    ? 'bg-[#00BA4A] text-white'
+                                    : 'bg-gray-100 dark:bg-white/10 text-gray-400'
+                                 }`}>
+                                 {tab.count}
+                              </span>
+                           </button>
+                        ))}
+                     </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                     <div className="overflow-x-auto overflow-y-hidden">
+                        <table className="w-full text-left border-collapse min-w-[800px]">
+                           <thead>
+                              <tr className="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5 text-[8px] font-black text-gray-400 uppercase tracking-[2px]">
+                                 <th className="px-6 py-3.5">CHI TIẾT</th>
+                                 <th className="px-6 py-3.5">SẢN PHẨM / DỊCH VỤ</th>
+                                 <th className="px-6 py-3.5 text-center">TỔNG TIỀN</th>
+                                 <th className="px-6 py-3.5 text-center">TRẠNG THÁI</th>
+                                 <th className="px-6 py-3.5">MÃ ĐƠN</th>
+                                 <th className="px-6 py-3.5">NGÀY ĐẶT</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                              {paginatedOrders.length === 0 ? (
+                                 <tr><td colSpan={6} className="p-20 text-center text-gray-400/60 font-black uppercase tracking-widest text-[9px]">Không tìm thấy đơn hàng nào</td></tr>
+                              ) : paginatedOrders.map((order: any, i: number) => {
+                                 const status = getStatusStyle(order.status);
+                                 return (
+                                    <tr key={i} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                                       <td className="px-6 py-4">
+                                          <button
+                                             onClick={() => handleViewOrderDetail(order.id)}
+                                             className="flex items-center gap-1.5 text-[9px] font-black text-[#00BA4A] hover:bg-[#00BA4A]/10 px-2.5 py-1.5 rounded-lg transition-all uppercase tracking-widest"
+                                          >
+                                             <FeatherIcon icon="eye" size={11} /> View
+                                          </button>
+                                       </td>
+                                       <td className="px-6 py-4">
+                                          <div className="flex flex-col gap-0.5">
+                                             <span className="text-[12px] font-black text-gray-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{order.type.replace(/_/g, ' ')}</span>
+                                             <div className="flex items-center gap-2">
+                                                <span className="text-[8.5px] font-black text-[#00BA4A] uppercase tracking-wider bg-[#00BA4A]/10 px-1.5 py-0.5 rounded">ID: #{order.item_id || 'N/A'}</span>
+                                             </div>
+                                          </div>
+                                       </td>
+                                       <td className="px-6 py-4 text-center text-[12.5px] font-black text-gray-900 dark:text-white">{fmt(order.amount)}</td>
+                                       <td className="px-6 py-4 text-center">
+                                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-gray-100 dark:border-white/5" style={{ background: status.bg, color: status.text }}>
+                                             <div className="w-1 h-1 rounded-full" style={{ backgroundColor: status.text }}></div>
+                                             <span className="text-[8.5px] font-black uppercase tracking-widest">{order.status}</span>
+                                          </div>
+                                       </td>
+                                       <td className="px-6 py-4 text-[11px] font-black text-gray-400 font-mono">PO{String(order.id).padStart(7, '0')}</td>
+                                       <td className="px-6 py-4">
+                                          <div className="flex flex-col">
+                                             <span className="text-[10px] font-black text-gray-800 dark:text-white">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                                             <span className="text-[8.5px] font-bold text-gray-400 uppercase">{new Date(order.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 );
+                              })}
+                           </tbody>
+                        </table>
+                     </div>
+
+                     {totalOrderPages > 1 && (
+                        <div className="px-6 py-5 border-t border-gray-50 dark:border-white/5 bg-gray-50/20 dark:bg-black/10 flex items-center justify-between">
+                           <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest hidden md:block">
+                              Trang {orderCurrentPage} / {totalOrderPages}
+                           </div>
+                           <div className="flex gap-2 w-full md:w-auto justify-center">
+                              <button
+                                 disabled={orderCurrentPage === 1}
+                                 onClick={() => { setOrderCurrentPage(p => p - 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                 className="w-10 h-10 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-[#00BA4A] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                              >
+                                 <FeatherIcon icon="chevron-left" size={16} />
+                              </button>
+
+                              {[...Array(totalOrderPages)].map((_, idx) => {
+                                 const page = idx + 1;
+                                 if (totalOrderPages > 5) {
+                                    if (page !== 1 && page !== totalOrderPages && (page < orderCurrentPage - 1 || page > orderCurrentPage + 1)) {
+                                       if (page === orderCurrentPage - 2 || page === orderCurrentPage + 2) return <span key={idx} className="w-10 h-10 flex items-center justify-center text-gray-300">...</span>;
+                                       return null;
+                                    }
+                                 }
+                                 return (
+                                    <button
+                                       key={idx}
+                                       onClick={() => { setOrderCurrentPage(page); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                       className={`w-10 h-10 rounded-xl text-[11px] font-black transition-all ${orderCurrentPage === page
+                                             ? 'bg-[#00BA4A] text-white shadow-lg shadow-[#00BA4A]/30 scale-110'
+                                             : 'bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 text-gray-500 hover:border-[#00BA4A]/50 hover:text-[#00BA4A]'
+                                          }`}
+                                    >
+                                       {page}
+                                    </button>
+                                 );
+                              })}
+
+                              <button
+                                 disabled={orderCurrentPage === totalOrderPages}
+                                 onClick={() => { setOrderCurrentPage(p => p + 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                 className="w-10 h-10 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-[#00BA4A] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                              >
+                                 <FeatherIcon icon="chevron-right" size={16} />
+                              </button>
+                           </div>
+                        </div>
+                     )}
+                  </div>
+               </div>
+            );
+         case 'balance':
+            return (
+               <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="bg-white dark:bg-[#0d1412] p-8 rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 flex items-center justify-between">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-[#3e6665] text-white rounded-[12px] flex items-center justify-center shadow-lg"><FeatherIcon icon="credit-card" size={20} /></div>
+                        <div>
+                           <h2 className="text-lg font-black dark:text-white uppercase tracking-tight">Biến động số dư</h2>
+                           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-0.5">Lịch sử nạp tiền & thanh toán hệ thống</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                     <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                           <thead>
+                              <tr className="bg-[#f8f9fb] dark:bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                 <th className="px-8 py-5">Mã Giao Dịch</th>
+                                 <th className="px-8 py-5">Số Tiền</th>
+                                 <th className="px-8 py-5">Phương Thức</th>
+                                 <th className="px-8 py-5 text-center">Trạng Thái</th>
+                                 <th className="px-8 py-5">Thời Gian</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                              {topups.length === 0 ? (
+                                 <tr><td colSpan={5} className="p-20 text-center text-gray-400 font-bold uppercase tracking-widest">Chưa có lịch sử giao dịch</td></tr>
+                              ) : topups.slice(0, visibleTopups).map((t, i) => {
+                                 const status = getStatusStyle(t.status);
+                                 return (
+                                    <tr key={i} className="text-xs font-bold transition-colors hover:bg-gray-50/50 dark:hover:bg-white/5">
+                                       <td className="px-8 py-5 text-[#297c6d] font-black uppercase">{t.code}</td>
+                                       <td className="px-8 py-5 text-sm font-black dark:text-white">+{fmt(t.amount)}</td>
+                                       <td className="px-8 py-5 text-gray-500 uppercase tracking-tight">{t.bank}</td>
+                                       <td className="px-8 py-5 text-center">
+                                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full uppercase text-[9px] font-black" style={{ background: status.bg, color: status.text }}>
+                                             <FeatherIcon icon={status.icon} size={10} /> {t.status}
+                                          </div>
+                                       </td>
+                                       <td className="px-8 py-5 text-[11px] text-gray-400 font-black">{new Date(t.createdAt).toLocaleString('vi-VN')}</td>
+                                    </tr>
+                                 );
+                              })}
+                           </tbody>
+                        </table>
+                     </div>
+
+                     {topups.length > visibleTopups && (
+                        <div className="px-8 py-6 border-t border-gray-50 dark:border-white/5 flex justify-center">
+                           <button onClick={() => setVisibleTopups(prev => prev + 10)} className="px-10 py-3 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[12px] text-[10px] font-black uppercase tracking-[2px] flex items-center gap-3 hover:bg-[#032030] hover:text-white transition-all shadow-sm">
+                              <FeatherIcon icon="refresh-cw" size={12} /> Tải thêm lịch sử ({topups.length - visibleTopups} còn lại)
+                           </button>
+                        </div>
+                     )}
+                  </div>
+               </div>
+            );
+      }
+   };
+
+   if (!user && !loading) return null;
+
+   return (
+      <HostingLayout>
+         <div className="min-h-screen bg-[#F8FAFB] dark:bg-[#060a09] pt-0 pb-24">
+
+            {/* ── BREADCRUMBS ── */}
+            <div className="hidden md:block max-w-[1200px] mx-auto px-4 md:px-6 lg:px-8 mb-6">
+               <div className="flex items-center gap-2 text-[13px] text-gray-500 font-medium">
+                  <Link to="/landing1" className="hover:text-[#00BA4A] transition-colors flex items-center gap-1.5 grayscale opacity-70 hover:opacity-100 hover:grayscale-0">
+                     <FeatherIcon icon="home" size={14} /> Trang chủ
+                  </Link>
+                  <FeatherIcon icon="chevron-right" size={12} className="opacity-30" />
+                  <span className="opacity-70">Tài khoản</span>
+                  <FeatherIcon icon="chevron-right" size={12} className="opacity-30" />
+                  <span className="text-gray-900 dark:text-white font-bold uppercase tracking-tight">{user?.name || 'Hồ sơ cá nhân'}</span>
+               </div>
+            </div>
+
+            <div className="max-w-[1200px] mx-auto px-4 md:px-6 lg:px-8">
+               <div className="flex flex-col lg:flex-row gap-10">
+
+                  <div className="lg:w-[320px] shrink-0 space-y-6">
+                     {/* ── ACCOUNT CARD ── */}
+                     <div className="bg-white dark:bg-[#0d1412] p-6 rounded-[16px] shadow-sm border border-[#eff2f6] dark:border-white/5 flex items-center gap-5 transition-all hover:shadow-md">
+                        <div className="relative shrink-0">
+                           <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=00BA4A&color=fff`} className="w-16 h-16 rounded-full border-2 border-[#eff2f6] dark:border-white/10 object-cover p-0.5" alt="Avatar" />
+                           <span className="absolute bottom-1 right-1 w-4 h-4 bg-[#00BA4A] border-4 border-white dark:border-[#0d1412] rounded-full"></span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                           <h3 className="text-[17px] font-black text-gray-900 dark:text-white uppercase tracking-tight truncate leading-tight">{user?.name || '---'}</h3>
+                           <div className="mt-2 space-y-0.5">
+                              <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Số dư hiện tại</p>
+                              <p className="text-[15px] font-black text-[#00BA4A] tracking-tight">{fmt(user?.balance || 0)}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* ── MENU CARD LIST ── */}
+                     <div className="space-y-3">
+                        {menuGroups.map((group, groupIdx) => (
+                           <div key={groupIdx} className="space-y-2">
+                              {group.items.map((item, i) => {
+                                 const accountIds = ['info', 'password'];
+                                 const transactionIds = ['deposit', 'orders', 'balance', 'activity', 'order-detail'];
+                                 const serviceIds = ['vps-register', 'vps-manage', 'workflows', 'courses'];
+                                 const utilityIds = ['favorites', 'support', 'referral', 'api'];
+
+                                 const isCurrent = (item.id === 'info' && accountIds.includes(activeTab)) ||
+                                    (item.id === 'deposit' && transactionIds.includes(activeTab)) ||
+                                    (item.id === 'vps-manage' && serviceIds.includes(activeTab)) ||
+                                    (item.id === 'favorites' && utilityIds.includes(activeTab)) ||
+                                    activeTab === item.id;
+
+                                 return (
+                                    <button
+                                       key={i}
+                                       onClick={() => { handleTabChange(item.id); setSelectedOrder(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                       className={`w-full flex items-center justify-between p-4 rounded-[16px] transition-all group border ${isCurrent
+                                             ? 'bg-[#00BA4A] border-[#00BA4A] shadow-lg shadow-[#00BA4A]/20'
+                                             : 'bg-white dark:bg-[#0d1412] border-[#eff2f6] dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-gray-200 dark:hover:border-white/20'
+                                          }`}
+                                    >
+                                       <div className="flex items-center gap-4">
+                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isCurrent ? 'bg-white text-[#00BA4A] shadow-lg' : 'bg-gray-50 dark:bg-white/5 text-gray-400 group-hover:text-[#00BA4A]'
+                                             }`}>
+                                             <FeatherIcon icon={item.icon} size={18} />
+                                          </div>
+                                          <span className={`text-[13px] font-bold tracking-tight transition-colors ${isCurrent ? 'text-white' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
+                                             }`}>
+                                             {item.label}
+                                          </span>
+                                       </div>
+                                       <FeatherIcon
+                                          icon="chevron-right"
+                                          size={14}
+                                          className={`transition-all ${isCurrent ? 'text-[#00BA4A] translate-x-0.5' : 'text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5'}`}
+                                       />
+                                    </button>
+                                 );
+                              })}
+                           </div>
+                        ))}
+
+                        {/* ── LOGOUT CARD ── */}
+                        <div className="pt-3 mt-3 border-t border-gray-100 dark:border-white/5">
+                           <button
+                              onClick={handleLogout}
+                              className="w-full flex items-center justify-between p-3.5 rounded-[14px] bg-white dark:bg-[#0d1412] border border-[#eff2f6] dark:border-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-100 dark:hover:border-red-500/20 transition-all group"
+                           >
+                              <div className="flex items-center gap-4">
+                                 <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/5 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
+                                    <FeatherIcon icon="log-out" size={18} />
+                                 </div>
+                                 <span className="text-[13px] font-bold text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400">Đăng xuất hệ thống</span>
+                              </div>
+                              <FeatherIcon icon="chevron-right" size={14} className="text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5" />
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                     {renderContent()}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </HostingLayout>
+   );
+};
+
+export default LandingProfilePage;

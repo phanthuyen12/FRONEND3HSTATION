@@ -85,7 +85,7 @@ const CoursesSection = () => {
           alt={course.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-60 group-hover:opacity-100"
         />
-        <div className="absolute top-5 left-5 px-3 py-1 bg-[#00ff9d] text-[#060a09] text-[9px] font-black uppercase rounded-lg shadow-lg">
+        <div className="absolute top-5 left-5 px-3 py-1 bg-[#00ff9d] text-force-white text-[9px] font-black uppercase rounded-lg shadow-lg">
           {course.category}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#080c0b] via-transparent to-transparent opacity-60"></div>
@@ -118,7 +118,7 @@ const CoursesSection = () => {
             <span className="text-[#00ff9d] text-[10px] font-black uppercase tracking-[0.2em] group-hover/link:tracking-[0.3em] transition-all duration-500">
               Join Course
             </span>
-            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover/link:bg-[#00ff9d] group-hover/link:text-[#060a09] group-hover/link:border-[#00ff9d] transition-all duration-500">
+            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover/link:bg-[#00ff9d] group-hover/link:text-force-white group-hover/link:border-[#00ff9d] transition-all duration-500">
               <FeatherIcon icon="arrow-right" size={14} />
             </div>
           </a>
@@ -154,12 +154,12 @@ const CoursesSection = () => {
 
             {/* Tabs Container */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-6">
-              <div className="bg-[#0a0f0d]/80 backdrop-blur-md p-1.5 rounded-[10px] border border-white/[0.05] flex flex-wrap justify-center items-center gap-1">
+              <div className="bg-[#0a0f0d]/80 backdrop-blur-md p-1.5 rounded-[7px] border border-white/[0.05] flex flex-wrap justify-center items-center gap-1">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => handleTabChange(cat)}
-                    className={`px-5 py-2 rounded-[10px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] shadow-[0_10px_20px_rgba(0,255,157,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                    className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#000000] shadow-[0_10px_20px_rgba(0,255,157,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                   >
                     {cat === 'All' ? 'Tất cả' : cat}
                   </button>
@@ -233,7 +233,7 @@ const CoursesSection = () => {
               <FeatherIcon icon="chevron-left" size={20} />
             </button>
             <div className="flex gap-2">
-              <button className="w-12 h-12 rounded-[10px] bg-gradient-to-br from-[#00ff9d] to-[#01c67c] text-[#060a09] flex items-center justify-center font-black text-sm shadow-[0_10px_20px_rgba(0,255,157,0.3)]">1</button>
+              <button className="w-12 h-12 rounded-[10px] bg-gradient-to-br from-[#00ff9d] to-[#01c67c] text-force-white flex items-center justify-center font-black text-sm shadow-[0_10px_20px_rgba(0,255,157,0.3)]">1</button>
               <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 font-black text-sm">2</button>
               <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 font-black text-sm">3</button>
             </div>

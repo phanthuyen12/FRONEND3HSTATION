@@ -76,7 +76,7 @@ class ElearningService {
   private api: string;
 
   constructor() {
-    this.api = 'https://api.3hstation.com';
+    this.api = 'http://api.3hstation.com';
   }
 
   // Helper fetch wrapper
@@ -107,7 +107,7 @@ class ElearningService {
     console.log('🔵 Calling API:', url);
 
     const response = await this.request<{ success: boolean; data: any }>(url);
-    
+
     // Backend có thể trả về { success: true, data: {data: [], total: 0} }
     if (response.success && response.data) {
       if (Array.isArray(response.data.data)) return response.data.data;
@@ -120,7 +120,7 @@ class ElearningService {
   async getCourses(): Promise<Course[]> {
     const url = `${this.api}/api/elearning/courses`;
     const response = await this.request<{ success: boolean; data: { data: Course[] } } | Course[]>(url);
-    
+
     // Response structure có thể là: { success: true, data: { data: Course[] } }
     if (response && typeof response === 'object' && 'success' in response) {
       if (response.success && response.data?.data && Array.isArray(response.data.data)) {
@@ -130,12 +130,12 @@ class ElearningService {
         return response.data as Course[];
       }
     }
-    
+
     // Fallback: nếu response là array trực tiếp
     if (Array.isArray(response)) {
       return response;
     }
-    
+
     return [];
   }
 
@@ -337,7 +337,7 @@ class ElearningService {
   async getClientCategories(): Promise<Category[]> {
     const url = `${this.api}/api/client/elearning/categories`;
     const response = await this.request<{ success: boolean; data: { data: Category[]; total?: number } | Category[] } | Category[]>(url);
-    
+
     if (response && typeof response === 'object' && 'success' in response) {
       if (response.success) {
         // Xử lý nested data.data
@@ -350,11 +350,11 @@ class ElearningService {
         }
       }
     }
-    
+
     if (Array.isArray(response)) {
       return response;
     }
-    
+
     return [];
   }
 
@@ -372,9 +372,9 @@ class ElearningService {
 
     const queryString = queryParams.toString();
     const url = `${this.api}/api/client/elearning/courses${queryString ? `?${queryString}` : ""}`;
-    
+
     const response = await this.request<{ success: boolean; data: { data: Course[]; total?: number; pagination?: { page: number; limit: number; total: number; totalPages: number } } | Course[]; pagination?: { page: number; limit: number; total: number; totalPages: number } } | { data: Course[]; pagination?: { page: number; limit: number; total: number; totalPages: number } }>(url);
-    
+
     if (response && typeof response === 'object' && 'success' in response) {
       if (response.success) {
         // Xử lý nested data.data
@@ -399,11 +399,11 @@ class ElearningService {
         }
       }
     }
-    
+
     if (Array.isArray((response as any).data)) {
       return response as { data: Course[]; pagination?: { page: number; limit: number; total: number; totalPages: number } };
     }
-    
+
     return { data: [] };
   }
 
@@ -413,14 +413,14 @@ class ElearningService {
       const res = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
       });
-      
+
       const body = await res.json();
-      
+
       if (!res.ok) {
         console.error('❌ API error:', body);
         throw new Error(body?.message || 'API Error');
       }
-      
+
       // Handle nested data structure: {success: true, data: {data: {...}}}
       if (body.success && body.data) {
         // Check if data.data exists (nested structure)
@@ -432,12 +432,12 @@ class ElearningService {
           return body.data as Course;
         }
       }
-      
+
       // Fallback: if body is Course directly
       if (body && typeof body === 'object' && 'id' in body) {
         return body as Course;
       }
-      
+
       return null;
     } catch (error) {
       console.error('❌ Fetch failed:', error);
@@ -449,17 +449,17 @@ class ElearningService {
     try {
       const url = `${this.api}/api/elearning/courses/${courseId}/sections`;
       const response = await this.request<{ success: boolean; data: CourseSection[] } | CourseSection[]>(url);
-      
+
       if (response && typeof response === 'object' && 'success' in response) {
         if (response.success && Array.isArray(response.data)) {
           return response.data;
         }
       }
-      
+
       if (Array.isArray(response)) {
         return response;
       }
-      
+
       return [];
     } catch (error) {
       return [];
@@ -469,11 +469,11 @@ class ElearningService {
   async getClientCourseVideos(courseId: string | number): Promise<CourseVideo[]> {
     try {
       // Get token from localStorage để backend có thể kiểm tra enrollment
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       const url = `${this.api}/api/elearning/courses/${courseId}/videos`;
       const response = await fetch(url, {
         headers: {
@@ -481,14 +481,14 @@ class ElearningService {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         console.error('❌ API error:', data);
         return [];
       }
-      
+
       const normalize = (items: any[]): CourseVideo[] =>
         (items || []).map((item) => {
           const normalized: any = { ...item };
@@ -507,11 +507,11 @@ class ElearningService {
           return normalize(data.data);
         }
       }
-      
+
       if (Array.isArray(data)) {
         return normalize(data);
       }
-      
+
       return [];
     } catch (error) {
       console.error('❌ Fetch failed:', error);
@@ -522,11 +522,11 @@ class ElearningService {
   async checkEnrollment(courseId: string | number): Promise<{ isEnrolled: boolean }> {
     try {
       // Get token from localStorage - try both possible keys
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       const url = `${this.api}/api/client/elearning/courses/${courseId}/enrollment`;
       const response = await fetch(url, {
         headers: {
@@ -548,15 +548,15 @@ class ElearningService {
     try {
       // Get token from localStorage - try both possible keys
       // authService uses 'auth_token' key
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       if (!token) {
         throw new Error('Bạn cần đăng nhập để đăng ký khóa học. Vui lòng đăng nhập lại.');
       }
-      
+
       const url = `${this.api}/api/client/elearning/courses/${courseId}/enroll`;
       const response = await fetch(url, {
         method: 'POST',
@@ -565,16 +565,16 @@ class ElearningService {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
         }
         throw new Error(data.message || 'Đăng ký khóa học thất bại');
       }
-      
+
       if (data.success && data.data) {
         return data.data;
       }
@@ -589,16 +589,16 @@ class ElearningService {
     try {
       // Get token from localStorage - try both possible keys
       // authService uses 'auth_token' key
-      const token = localStorage.getItem('auth_token') 
+      const token = localStorage.getItem('auth_token')
         || localStorage.getItem('authToken')
         || sessionStorage.getItem('auth_token')
         || sessionStorage.getItem('authToken');
-      
+
       if (!token) {
         console.warn('No token found, returning empty courses list');
         return [];
       }
-      
+
       const url = `${this.api}/api/client/users/me/my-courses`;
       const response = await fetch(url, {
         headers: {
@@ -607,7 +607,7 @@ class ElearningService {
         },
       });
       const data = await response.json();
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           console.warn('Unauthorized, returning empty courses list');
@@ -615,7 +615,7 @@ class ElearningService {
         }
         throw new Error(data.message || 'Không thể lấy danh sách khóa học');
       }
-      
+
       if (data.success && data.data) {
         // Handle nested structure: data.data.data or direct array
         if (Array.isArray(data.data)) {
@@ -627,12 +627,12 @@ class ElearningService {
         }
         return [];
       }
-      
+
       // Fallback: if data is array directly
       if (Array.isArray(data)) {
         return data;
       }
-      
+
       return [];
     } catch (error: any) {
       console.error('Get my courses error:', error);
