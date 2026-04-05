@@ -35,7 +35,7 @@ const NodeverseVps: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                // 1. Fetch Nodeverse plans to get the OS list (from http://api.3hstation.com/admin/vps/nodeverse)
+                // 1. Fetch Nodeverse plans to get the OS list (from https://api.3hstation.com/admin/vps/nodeverse)
                 const nvData = await vpsService.getNodeverseVpsPlans();
                 let nvList: NodeverseVpsPlan[] = [];
                 if (Array.isArray(nvData)) nvList = nvData;
@@ -43,7 +43,7 @@ const NodeverseVps: React.FC = () => {
 
                 setNvPlans(nvList.filter(p => p.isActive));
 
-                // 2. Fetch Standard plans (from http://api.3hstation.com/vps)
+                // 2. Fetch Standard plans (from https://api.3hstation.com/vps)
                 const stdData = await vpsService.fetchClientPlans();
                 setStdPlans(stdData || []);
 
