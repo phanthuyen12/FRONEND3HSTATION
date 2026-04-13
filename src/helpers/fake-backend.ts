@@ -11,7 +11,7 @@ interface UserData {
   token: string;
 }
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(axios, { onNoMatch: "passthrough" });
 
 export function configureFakeBackend() {
   const users: UserData[] = [

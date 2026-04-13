@@ -640,6 +640,17 @@ class VpsService {
     if (!res.ok) throw new Error(body?.message || 'Không thể tải lịch sử gia hạn');
     return Array.isArray(body.data) ? body.data : [];
   }
+
+  async adminSendActivationEmail(id: string): Promise<any> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/vps/nodeverse-plans/instances/${id}/send-activation-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Gửi email kích hoạt thất bại');
+    return body.data;
+  }
 }
 
 export interface NodeverseDevice {

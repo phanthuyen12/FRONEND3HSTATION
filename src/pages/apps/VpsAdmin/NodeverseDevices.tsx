@@ -21,11 +21,15 @@ const NodeverseAdminPage: React.FC = () => {
     const [syncing, setSyncing] = useState(false);
     const [search, setSearch] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
     const loadPlans = async () => {
         try {
             setLoading(true);
             const data = await vpsService.adminGetNodeversePlans(search || undefined);
             setPlans(data.plans || []);
+            setCurrentPage(1); // Reset to page 1 on search or reload
         } catch (err: any) {
             Swal.fire("Lỗi", err.message, "error");
         } finally {
@@ -43,7 +47,7 @@ const NodeverseAdminPage: React.FC = () => {
     const handleSync = async () => {
         const result = await Swal.fire({
             title: "Sync từ Nodeverse?",
-            text: "Sẽ kéo toàn bộ VPS devices về DB. Giá cũ không bị xóa.",
+            text: "Sẽ kéo toàn bộ VPS devices về DB. Tự động hiển thị thiết bị Online và ẩn thiết bị Offline.",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Sync ngay",
@@ -53,7 +57,7 @@ const NodeverseAdminPage: React.FC = () => {
         try {
             setSyncing(true);
             const data = await vpsService.syncNodeversePlans();
-            await Swal.fire("✅ Sync xong!", `Đã sync ${data.synced} VPS devices từ Nodeverse.`, "success");
+            await Swal.fire("✅ Sync xong!", `Đã sync ${data.synced} VPS devices từ Nodeverse. Các thiết bị Online đã được bật tự động.`, "success");
             void loadPlans();
         } catch (err: any) {
             Swal.fire("Lỗi", err.message, "error");
@@ -91,9 +95,15 @@ const NodeverseAdminPage: React.FC = () => {
         );
     }, [plans, search]);
 
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const paginatedItems = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return filtered.slice(start, start + itemsPerPage);
+    }, [filtered, currentPage, itemsPerPage]);
+
     const formatDate = (s: string | null) => {
         if (!s) return "—";
-        return new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+        return new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
     };
 
     // const formatCurrency = (v: string | number | null) => { ... }
@@ -148,7 +158,7 @@ const NodeverseAdminPage: React.FC = () => {
             <div className="card">
                 <div className="card-header flex items-center justify-between">
                     <h4 className="card-title mb-0">VPS Plans (từ Nodeverse)</h4>
-                    <p className="text-xs text-slate-400">Sync thiết bị → Tùy chỉnh ẩn/hiện trên giao diện người dùng</p>
+                    <p className="text-xs text-slate-400">Sync thiết bị → Tự động ẩn/hiện dựa trên trạng thái (Online/Offline)</p>
                 </div>
                 <div className="relative overflow-x-auto">
                     {loading ? (
@@ -157,67 +167,125 @@ const NodeverseAdminPage: React.FC = () => {
                             Đang tải...
                         </div>
                     ) : (
-                        <table className="w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs">
-                            <thead className="bg-slate-50 dark:bg-slate-700/60">
-                                <tr>
-                                    <th className="px-4 py-3 text-left font-semibold text-slate-600">Device / Config</th>
-                                    <th className="px-4 py-3 text-left font-semibold text-slate-600">Trạng thái Nodeverse</th>
-                                    <th className="px-4 py-3 text-left font-semibold text-slate-600">Sync lần cuối</th>
-                                    <th className="px-4 py-3 text-center font-semibold text-slate-600">Ẩn/Hiện</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/60">
-                                {filtered.map((plan) => (
-                                    <tr key={plan.id} className="hover:bg-slate-50/80 transition-colors">
-                                        <td className="px-4 py-3">
-                                            <div className="font-semibold text-slate-900 dark:text-white mb-0.5">{plan.name}</div>
-                                            <div className="text-slate-400 space-y-0.5">
-                                                <div>{plan.cpuInfo}</div>
-                                                <div className="flex items-center gap-2">
-                                                    {plan.totalMemory && <span className="bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded text-[10px] font-bold">{plan.totalMemory}GB RAM</span>}
-                                                    {plan.diskSpace && <span className="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">{plan.diskSpace}GB Disk</span>}
-                                                </div>
-                                                <div className="text-[10px] text-slate-300">{plan.operatingSystem}</div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            {plan.nodeverseStatus === "online" ? (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />Online
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />Offline
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3 text-slate-400">{formatDate(plan.nodeverseSyncedAt)}</td>
-                                        <td className="px-4 py-3 text-center">
-                                            <div className="flex items-center justify-center gap-2">
-                                                {plan.isActive ? (
-                                                    <button
-                                                        className="btn btn-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors border-none"
-                                                        onClick={() => toggleVisibility(plan)}
-                                                    >
-                                                        <i className="mgc_eye_line mr-1" /> Đang hiện
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        className="btn btn-xs bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors border-none"
-                                                        onClick={() => toggleVisibility(plan)}
-                                                    >
-                                                        <i className="mgc_eye_close_line mr-1" /> Đang ẩn
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
+                        <>
+                            <table className="w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs text-left">
+                                <thead className="bg-slate-50 dark:bg-slate-700/60">
+                                    <tr>
+                                        <th className="px-4 py-3 font-semibold text-slate-600">Device / Config</th>
+                                        <th className="px-4 py-3 font-semibold text-slate-600">Trạng thái Nodeverse</th>
+                                        <th className="px-4 py-3 font-semibold text-slate-600">Sync lần cuối</th>
+                                        <th className="px-4 py-3 text-center font-semibold text-slate-600">Ẩn/Hiện</th>
                                     </tr>
-                                ))}
-                                {filtered.length === 0 && (
-                                    <tr><td colSpan={4} className="py-8 text-center text-slate-400 text-sm">Không có plans nào.</td></tr>
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700/60">
+                                    {paginatedItems.map((plan) => (
+                                        <tr key={plan.id} className="hover:bg-slate-50/80 transition-colors">
+                                            <td className="px-4 py-3 text-left">
+                                                <div className="font-semibold text-slate-900 dark:text-white mb-0.5">{plan.name}</div>
+                                                <div className="text-slate-400 space-y-0.5">
+                                                    <div>{plan.cpuInfo}</div>
+                                                    <div className="flex items-center gap-2">
+                                                        {plan.totalMemory && <span className="bg-violet-100 text-violet-700 px-1.5 py-0.5 rounded text-[10px] font-bold">{plan.totalMemory}GB RAM</span>}
+                                                        {plan.diskSpace && <span className="bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">{plan.diskSpace}GB Disk</span>}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-300">{plan.operatingSystem}</div>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3 text-left">
+                                                {plan.nodeverseStatus === "online" ? (
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />Online
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />Offline
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-3 text-left text-slate-400">{formatDate(plan.nodeverseSyncedAt)}</td>
+                                            <td className="px-4 py-3 text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    {plan.isActive ? (
+                                                        <button
+                                                            className="btn btn-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors border-none"
+                                                            onClick={() => toggleVisibility(plan)}
+                                                        >
+                                                            <i className="mgc_eye_line mr-1" /> Đang hiện
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="btn btn-xs bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors border-none"
+                                                            onClick={() => toggleVisibility(plan)}
+                                                        >
+                                                            <i className="mgc_eye_close_line mr-1" /> Đang ẩn
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {paginatedItems.length === 0 && (
+                                        <tr><td colSpan={4} className="py-8 text-center text-slate-400 text-sm">Không có plans nào.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+
+                            {/* Pagination UI */}
+                            {totalPages > 1 && (
+                                <div className="p-4 border-t flex items-center justify-between bg-slate-50/50">
+                                    <span className="text-slate-500">
+                                        Trang <strong>{currentPage}</strong> / {totalPages}
+                                    </span>
+                                    <div className="flex items-center gap-1">
+                                        <button
+                                            className="btn btn-sm bg-white border-slate-200 text-slate-600 disabled:opacity-40"
+                                            disabled={currentPage === 1}
+                                            onClick={() => setCurrentPage(1)}
+                                        >
+                                            Đầu
+                                        </button>
+                                        <button
+                                            className="btn btn-sm bg-white border-slate-200 text-slate-600 disabled:opacity-40"
+                                            disabled={currentPage === 1}
+                                            onClick={() => setCurrentPage(v => v - 1)}
+                                        >
+                                            Trước
+                                        </button>
+                                        
+                                        <div className="flex items-center gap-1 px-2">
+                                            {[...Array(totalPages)].map((_, i) => {
+                                                const p = i + 1;
+                                                if (totalPages > 5 && Math.abs(p - currentPage) > 2) return null;
+                                                return (
+                                                    <button
+                                                        key={p}
+                                                        className={`w-8 h-8 rounded text-xs font-bold transition-all ${currentPage === p ? 'bg-blue-600 text-white shadow-md' : 'bg-white border text-slate-500 hover:bg-slate-50'}`}
+                                                        onClick={() => setCurrentPage(p)}
+                                                    >
+                                                        {p}
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+
+                                        <button
+                                            className="btn btn-sm bg-white border-slate-200 text-slate-600 disabled:opacity-40"
+                                            disabled={currentPage === totalPages}
+                                            onClick={() => setCurrentPage(v => v + 1)}
+                                        >
+                                            Tiếp
+                                        </button>
+                                        <button
+                                            className="btn btn-sm bg-white border-slate-200 text-slate-600 disabled:opacity-40"
+                                            disabled={currentPage === totalPages}
+                                            onClick={() => setCurrentPage(totalPages)}
+                                        >
+                                            Cuối
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { vpsService } from "../../../config";
 import { VpsPlan } from "../../../services/vpsService";
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
+import { ChevronLeft, ChevronRight, Server } from "lucide-react";
 
 type EditableVpsPlan = VpsPlan;
 
@@ -26,6 +27,10 @@ const VpsAdminList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+
   const loadPlans = async () => {
     try {
       setLoading(true);
@@ -44,14 +49,29 @@ const VpsAdminList: React.FC = () => {
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return plans;
-    const keyword = search.toLowerCase();
-    return plans.filter(
-      (p) =>
-        p.name.toLowerCase().includes(keyword) ||
-        p.id.toLowerCase().includes(keyword)
-    );
+    let result = plans;
+    if (search.trim()) {
+      const keyword = search.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(keyword) ||
+          p.id.toLowerCase().includes(keyword)
+      );
+    }
+    return result;
   }, [plans, search]);
+
+  // Paginated data
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, currentPage]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const startCreate = () => {
     setEditingId(null);
@@ -68,6 +88,21 @@ const VpsAdminList: React.FC = () => {
     value: EditableVpsPlan[K]
   ) => {
     setForm((prev: EditableVpsPlan) => ({ ...prev, [field]: value }));
+  };
+
+  const formatCurrency = (val: string | number) => {
+    if (!val) return "0 ₫";
+    // Xử lý chuỗi giá có dấu chấm ngăn cách nghìn (ví dụ "120.900")
+    const cleanValue = typeof val === 'string' 
+      ? val.replace(/\./g, '').replace(/,/g, '') 
+      : val.toString();
+    const number = parseFloat(cleanValue);
+    if (isNaN(number)) return val.toString();
+    
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(number);
   };
 
   const handleSave = () => {
@@ -216,7 +251,7 @@ const VpsAdminList: React.FC = () => {
       <PageBreadcrumb
         title="Quản lý gói VPS"
         name="Quản lý gói VPS"
-        breadCrumbItems={["Konrix", "Apps", "VPS"]}
+        breadCrumbItems={["3HStation", "Apps", "VPS"]}
       />
 
       {/* Header + stats */}
@@ -267,20 +302,20 @@ const VpsAdminList: React.FC = () => {
         {/* Form tạo / cập nhật VPS */}
         <div className="card">
           <div className="card-header flex items-center justify-between">
-            <h4 className="card-title mb-0">
+            <h4 className="card-title mb-0 text-sm md:text-base">
               {editingId ? "Cập nhật gói VPS" : "Tạo gói VPS mới"}
             </h4>
             {editingId && (
               <button
                 type="button"
-                className="btn btn-xs bg-slate-100 text-xs"
+                className="btn btn-xs bg-slate-100 text-xs px-2 py-1 rounded"
                 onClick={startCreate}
               >
                 Tạo mới
               </button>
             )}
           </div>
-          <div className="p-6 space-y-4 text-sm">
+          <div className="p-4 md:p-6 space-y-4 text-sm">
             <div className="grid md:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">
@@ -339,20 +374,6 @@ const VpsAdminList: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                Nhãn giảm giá (optional)
-              </label>
-              <input
-                className="form-input text-xs"
-                placeholder="Ví dụ: GIẢM GIÁ 60%"
-                value={form.discountLabel || ""}
-                onChange={(e) =>
-                  handleFormChange("discountLabel", e.target.value)
-                }
-              />
-            </div>
-
             <div className="grid md:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">
@@ -385,7 +406,7 @@ const VpsAdminList: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">
-                  Ổ cứng
+                   SSD
                 </label>
                 <input
                   className="form-input text-xs"
@@ -423,7 +444,7 @@ const VpsAdminList: React.FC = () => {
               />
               <label
                 htmlFor="popular"
-                className="text-xs text-slate-600 select-none"
+                className="text-xs text-slate-600 select-none cursor-pointer"
               >
                 Đánh dấu là gói phổ biến
               </label>
@@ -431,7 +452,7 @@ const VpsAdminList: React.FC = () => {
 
             <button
               type="button"
-              className="btn bg-primary text-white text-sm w-full mt-2 disabled:opacity-60"
+              className={`btn ${editingId ? 'bg-indigo-600' : 'bg-primary'} text-white text-sm w-full mt-2 py-2 rounded-lg font-medium transition-all hover:opacity-90 disabled:opacity-60 shadow-sm`}
               onClick={handleSave}
               disabled={saving}
             >
@@ -441,26 +462,21 @@ const VpsAdminList: React.FC = () => {
                 ? "Cập nhật gói VPS"
                 : "Thêm gói VPS"}
             </button>
-
-            <p className="text-[11px] text-slate-500">
-              Dữ liệu đang lấy trực tiếp từ API VPS (`/vps/plans`). Form này sẽ
-              gửi yêu cầu tạo/cập nhật/xoá gói VPS lên backend.
-            </p>
           </div>
         </div>
 
         {/* Danh sách gói VPS */}
-        <div className="xl:col-span-2 card">
-          <div className="card-header flex flex-wrap items-center justify-between gap-3">
-            <h4 className="card-title mb-0">Danh sách gói VPS</h4>
+        <div className="xl:col-span-2 card overflow-hidden">
+          <div className="card-header flex flex-wrap items-center justify-between gap-3 p-4 md:p-5 border-b border-slate-100">
+            <h4 className="card-title mb-0 text-sm md:text-base font-bold">Danh sách gói VPS</h4>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
                   <i className="mgc_search_3_line" />
                 </span>
                 <input
-                  className="form-input pl-9 pr-3 py-2 text-xs w-64"
-                  placeholder="Tìm theo mã gói hoặc tên gói"
+                  className="form-input pl-9 pr-3 py-1.5 text-xs w-48 md:w-64"
+                  placeholder="Tìm gói..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -469,92 +485,77 @@ const VpsAdminList: React.FC = () => {
           </div>
 
           <div className="relative overflow-x-auto">
-            <table className="w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-700/60">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50/80 uppercase text-[10px] font-bold text-slate-500">
                 <tr>
-                  <th className="px-3 py-2 text-left font-semibold text-slate-600">
-                    Gói VPS
-                  </th>
-                  <th className="px-3 py-2 text-left font-semibold text-slate-600">
-                    Tài nguyên
-                  </th>
-                  <th className="px-3 py-2 text-right font-semibold text-slate-600">
-                    Giá
-                  </th>
-                  <th className="px-3 py-2 text-right font-semibold text-slate-600">
-                    Thao tác
-                  </th>
+                  <th className="px-4 py-3">Gói VPS</th>
+                  <th className="px-4 py-3">Tài nguyên</th>
+                  <th className="px-4 py-3 text-right">Giá</th>
+                  <th className="px-4 py-3 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
-                {filtered.map((plan) => (
+              <tbody className="divide-y divide-slate-100">
+                {paginatedData.map((plan) => (
                   <tr
                     key={plan.id}
-                    className="border-t border-slate-100 dark:border-slate-700/60"
+                    className="hover:bg-slate-50/50 transition-colors"
                   >
-                    <td className="px-3 py-3">
+                    <td className="px-4 py-4">
                       <div className="flex flex-col gap-1">
-                        <span className="text-xs text-slate-500">
-                          ID:{" "}
-                          <span className="font-mono text-slate-700">
-                            {plan.id}
-                          </span>
+                        <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
+                           ID: <span className="bg-slate-100 px-1 rounded font-mono">{plan.id}</span>
                         </span>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+                          <span className="font-bold text-slate-800 text-sm">
                             {plan.name}
                           </span>
                           {plan.popular && (
-                            <span className="inline-flex px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold uppercase">
+                            <span className="inline-flex px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-700 text-[9px] font-extrabold uppercase tracking-tight">
                               Phổ biến
                             </span>
                           )}
                         </div>
-                        {plan.discountLabel && (
-                          <span className="inline-flex px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 text-[10px] font-medium">
-                            {plan.discountLabel}
-                          </span>
-                        )}
                       </div>
                     </td>
-                    <td className="px-3 py-3 text-xs text-slate-600">
-                      <div className="flex flex-col gap-1">
-                        <span>{plan.cpu}</span>
-                        <span>{plan.ram}</span>
-                        <span>{plan.ssd}</span>
-                        <span>{plan.bandwidth}</span>
-                      </div>
+                    <td className="px-4 py-4">
+                       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-slate-600">
+                          <div className="flex items-center gap-1.5"><Server className="w-3 h-3 text-slate-400" />{plan.cpu}</div>
+                          <div className="flex items-center gap-1.5"><span className="w-3 h-3 text-center text-slate-400 font-bold">R</span>{plan.ram}</div>
+                          <div className="flex items-center gap-1.5"><span className="w-3 h-3 text-center text-slate-400 font-bold">S</span>{plan.ssd}</div>
+                          <div className="flex items-center gap-1.5"><span className="w-3 h-3 text-center text-slate-400 font-bold">B</span>{plan.bandwidth}</div>
+                       </div>
                     </td>
-                    <td className="px-3 py-3 text-right text-sm font-semibold text-primary">
-                      {plan.price}{" "}
-                      <span className="text-[11px] text-slate-500">
-                        {plan.unit}
-                      </span>
+                    <td className="px-4 py-4 text-right">
+                       <p className="text-sm font-bold text-primary">{formatCurrency(plan.price)}</p>
+                       <p className="text-[10px] text-slate-400">{plan.unit}</p>
                     </td>
-                    <td className="px-3 py-3 text-right whitespace-nowrap">
-                      <button
-                        type="button"
-                        className="btn btn-xs bg-slate-100 text-xs mr-2"
-                        onClick={() => startEdit(plan)}
-                      >
-                        <i className="mgc_edit_line mr-1" />
-                        Sửa
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-xs bg-emerald-50 text-emerald-600 text-xs mr-2"
-                        onClick={() => handleTogglePopular(plan.id)}
-                      >
-                        {plan.popular ? "Bỏ phổ biến" : "Đánh dấu phổ biến"}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-xs bg-rose-50 text-rose-600 text-xs"
-                        onClick={() => handleDelete(plan.id)}
-                      >
-                        <i className="mgc_delete_line mr-1" />
-                        Xoá
-                      </button>
+                    <td className="px-4 py-4 text-right whitespace-nowrap">
+                       <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            className="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                            onClick={() => startEdit(plan)}
+                            title="Sửa"
+                          >
+                            <i className="mgc_edit_line text-sm" />
+                          </button>
+                          <button
+                            type="button"
+                            className={`p-1.5 rounded-lg border transition-colors ${plan.popular ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'}`}
+                            onClick={() => handleTogglePopular(plan.id)}
+                            title={plan.popular ? "Bỏ phổ biến" : "Đánh dấu phổ biến"}
+                          >
+                            <i className="mgc_star_line text-sm" />
+                          </button>
+                          <button
+                            type="button"
+                            className="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+                            onClick={() => handleDelete(plan.id)}
+                            title="Xoá"
+                          >
+                            <i className="mgc_delete_line text-sm" />
+                          </button>
+                       </div>
                     </td>
                   </tr>
                 ))}
@@ -562,15 +563,53 @@ const VpsAdminList: React.FC = () => {
                   <tr>
                     <td
                       colSpan={4}
-                      className="px-3 py-6 text-center text-slate-500 text-sm"
+                      className="px-4 py-12 text-center text-slate-400 italic"
                     >
-                      Không tìm thấy gói VPS nào phù hợp.
+                      {loading ? "Đang tải dữ liệu..." : "Chưa có dự liệu VPS nào phù hợp."}
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-4 py-3 md:px-5 md:py-4 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-[11px] font-medium text-slate-500">
+                Hiển thị {Math.min(filtered.length, (currentPage - 1) * pageSize + 1)} - {Math.min(filtered.length, currentPage * pageSize)} trên tổng số {filtered.length} gói
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => prev - 1)}
+                  className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`min-w-[28px] h-7 text-[11px] font-bold rounded-lg transition-all ${
+                      currentPage === i + 1 
+                        ? "bg-primary text-white shadow-sm" 
+                        : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -578,5 +617,3 @@ const VpsAdminList: React.FC = () => {
 };
 
 export default VpsAdminList;
-
-

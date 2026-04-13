@@ -5,7 +5,7 @@ import {API_URL} from "../../config";
 
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// axios.defaults.baseURL = API_URL;
+axios.defaults.baseURL = API_URL;
 
 // Request interceptor để log requests
 axios.interceptors.request.use(
@@ -82,7 +82,13 @@ const setAuthorization = (token: string | null) => {
 
 const getUserFromCookie = () => {
   const user = sessionStorage.getItem(AUTH_SESSION_KEY);
-  return user ? (typeof user == "object" ? user : JSON.parse(user)) : null;
+  if (user) return typeof user == "object" ? user : JSON.parse(user);
+  
+  // Fallback: check localStorage directly for token if konrix_user not found
+  const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
+  if (token) return { token }; // Return minimal object with token
+  
+  return null;
 };
 class APICore {
   /**
@@ -239,11 +245,11 @@ class APICore {
 }
 
 /*
-Check if token available in session
+Check if token available in session or localStorage
 */
-const user = getUserFromCookie();
-if (user) {
-  const { token } = user;
+const savedUser = getUserFromCookie();
+if (savedUser) {
+  const { token } = savedUser;
   if (token) {
     setAuthorization(token);
   }
