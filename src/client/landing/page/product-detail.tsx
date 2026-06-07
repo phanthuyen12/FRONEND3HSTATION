@@ -11,7 +11,7 @@ const MOCK_PRODUCT = {
   category: 'Học tập',
   logo: 'https://logo.clearbit.com/openai.com',
   cover: 'https://images.unsplash.com/photo-1673173054454-e053a992e854?w=800&auto=format&fit=crop&q=80',
-  accent: '#00BA4A',
+  accent: '#FBBF24',
   dark: '#0d1f05',
   discount: 71,
   originalPrice: 510000,
@@ -64,31 +64,31 @@ const ProductMMODetailPage = () => {
 
   return (
     <HostingLayout>
-      <div className="min-h-screen bg-[#F8FAFB] dark:bg-[#060a09] pt-0 pb-12">
+      <div className="min-h-screen bg-[#060a09] pt-0 pb-12">
 
         {/* ── BREADCRUMBS ── */}
         <div className="hidden md:block container mx-auto px-4 md:px-6 pt-1 pb-2">
-          <div className="flex items-center gap-2 text-[13px] text-gray-500 font-medium">
-            <Link to="/" className="hover:text-[#00BA4A] transition-colors flex items-center gap-1">
+          <div className="flex items-center gap-2 text-[13px] text-gray-400 font-medium">
+            <Link to="/" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1">
               <FeatherIcon icon="home" size={14} /> Trang chủ
             </Link>
             <FeatherIcon icon="chevron-right" size={12} />
-            <Link to="/product-mmo" className="hover:text-[#00BA4A]">Sản phẩm</Link>
+            <Link to="/product-mmo" className="hover:text-[#FBBF24]">Sản phẩm</Link>
             <FeatherIcon icon="chevron-right" size={12} />
             <span className="text-gray-400">Học tập</span>
             <FeatherIcon icon="chevron-right" size={12} />
-            <span className="text-gray-900 dark:text-white font-bold">{p.name}</span>
+            <span className="text-white font-bold">{p.name}</span>
           </div>
         </div>
 
         {/* ── HERO SECTION ── */}
-        <div className="bg-gradient-to-r from-[#00BA4A] to-[#032030] dark:from-[#0a1411] dark:to-[#080d0c] py-10 mb-8 border-b border-white/5 text-white">
+        <div className="bg-gradient-to-r from-[#FBBF24] to-[#032030] dark:from-[#0a1411] dark:to-[#080d0c] py-10 mb-8 border-b border-white/[0.03] text-white">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
 
               {/* Product Visual */}
               <div className="relative group shrink-0">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#00BA4A] to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#FBBF24] to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                 <div className="relative w-full md:w-[280px] h-[190px] bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-800 dark:to-gray-900 rounded-xl overflow-hidden shadow-2xl flex flex-col justify-between p-4 border border-white/10">
                   <div className="flex justify-between items-start">
                     <img
@@ -96,11 +96,11 @@ const ProductMMODetailPage = () => {
                       alt="Logo"
                       className="w-10 h-10 opacity-80"
                     />
-                    <span className="text-[10px] font-bold bg-[#00BA4A] px-2 py-0.5 rounded text-white uppercase shadow-lg">Premium</span>
+                    <span className="text-[10px] font-bold bg-[#FBBF24] px-2 py-0.5 rounded text-white uppercase shadow-lg">Premium</span>
                   </div>
                   <div>
-                    <h3 className="text-gray-900 dark:text-white font-black text-xl mb-1">{MOCK_PRODUCT.name}</h3>
-                    <div className="bg-white/90 dark:bg-white/10 px-2 py-0.5 rounded text-[10px] font-bold w-fit uppercase tracking-wider text-gray-800 dark:text-white">1 THÁNG</div>
+                    <h3 className="text-white font-black text-xl mb-1">{MOCK_PRODUCT.name}</h3>
+                    <div className="bg-[#0d1412]/10 px-2 py-0.5 rounded text-[10px] font-bold w-fit uppercase tracking-wider text-white">1 THÁNG</div>
                   </div>
                   {/* Glass highlight effect */}
                   <div className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-full transition-all duration-1000 ease-in-out" />
@@ -112,7 +112,7 @@ const ProductMMODetailPage = () => {
                 <h1 className="text-2xl md:text-3xl font-black mb-3 tracking-tight !text-white">{MOCK_PRODUCT.name}</h1>
 
                 <div className="flex flex-wrap items-center gap-4 mb-5">
-                  <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg border border-white/5">
+                  <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg border border-white/[0.03]">
                     <div className="flex text-amber-400">
                       {[...Array(5)].map((_, i) => (
                         <FeatherIcon key={i} icon="star" size={14} fill={i < 4 ? "currentColor" : "none"} />
@@ -123,29 +123,29 @@ const ProductMMODetailPage = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    <button className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[#00BA4A] transition-all border border-white/5 group">
+                    <button className="w-8 h-8 rounded-lg bg-[#0d1412]/10 flex items-center justify-center hover:bg-[#FBBF24] transition-all border border-white/[0.03] group">
                       <FeatherIcon icon="share-2" size={14} className="group-hover:scale-110" />
                     </button>
-                    <button className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[#00BA4A] transition-all border border-white/5 group">
+                    <button className="w-8 h-8 rounded-lg bg-[#0d1412]/10 flex items-center justify-center hover:bg-[#FBBF24] transition-all border border-white/[0.03] group">
                       <FeatherIcon icon="code" size={14} className="group-hover:scale-110" />
                     </button>
-                    <button className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-pink-500 transition-all border border-white/5 group">
+                    <button className="w-8 h-8 rounded-lg bg-[#0d1412]/10 flex items-center justify-center hover:bg-pink-500 transition-all border border-white/[0.03] group">
                       <FeatherIcon icon="heart" size={14} className="group-hover:scale-110" />
                     </button>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-[#00BA4A] flex items-center gap-1.5">
+                  <span className="px-3 py-1.5 rounded-lg bg-[#0d1412]/5 border border-white/10 text-[11px] font-bold text-[#FBBF24] flex items-center gap-1.5">
                     <FeatherIcon icon="package" size={12} /> Học tập
                   </span>
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-[#00BA4A] flex items-center gap-1.5">
+                  <span className="px-3 py-1.5 rounded-lg bg-[#0d1412]/5 border border-white/10 text-[11px] font-bold text-[#FBBF24] flex items-center gap-1.5">
                     <FeatherIcon icon="briefcase" size={12} /> Làm việc
                   </span>
-                  <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-bold text-[#00BA4A] flex items-center gap-1.5">
+                  <span className="px-3 py-1.5 rounded-lg bg-[#0d1412]/5 border border-white/10 text-[11px] font-bold text-[#FBBF24] flex items-center gap-1.5">
                     <FeatherIcon icon="cpu" size={12} /> Tài khoản AI
                   </span>
-                  <div className="px-3 py-1.5 rounded-lg bg-[#00BA4A] text-[11px] font-bold text-white flex items-center gap-1.5 shadow-lg shadow-[#00BA4A]/20">
+                  <div className="px-3 py-1.5 rounded-lg bg-[#FBBF24] text-[11px] font-bold text-white flex items-center gap-1.5 shadow-lg shadow-[#FBBF24]/20">
                     <FeatherIcon icon="zap" size={12} fill="white" /> Đã bán 43
                   </div>
                 </div>
@@ -162,30 +162,30 @@ const ProductMMODetailPage = () => {
             <div className="w-full lg:flex-1 space-y-6">
 
               {/* Variation Selection */}
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] overflow-hidden shadow-sm">
                 <div className="p-4 flex flex-col divide-y divide-gray-50 dark:divide-white/5">
                   {p.variations.map((v) => (
                     <div
                       key={v.id}
                       onClick={() => setSelectedVariation(v.id)}
-                      className={`flex items-center justify-between p-4 cursor-pointer transition-all ${selectedVariation === v.id ? 'bg-[#00BA4A]/5' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                      className={`flex items-center justify-between p-4 cursor-pointer transition-all ${selectedVariation === v.id ? 'bg-[#FBBF24]/5' : 'hover:bg-white/5 dark:hover:bg-[#0d1412]/5'}`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedVariation === v.id ? 'border-[#00BA4A] bg-[#00BA4A]' : 'border-gray-200 dark:border-gray-700'}`}>
-                          {selectedVariation === v.id && <div className="w-2 h-2 rounded-full bg-white" />}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedVariation === v.id ? 'border-[#FBBF24] bg-[#FBBF24]' : 'border-gray-700'}`}>
+                          {selectedVariation === v.id && <div className="w-2 h-2 rounded-full bg-[#0d1412]" />}
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center p-1.5 shadow-sm">
                             <img src={p.logo} alt="v" className="w-full h-full object-contain" />
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-gray-900 dark:text-white">{v.name}</div>
-                            {v.id === 1 && <div className="text-[10px] text-[#00BA4A] font-bold flex items-center gap-1 mt-0.5"><FeatherIcon icon="zap" size={10} /> Đang bảo trì</div>}
+                            <div className="text-sm font-bold text-white">{v.name}</div>
+                            {v.id === 1 && <div className="text-[10px] text-[#FBBF24] font-bold flex items-center gap-1 mt-0.5"><FeatherIcon icon="zap" size={10} /> Đang bảo trì</div>}
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-black text-gray-900 dark:text-white">{v.price > 0 ? fmt(v.price) : 'Liên hệ'}</div>
+                        <div className="text-sm font-black text-white">{v.price > 0 ? fmt(v.price) : 'Liên hệ'}</div>
                         {v.originalPrice && (
                           <div className="flex items-center justify-end gap-1.5 mt-0.5">
                             <span className="text-[10px] text-gray-400 line-through">{fmt(v.originalPrice)}</span>
@@ -199,24 +199,24 @@ const ProductMMODetailPage = () => {
               </div>
 
               {/* Package Detail Accordion */}
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 p-4 flex items-center justify-between shadow-sm border-l-4 border-l-[#7C3AED]">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] p-4 flex items-center justify-between shadow-sm border-l-4 border-l-[#7C3AED]">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-[#7C3AED]/10 text-[#7C3AED] flex items-center justify-center">
                     <FeatherIcon icon="box" size={18} />
                   </div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wide">CHI TIẾT GÓI <br /><span className="text-xs font-bold text-gray-500 normal-case tracking-normal">ChatGPT Plus 20$ 1 tháng - dùng chung</span></div>
+                  <div className="text-sm font-black text-white uppercase tracking-wide">CHI TIẾT GÓI <br /><span className="text-xs font-bold text-gray-400 normal-case tracking-normal">ChatGPT Plus 20$ 1 tháng - dùng chung</span></div>
                 </div>
                 <FeatherIcon icon="chevron-down" size={20} className="text-gray-400" />
               </div>
 
               {/* Notes */}
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
-                <h3 className="text-lg font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] p-6 shadow-sm">
+                <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
                   Lưu ý:
                 </h3>
                 <ul className="space-y-4">
                   {p.notes.map((note, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed">
+                    <li key={i} className="flex items-start gap-3 text-[13px] text-gray-400 leading-relaxed">
                       <div className="w-1.5 h-1.5 rounded-full bg-gray-300 mt-2 shrink-0" />
                       {note}
                     </li>
@@ -225,7 +225,7 @@ const ProductMMODetailPage = () => {
               </div>
 
               {/* Description Expandable */}
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-[#10B981]/10 text-[#10B981] flex items-center justify-center">
@@ -233,27 +233,27 @@ const ProductMMODetailPage = () => {
                     </div>
                     <div>
                       <div className="text-[10px] font-bold text-[#10B981] uppercase">GIỚI THIỆU</div>
-                      <div className="text-sm font-black text-gray-900 dark:text-white">Mô tả sản phẩm</div>
+                      <div className="text-sm font-black text-white">Mô tả sản phẩm</div>
                     </div>
                   </div>
-                  <button className="text-xs font-bold text-gray-500 flex items-center gap-1 hover:text-[#00BA4A]">
+                  <button className="text-xs font-bold text-gray-400 flex items-center gap-1 hover:text-[#FBBF24]">
                     Xem chi tiết <FeatherIcon icon="chevron-right" size={14} />
                   </button>
                 </div>
               </div>
 
               {/* Reviews Section */}
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
                     <FeatherIcon icon="star" size={18} className="text-amber-400" fill="currentColor" /> Đánh giá sản phẩm
                   </h3>
-                  <div className="px-3 py-1 rounded bg-gray-100 dark:bg-white/5 text-[11px] font-bold text-gray-500">2 đánh giá</div>
+                  <div className="px-3 py-1 rounded bg-[#0d1412]/5 text-[11px] font-bold text-gray-400">2 đánh giá</div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-10 mb-10 pb-10 border-b border-gray-50 dark:border-white/5">
+                <div className="flex flex-col md:flex-row gap-10 mb-10 pb-10 border-b border-white/[0.03]">
                   <div className="flex flex-col items-center justify-center text-center">
-                    <div className="text-5xl font-black text-gray-900 dark:text-white mb-2">4.0</div>
+                    <div className="text-5xl font-black text-white mb-2">4.0</div>
                     <div className="flex text-amber-400 mb-2">
                       {[...Array(5)].map((_, i) => (
                         <FeatherIcon key={i} icon="star" size={20} fill={i < 4 ? 'currentColor' : 'none'} />
@@ -264,9 +264,9 @@ const ProductMMODetailPage = () => {
                   <div className="flex-1 space-y-2">
                     {[5, 4, 3, 2, 1].map((star) => (
                       <div key={star} className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-gray-500 w-2">{star}</span>
+                        <span className="text-xs font-bold text-gray-400 w-2">{star}</span>
                         <FeatherIcon icon="star" size={12} className="text-gray-300" />
-                        <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                        <div className="flex-1 h-2 bg-[#0d1412]/5 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-amber-400"
                             style={{
@@ -287,13 +287,13 @@ const ProductMMODetailPage = () => {
                     <div key={i} className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-full bg-[#0d1412]/5 flex items-center justify-center">
                             <FeatherIcon icon="user" size={18} className="text-gray-400" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-gray-900 dark:text-white">{rev.user}</span>
-                              <span className="text-[10px] font-bold text-[#00BA4A] flex items-center gap-1">
+                              <span className="text-sm font-bold text-white">{rev.user}</span>
+                              <span className="text-[10px] font-bold text-[#FBBF24] flex items-center gap-1">
                                 <FeatherIcon icon="check-circle" size={10} fill="currentColor" /> {rev.status}
                               </span>
                             </div>
@@ -307,13 +307,13 @@ const ProductMMODetailPage = () => {
                         <div className="text-xs text-gray-400 font-bold">{rev.date}</div>
                       </div>
                       <div className="pl-13">
-                        <div className="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 text-[10px] font-bold text-gray-500 w-fit mb-2">
+                        <div className="px-3 py-1.5 rounded-lg bg-[#0d1412]/5 text-[10px] font-bold text-gray-400 w-fit mb-2">
                           {p.variations.find(v => v.id === 3)?.name}
                         </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                        <p className="text-sm text-gray-300 leading-relaxed italic">
                           "{rev.content}"
                         </p>
-                        <button className="mt-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-white/10 text-xs font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5">
+                        <button className="mt-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold text-gray-400 hover:bg-white/5 dark:hover:bg-[#0d1412]/5">
                           <FeatherIcon icon="thumbs-up" size={14} /> Hữu ích
                         </button>
                       </div>
@@ -326,20 +326,20 @@ const ProductMMODetailPage = () => {
             {/* RIGHT COLUMN (SIDEBAR) */}
             <div className="w-full lg:w-80 shrink-0 space-y-6 lg:sticky lg:top-24">
 
-              <div className="bg-white dark:bg-[#050807] rounded-xl border border-gray-100 dark:border-white/5 p-6 shadow-sm space-y-6">
+              <div className="bg-[#050807] rounded-xl border border-white/[0.03] p-6 shadow-sm space-y-6">
 
                 {/* Quantity */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Số lượng</span>
-                  <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-lg p-1">
+                  <span className="text-sm font-bold text-gray-300">Số lượng</span>
+                  <div className="flex items-center bg-[#0d1412]/5 rounded-lg p-1">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-900"
+                      className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white"
                     >-</button>
                     <div className="w-10 text-center text-sm font-black dark:text-white">{quantity}</div>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-full flex items-center justify-center bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-l border-gray-200 dark:border-white/10"
+                      className="w-10 h-full flex items-center justify-center bg-[#0d1412]/5 hover:bg-gray-100 dark:hover:bg-[#0d1412]/10 transition-colors border-l border-white/10"
                     >
                       <FeatherIcon icon="plus" size={14} />
                     </button>
@@ -348,16 +348,16 @@ const ProductMMODetailPage = () => {
 
                 {/* Order Info */}
                 <div className="space-y-3">
-                  <h3 className="text-sm font-bold text-gray-800 dark:text-white">Thông tin Order</h3>
-                  <div className="italic text-[13px] text-gray-400 dark:text-gray-500 py-2">
+                  <h3 className="text-sm font-bold text-white">Thông tin Order</h3>
+                  <div className="italic text-[13px] text-gray-400 py-2">
                     Không có trường thông tin nào cần điền
                   </div>
                 </div>
 
                 {/* Promo Code */}
-                <div className="relative group cursor-pointer border border-gray-200 dark:border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-all">
-                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                    <FeatherIcon icon="credit-card" size={16} className="text-[#00BA4A]" />
+                <div className="relative group cursor-pointer border border-white/10 rounded-xl p-3 flex items-center justify-between hover:bg-white/5 dark:hover:bg-[#0d1412]/5 transition-all">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <FeatherIcon icon="credit-card" size={16} className="text-[#FBBF24]" />
                     <span className="text-sm font-bold">Bạn có mã giảm giá?</span>
                   </div>
                   <FeatherIcon icon="chevron-down" size={16} className="text-gray-400" />
@@ -366,12 +366,12 @@ const ProductMMODetailPage = () => {
                 {/* Summary */}
                 <div className="flex flex-col gap-3 sticky bottom-0">
                   <div className="flex gap-2">
-                    <button className="flex-[9] py-4 rounded-xl bg-gradient-to-r from-[#032030] to-[#00BA4A] dark:from-[#080d0c] dark:to-[#0a1411] !text-white text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#253982] transition-all shadow-lg shadow-blue-900/10 active:scale-[0.98]">
+                    <button className="flex-[9] py-4 rounded-xl bg-gradient-to-r from-[#032030] to-[#FBBF24] dark:from-[#080d0c] dark:to-[#0a1411] !text-white text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#253982] transition-all shadow-lg shadow-blue-900/10 active:scale-[0.98]">
                       <FeatherIcon icon="shopping-cart" size={18} fill="currentColor" />
                       Đặt hàng ngay
                     </button>
 
-                    <button className="flex-[2] py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-500 flex items-center justify-center hover:bg-gray-50 active:scale-[0.98]">
+                    <button className="flex-[2] py-3.5 rounded-xl border border-white/10 text-gray-400 flex items-center justify-center hover:bg-white/5 active:scale-[0.98]">
                       <FeatherIcon icon="shopping-bag" size={18} />
                     </button>
                   </div>
@@ -387,7 +387,7 @@ const ProductMMODetailPage = () => {
                 <div className="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center">
                   <FeatherIcon icon="layer" size={20} />
                 </div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-white">Sản phẩm liên quan</h3>
+                <h3 className="text-xl font-black text-white">Sản phẩm liên quan</h3>
               </div>
               <button className="px-5 py-2.5 rounded-lg bg-[#2D459D] text-white text-[11px] font-black uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
                 Xem tất cả <FeatherIcon icon="chevron-right" size={14} />
@@ -396,19 +396,19 @@ const ProductMMODetailPage = () => {
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {p.relatedProducts.map((rp) => (
-                <div key={rp.id} className="group bg-white dark:bg-[#050807] rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden hover:shadow-xl transition-all cursor-pointer">
+                <div key={rp.id} className="group bg-[#050807] rounded-2xl border border-white/[0.03] overflow-hidden hover:shadow-xl transition-all cursor-pointer">
                   <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
                     <img src={rp.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={rp.name} />
                     <div className="absolute inset-0 bg-black/20" />
                     <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-white p-1.5 shadow-lg">
+                      <div className="w-8 h-8 rounded-lg bg-[#0d1412] p-1.5 shadow-lg">
                         <img src="https://logo.clearbit.com/openai.com" className="w-full h-full object-contain" alt="" />
                       </div>
                       <span className="text-[10px] font-black text-white drop-shadow truncate uppercase tracking-widest">{rp.name}</span>
                     </div>
                   </div>
                   <div className="p-4">
-                    <div className="text-sm font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">{rp.name}</div>
+                    <div className="text-sm font-bold text-white mb-2 line-clamp-1">{rp.name}</div>
                     <div className="text-base font-black text-[#FF3B30]">{fmt(rp.price)}</div>
                   </div>
                 </div>
@@ -420,12 +420,12 @@ const ProductMMODetailPage = () => {
       </div>
 
       {/* Mobile Sticky CTA */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#050807] border-t border-gray-100 dark:border-white/5 p-4 py-3 flex items-center gap-3 shadow-2xl">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#050807] border-t border-white/[0.03] p-4 py-3 flex items-center gap-3 shadow-2xl">
         <div className="flex-1">
           <div className="text-[10px] text-gray-400 font-bold uppercase">Tổng cộng</div>
           <div className="text-lg font-black text-[#FF3B30]">{fmt(p.price * quantity)}</div>
         </div>
-        <button className="flex-[2] h-12 rounded-xl bg-gradient-to-r from-[#032030] to-[#00BA4A] dark:from-[#080d0c] dark:to-[#0a1411] text-white text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95">
+        <button className="flex-[2] h-12 rounded-xl bg-gradient-to-r from-[#032030] to-[#FBBF24] dark:from-[#080d0c] dark:to-[#0a1411] text-white text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 active:scale-95">
           Đặt hàng ngay
         </button>
       </div>

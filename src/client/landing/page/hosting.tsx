@@ -97,11 +97,11 @@ const LandingHostingPage = () => {
 
     return (
         <HostingLayout>
-            <div className="bg-gray-50 dark:bg-[#060a09] min-h-screen pb-24">
+            <div className="bg-[#060a09] min-h-screen pb-24">
                 {/* Breadcrumb */}
                 <div className="max-w-7xl mx-auto px-4 py-2">
                     <nav className="flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[2px]">
-                        <Link to="/" className="text-gray-400 hover:text-[#00BA4A] flex items-center gap-1.5">
+                        <Link to="/" className="text-gray-400 hover:text-[#FBBF24] flex items-center gap-1.5">
                             <FeatherIcon icon="home" size={12} /> Trang chủ
                         </Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
@@ -110,12 +110,12 @@ const LandingHostingPage = () => {
                 </div>
 
                 {/* Hero */}
-                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#014e3b] border-y border-white/5">
+                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#014e3b] border-y border-white/[0.03]">
                     <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
                         <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-tight !text-white">
-                            CLOUD <span className="text-[#00BA4A]">HOSTING</span>
+                            CLOUD <span className="text-[#FBBF24]">HOSTING</span>
                         </h1>
-                        <p className="text-sm md:text-base !text-white font-black uppercase tracking-[2px] border-l-4 border-[#00BA4A] pl-4 mt-4">
+                        <p className="text-sm md:text-base !text-white font-black uppercase tracking-[2px] border-l-4 border-[#FBBF24] pl-4 mt-4">
                             Linh hồn cho website của bạn. Tốc độ vượt trội, bảo mật tối đa.
                         </p>
                     </div>
@@ -125,7 +125,7 @@ const LandingHostingPage = () => {
                     <div className="lg:col-span-2 space-y-6">
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {[1, 2, 3, 4].map(n => <div key={n} className="h-40 bg-white/5 animate-pulse rounded-xl"></div>)}
+                                {[1, 2, 3, 4].map(n => <div key={n} className="h-40 bg-[#0d1412]/5 animate-pulse rounded-xl"></div>)}
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -133,18 +133,18 @@ const LandingHostingPage = () => {
                                     <button
                                         key={plan.id}
                                         onClick={() => setSelectedPlanId(plan.id)}
-                                        className={`p-6 rounded-[12px] border-2 text-left transition-all ${selectedPlanId === plan.id ? 'border-[#00BA4A] bg-[#00BA4A]/5' : 'border-white/5 hover:border-[#00BA4A]/20'}`}
+                                        className={`p-6 rounded-[12px] border-2 text-left transition-all ${selectedPlanId === plan.id ? 'border-[#FBBF24] bg-[#FBBF24]/5' : 'border-white/[0.03] hover:border-[#FBBF24]/20'}`}
                                     >
                                         <div className="flex items-center gap-4 mb-4">
-                                            <div className="w-12 h-12 bg-[#00BA4A]/10 text-[#00BA4A] rounded-xl flex items-center justify-center">
+                                            <div className="w-12 h-12 bg-[#FBBF24]/10 text-[#FBBF24] rounded-xl flex items-center justify-center">
                                                 <FeatherIcon icon="globe" size={24} />
                                             </div>
                                             <div>
                                                 <span className="text-lg font-black ">{plan.name}</span>
-                                                <span className="text-[10px] text-[#00BA4A] block uppercase font-bold tracking-widest">{plan.ssd} Storage</span>
+                                                <span className="text-[10px] text-[#FBBF24] block uppercase font-bold tracking-widest">{plan.ssd} Storage</span>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between items-center pt-4 border-t border-white/5 mt-auto">
+                                        <div className="flex justify-between items-center pt-4 border-t border-white/[0.03] mt-auto">
                                             <span className="text-sm text-gray-400">Chỉ từ</span>
                                             <span className="text-lg font-black ">{fmt(plan.price)}</span>
                                         </div>
@@ -155,8 +155,8 @@ const LandingHostingPage = () => {
                     </div>
 
                     <div className="space-y-6">
-                        <div className="bg-white dark:bg-[#0d1412] p-6 rounded-xl border border-white/5">
-                            <h4 className="text-sm font-black uppercase tracking-widest border-b border-white/5 pb-4 mb-6">Thanh toán Hosting</h4>
+                        <div className="bg-[#0d1412] p-6 rounded-xl border border-white/[0.03]">
+                            <h4 className="text-sm font-black uppercase tracking-widest border-b border-white/[0.03] pb-4 mb-6">Thanh toán Hosting</h4>
                             {billingDetails ? (
                                 <div className="space-y-6">
                                     <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase">
@@ -164,21 +164,21 @@ const LandingHostingPage = () => {
                                         <span className="text-white">{hostingPlans.find(p => p.id === selectedPlanId)?.name}</span>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Thời hạn</label>
-                                        <select value={billingTerm} onChange={e => setBillingTerm(e.target.value)} className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-xs font-black uppercase outline-none">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Thời hạn</label>
+                                        <select value={billingTerm} onChange={e => setBillingTerm(e.target.value)} className="w-full h-12 bg-[#0d1412]/5 border border-white/10 rounded-xl px-4 text-xs font-black uppercase outline-none">
                                             {billingDetails.availableTerms.map(t => <option key={t.code} value={t.code}>{t.label}</option>)}
                                         </select>
                                     </div>
                                     <div className="pt-4 border-t border-dashed border-white/10 flex justify-between items-center">
                                         <span className="text-lg font-black ">Tổng tiền</span>
-                                        <span className="text-3xl font-black text-[#00BA4A]">{fmt(billingDetails.total)}</span>
+                                        <span className="text-3xl font-black text-[#FBBF24]">{fmt(billingDetails.total)}</span>
                                     </div>
-                                    <button onClick={handleOrder} className="w-full bg-[#00BA4A] text-white py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
+                                    <button onClick={handleOrder} className="w-full bg-[#FBBF24] text-white py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
                                         THANH TOÁN NGAY
                                     </button>
                                 </div>
                             ) : (
-                                <div className="py-10 text-center text-gray-500 text-xs uppercase font-black tracking-widest">Vui lòng chọn 1 gói</div>
+                                <div className="py-10 text-center text-gray-400 text-xs uppercase font-black tracking-widest">Vui lòng chọn 1 gói</div>
                             )}
                         </div>
                     </div>

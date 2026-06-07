@@ -9,7 +9,7 @@ import * as layoutConstants from "../../constants/layout";
 import { useViewPort } from "../../hooks";
 import { changeHTMLAttribute } from "../../utils/layout";
 import { changeSideBarType } from "../../redux/actions";
-import { Preloader } from "../../components";
+import { Preloader, ScrollToTopOnNavigate } from "../../components";
 
 // code splitting and lazy loading
 const ClientTopbar = React.lazy(() => import("../components/ClientTopbar"));
@@ -95,6 +95,7 @@ const ClientVerticalLayout = ({ children }: ClientVerticalLayoutProps) => {
 
   return (
     <>
+      <ScrollToTopOnNavigate />
       <Suspense fallback={loading()}>
         <div className="flex wrapper">
           <Suspense fallback={loading()}>

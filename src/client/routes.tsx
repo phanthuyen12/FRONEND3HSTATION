@@ -93,7 +93,7 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/"
-          element={<Landing1 />}
+          element={<LandingCoursesPage />}
         />
         <Route
           path="/landing"
@@ -490,6 +490,5 @@ const ClientRoutes: React.FC = () => {
 };
 
 export default ClientRoutes;
-
 
 

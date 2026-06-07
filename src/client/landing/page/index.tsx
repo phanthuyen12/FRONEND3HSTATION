@@ -44,8 +44,8 @@ const LandingPage = () => {
                 >
                     {/* Badge */}
                     <motion.div variants={heroItem}>
-                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#00ff9d] animate-pulse"></span>
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FDE047] animate-pulse"></span>
                             Hệ sinh thái Tự động hóa hàng đầu cho MMO
                         </span>
                     </motion.div>
@@ -56,7 +56,7 @@ const LandingPage = () => {
                         variants={heroItem}
                     >
                         Tự động hóa MMO <br />
-                        với <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">
+                        với <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-400">
                             Cloud VPS n8n
                         </span>
                     </motion.h1>
@@ -71,20 +71,20 @@ const LandingPage = () => {
 
                     {/* CTA Row */}
                     <motion.div className="flex flex-wrap items-center gap-4 pt-2" variants={heroItem}>
-                        <button className="px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white font-black rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 flex items-center gap-2.5 text-xs uppercase tracking-wider group">
+                        <button className="px-10 py-4 bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-force-white font-black rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 flex items-center gap-2.5 text-xs uppercase tracking-wider group">
                             Khám phá ngay
-                            <div className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-all">
+                            <div className="w-6 h-6 bg-[#0d1412]/10 rounded-full flex items-center justify-center group-hover:bg-[#0d1412]/20 transition-all">
                                 <FeatherIcon icon="arrow-right" size={14} color="white" />
                             </div>
                         </button>
-                        <button className="px-8 py-4 rounded-full border border-white/10 text-white/70 text-xs font-black uppercase tracking-wider hover:border-[#00ff9d]/40 hover:text-white transition-all duration-500 hover:bg-[#00ff9d]/5">
+                        <button className="px-8 py-4 rounded-full border border-white/10 text-white/70 text-xs font-black uppercase tracking-wider hover:border-[#FDE047]/40 hover:text-white transition-all duration-500 hover:bg-[#FDE047]/5">
                             Xem Demo
                         </button>
                     </motion.div>
 
                     {/* Trust indicators */}
                     <motion.div
-                        className="flex items-center gap-6 pt-4 border-t border-white/5"
+                        className="flex items-center gap-6 pt-4 border-t border-white/[0.03]"
                         variants={heroItem}
                     >
                         {[
@@ -93,10 +93,10 @@ const LandingPage = () => {
                             { icon: 'cpu', label: 'NVMe Gen4' },
                         ].map((item) => (
                             <div key={item.label} className="flex items-center gap-2 group">
-                                <div className="w-6 h-6 rounded-lg bg-[#00ff9d]/10 flex items-center justify-center border border-[#00ff9d]/20 group-hover:bg-[#00ff9d]/20 transition-all duration-300">
-                                    <FeatherIcon icon={item.icon} className="text-[#00ff9d]" size={12} />
+                                <div className="w-6 h-6 rounded-lg bg-[#FDE047]/10 flex items-center justify-center border border-[#FDE047]/20 group-hover:bg-[#FDE047]/20 transition-all duration-300">
+                                    <FeatherIcon icon={item.icon} className="text-[#FDE047]" size={12} />
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-gray-300 transition-colors">{item.label}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-gray-300 transition-colors">{item.label}</span>
                             </div>
                         ))}
                     </motion.div>
@@ -130,7 +130,7 @@ const LandingPage = () => {
                     </div>
 
                     {/* Ambient glow */}
-                    <div className="absolute inset-0 -z-10 bg-[#00ff9d]/8 blur-[120px] rounded-full scale-75"></div>
+                    <div className="absolute inset-0 -z-10 bg-[#FDE047]/8 blur-[120px] rounded-full scale-75"></div>
                 </motion.div>
             </div>
 

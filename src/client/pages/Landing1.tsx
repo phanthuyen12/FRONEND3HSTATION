@@ -330,7 +330,7 @@ const Landing1: React.FC = () => {
                     href="https://m.me/3hstation"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-14 h-14 bg-blue-600 rounded-full shadow-lg hover:shadow-2xl transition-all flex items-center justify-center text-white transform hover:scale-110"
+                    className="w-14 h-14 bg-blue-600 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.02)] transition-all flex items-center justify-center text-white transform hover:scale-110"
                 >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l5.71-.97C9 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z" />
@@ -338,7 +338,7 @@ const Landing1: React.FC = () => {
                 </a>
                 <a
                     href="tel:0869895748"
-                    className="w-14 h-14 bg-green-500 rounded-full shadow-lg hover:shadow-2xl transition-all flex items-center justify-center text-white transform hover:scale-110"
+                    className="w-14 h-14 bg-green-500 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.02)] transition-all flex items-center justify-center text-white transform hover:scale-110"
                 >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />

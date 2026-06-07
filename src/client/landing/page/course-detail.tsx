@@ -141,10 +141,10 @@ const CourseDetailPage = () => {
     if (loading) {
         return (
             <HostingLayout>
-                <div className="min-h-screen bg-[#F8FAFB] dark:bg-[#060a09] flex items-center justify-center">
+                <div className="min-h-screen bg-[#060a09] flex items-center justify-center">
                     <div className="animate-pulse flex flex-col items-center gap-4">
-                        <FeatherIcon icon="loader" className="animate-spin text-[#00BA4A]" />
-                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Đang tải dữ liệu...</span>
+                        <FeatherIcon icon="loader" className="animate-spin text-[#FBBF24]" />
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Đang tải dữ liệu...</span>
                     </div>
                 </div>
             </HostingLayout>
@@ -155,18 +155,18 @@ const CourseDetailPage = () => {
 
     return (
         <HostingLayout>
-            <div className="min-h-screen bg-white dark:bg-[#060b0a] pt-0 pb-24 overflow-x-hidden">
+            <div className="min-h-screen bg-[#060b0a] pt-0 pb-24 overflow-x-hidden">
                 {/* ── BREADCRUMBS ── */}
-            <div className="w-full bg-white dark:bg-[#0d1513] border-b border-gray-100 dark:border-white/5 mb-6">
+            <div className="w-full bg-[#0d1513] border-b border-white/[0.03] mb-6">
                 <div className="max-w-7xl mx-auto px-4 py-3">
                     <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400">
-                        <Link to="/" className="hover:text-[#00BA4A] transition-colors flex items-center gap-1.5">
+                        <Link to="/" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1.5">
                             <FeatherIcon icon="home" size={12} /> Trang chủ
                         </Link>
                         <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
-                        <Link to="/landing-courses" className="hover:text-[#00BA4A]">Khóa học</Link>
+                        <Link to="/landing-courses" className="hover:text-[#FBBF24]">Khóa học</Link>
                         <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
-                        <span className="text-gray-900 dark:text-white">{course.title}</span>
+                        <span className="text-white">{course.title}</span>
                     </div>
                 </div>
             </div>
@@ -195,39 +195,39 @@ const CourseDetailPage = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-[#0d1513] rounded-[10px] border border-gray-100 dark:border-white/5 p-8 shadow-sm">
+                            <div className="bg-[#0d1513] rounded-[10px] border border-white/[0.03] p-8 shadow-sm">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                     <div className="space-y-2">
-                                        <span className="px-3 py-1 rounded-[10px] bg-[#00BA4A]/10 text-[#00BA4A] text-[10px] font-bold uppercase">ĐÃ SỞ HỮU</span>
+                                        <span className="px-3 py-1 rounded-[10px] bg-[#FBBF24]/10 text-[#FBBF24] text-[10px] font-bold uppercase">ĐÃ SỞ HỮU</span>
                                         <h1 className="text-3xl font-black dark:text-white tracking-tight">{course.title}</h1>
                                     </div>
-                                    <Link to={`/courses/${course.id}`} className="px-8 py-4 bg-[#00BA4A] hover:bg-[#00a340] text-white rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
+                                    <Link to={`/courses/${course.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
                                         VÀO HỌC CHUYÊN SÂU
                                     </Link>
                                 </div>
 
-                                <div className="flex items-center gap-4 mt-8 border-t border-gray-50 dark:border-white/5 pt-8">
-                                    <button onClick={() => setDetailTab('content')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'content' ? 'bg-[#00BA4A] text-white' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>Bài học</button>
-                                    <button onClick={() => setDetailTab('about')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'about' ? 'bg-[#00BA4A] text-white' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>Giới thiệu</button>
+                                <div className="flex items-center gap-4 mt-8 border-t border-white/[0.03] pt-8">
+                                    <button onClick={() => setDetailTab('content')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'content' ? 'bg-[#FBBF24] text-black' : 'text-gray-400 hover:text-white dark:hover:text-white'}`}>Bài học</button>
+                                    <button onClick={() => setDetailTab('about')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'about' ? 'bg-[#FBBF24] text-black' : 'text-gray-400 hover:text-white dark:hover:text-white'}`}>Giới thiệu</button>
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-[#0d1513] rounded-[10px] border border-gray-100 dark:border-white/5 shadow-sm p-8">
+                            <div className="bg-[#0d1513] rounded-[10px] border border-white/[0.03] shadow-sm p-8">
                                 {detailTab === 'content' ? (
                                     <div className="space-y-4">
                                         {sections.map(section => {
                                             const sectionVideos = videos.filter(v => v.sectionId === section.id);
                                             const isExpanded = expandedSections.includes(String(section.id));
                                             return (
-                                                <div key={section.id} className="border border-gray-100 dark:border-white/5 rounded-[10px] overflow-hidden">
-                                                    <div onClick={() => toggleSection(String(section.id))} className="p-4 bg-gray-50 dark:bg-white/[0.02] flex items-center justify-between cursor-pointer">
+                                                <div key={section.id} className="border border-white/[0.03] rounded-[10px] overflow-hidden">
+                                                    <div onClick={() => toggleSection(String(section.id))} className="p-4 bg-[#0d1412]/[0.02] flex items-center justify-between cursor-pointer">
                                                         <span className="text-[13px] font-bold dark:text-white">{section.title}</span>
                                                         <FeatherIcon icon="chevron-down" size={14} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                                                     </div>
                                                     {isExpanded && (
                                                         <div className="p-2 space-y-1">
                                                             {sectionVideos.map(video => (
-                                                                <button key={video.id} onClick={() => setSelectedVideo(video)} className={`w-full flex items-center justify-between p-3 rounded-[10px] transition-all ${selectedVideo?.id === video.id ? 'bg-[#00BA4A]/10 text-[#00BA4A]' : 'hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500'}`}>
+                                                                <button key={video.id} onClick={() => setSelectedVideo(video)} className={`w-full flex items-center justify-between p-3 rounded-[10px] transition-all ${selectedVideo?.id === video.id ? 'bg-[#FBBF24]/10 text-[#FBBF24]' : 'hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-gray-400'}`}>
                                                                     <div className="flex items-center gap-3">
                                                                         <FeatherIcon icon="play-circle" size={14} />
                                                                         <span className="text-[13px] font-medium">{video.title}</span>
@@ -242,7 +242,7 @@ const CourseDetailPage = () => {
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="prose prose-invert max-w-none text-gray-600 dark:text-gray-300 text-[15px] whitespace-pre-wrap">
+                                    <div className="prose prose-invert max-w-none text-gray-300 text-[15px] whitespace-pre-wrap">
                                         {course.description || course.content}
                                     </div>
                                 )}
@@ -257,10 +257,10 @@ const CourseDetailPage = () => {
                             {/* LEFT COLUMN - 70% */}
                             <div className="w-full lg:flex-1 space-y-10">
                                 <div className="space-y-4">
-                                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white leading-[1.2] tracking-tight">
+                                    <h1 className="text-3xl md:text-4xl font-black text-white leading-[1.2] tracking-tight">
                                         {course.title}
                                     </h1>
-                                    <p className="text-gray-500 font-medium text-[15px] max-w-2xl leading-relaxed">
+                                    <p className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed">
                                         Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.
                                     </p>
                                     <div className="flex flex-wrap gap-6 pt-2">
@@ -270,14 +270,14 @@ const CourseDetailPage = () => {
                                             </div>
                                             <span className="text-[14px] font-black underline">{course.rating || '5.0'}</span>
                                         </div>
-                                        <div className="flex items-center gap-2 text-gray-500">
+                                        <div className="flex items-center gap-2 text-gray-400">
                                             <FeatherIcon icon="users" size={14} />
                                             <span className="text-[14px] font-bold">{course.students || 128} học viên</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="relative w-full bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-gray-100 dark:border-white/5">
+                                <div className="relative w-full bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-white/[0.03]">
                                     {selectedVideo && selectedVideo.preview ? (
                                         <div className="w-full h-full" key={selectedVideo.id}>
                                             <Plyr
@@ -295,8 +295,8 @@ const CourseDetailPage = () => {
                                             <img src={course.thumbnail || course.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200'} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Thumb" />
                                             <div className="absolute inset-0 bg-black/40"></div>
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-20 h-20 rounded-full bg-[#00BA4A] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                                                    <FeatherIcon icon="play" fill="white" size={28} className="ml-1 text-white" />
+                                                <div className="w-20 h-20 rounded-full bg-[#FBBF24] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                                                    <FeatherIcon icon="play" fill="black" size={28} className="ml-1 text-black" />
                                                 </div>
                                             </div>
                                         </div>
@@ -304,26 +304,26 @@ const CourseDetailPage = () => {
                                 </div>
 
                                 <div className="space-y-6 pt-6">
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Nội dung đào tạo</h2>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Nội dung đào tạo</h2>
                                     <div className="space-y-4">
                                         {sections.map(section => {
                                             const sectionVideos = videos.filter(v => v.sectionId === section.id);
                                             const isExpanded = expandedSections.includes(String(section.id));
                                             return (
-                                                <div key={section.id} className="bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-[10px] overflow-hidden">
-                                                    <div onClick={() => toggleSection(String(section.id))} className="p-5 flex items-center justify-between cursor-pointer hover:bg-gray-50">
-                                                        <span className="text-[14px] font-black text-gray-800 dark:text-white">{section.title}</span>
+                                                <div key={section.id} className="bg-[#0d1412]/[0.02] border border-white/[0.03] rounded-[10px] overflow-hidden">
+                                                    <div onClick={() => toggleSection(String(section.id))} className="p-5 flex items-center justify-between cursor-pointer hover:bg-white/5">
+                                                        <span className="text-[14px] font-black text-white">{section.title}</span>
                                                         <FeatherIcon icon="chevron-down" size={16} className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
                                                     </div>
                                                     {isExpanded && (
                                                         <div className="p-3 border-t border-gray-50 space-y-1">
                                                             {sectionVideos.map(video => (
-                                                                <div key={video.id} onClick={() => video.preview && setSelectedVideo(video)} className={`flex items-center justify-between p-4 rounded-[10px] transition-all ${video.preview ? 'bg-[#00BA4A]/5 hover:bg-[#00BA4A]/10 text-[#00BA4A] cursor-pointer' : 'text-gray-400 select-none'}`}>
+                                                                <div key={video.id} onClick={() => video.preview && setSelectedVideo(video)} className={`flex items-center justify-between p-4 rounded-[10px] transition-all ${video.preview ? 'bg-[#FBBF24]/5 hover:bg-[#FBBF24]/10 text-[#FBBF24] cursor-pointer' : 'text-gray-400 select-none'}`}>
                                                                     <div className="flex items-center gap-4">
                                                                         <FeatherIcon icon={video.preview ? "play-circle" : "lock"} size={14} />
                                                                         <span className="text-[14px] font-bold">{video.title}</span>
                                                                     </div>
-                                                                    {video.preview && <span className="text-[9px] font-black uppercase text-[#00BA4A] bg-[#00BA4A]/10 px-3 py-1 rounded-full">Xem thử</span>}
+                                                                    {video.preview && <span className="text-[9px] font-black uppercase text-[#FBBF24] bg-[#FBBF24]/10 px-3 py-1 rounded-full">Xem thử</span>}
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -337,15 +337,15 @@ const CourseDetailPage = () => {
 
                             {/* RIGHT COLUMN - Refined Checkout Card */}
                             <div className="w-full lg:w-[360px] shrink-0 lg:sticky lg:top-24">
-                                <div className="bg-white dark:bg-[#0d1513] rounded-[10px] p-6 border border-gray-100 dark:border-white/5 shadow-[0_15px_40px_-5px_rgba(0,0,0,0.08)] space-y-7">
+                                <div className="bg-[#0d1513] rounded-[10px] p-6 border border-white/[0.03] shadow-[0_15px_40px_-5px_rgba(0,0,0,0.08)] space-y-7">
                                     
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Giá trọn gói</p>
                                         <div className="flex flex-col">
-                                            <div className="text-4xl font-black text-[#00a340] tracking-tighter leading-none">
+                                            <div className="text-4xl font-black text-[#FBBF24] tracking-tighter leading-none">
                                                 {fmt(course.price)}
                                             </div>
-                                            <p className="text-[10px] font-medium text-gray-500 mt-2 italic opacity-60">* Thanh toán một lần, sở hữu vĩnh viễn</p>
+                                            <p className="text-[10px] font-medium text-gray-400 mt-2 italic opacity-60">* Thanh toán một lần, sở hữu vĩnh viễn</p>
                                         </div>
                                     </div>
 
@@ -354,32 +354,32 @@ const CourseDetailPage = () => {
                                             <button 
                                                 onClick={handleEnroll}
                                                 disabled={enrolling}
-                                                className="w-full h-14 bg-gradient-to-r from-[#00BA4A] to-[#01a643] hover:brightness-105 active:scale-[0.98] text-white rounded-[10px] font-bold text-[15px] transition-all flex flex-col items-center justify-center leading-tight shadow-lg shadow-[#00BA4A]/20 disabled:opacity-50"
+                                                className="w-full h-14 bg-gradient-to-r from-[#FBBF24] to-[#F59E0B] hover:brightness-105 active:scale-[0.98] text-black rounded-[10px] font-bold text-[15px] transition-all flex flex-col items-center justify-center leading-tight shadow-lg shadow-[#FBBF24]/20 disabled:opacity-50"
                                             >
                                                 <span>{enrolling ? 'Đang xử lý...' : 'Đăng ký học ngay'}</span>
                                                 {!enrolling && <span className="text-[10px] font-medium opacity-70">Kích hoạt tài khoản tức thì</span>}
                                             </button>
                                             
-                                            <button className="w-full h-12 bg-transparent border border-gray-100 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-white rounded-[10px] font-bold text-[13px] transition-all">
+                                            <button className="w-full h-12 bg-transparent border border-white/10 hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-white rounded-[10px] font-bold text-[13px] transition-all">
                                                 Thêm vào giỏ hàng
                                             </button>
                                         </div>
 
-                                        <div className="pt-6 border-t border-gray-50 dark:border-white/5 space-y-3">
-                                            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-                                                <div className="w-5 h-5 rounded-full bg-[#00BA4A]/10 flex items-center justify-center text-[#00BA4A]">
+                                        <div className="pt-6 border-t border-white/[0.03] space-y-3">
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
                                                 <span className="text-[12px] font-medium tracking-tight">Thanh toán bảo mật 100%</span>
                                             </div>
-                                            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-                                                <div className="w-5 h-5 rounded-full bg-[#00BA4A]/10 flex items-center justify-center text-[#00BA4A]">
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
                                                 <span className="text-[12px] font-medium tracking-tight">Kích hoạt học ngay tức thì</span>
                                             </div>
-                                            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-                                                <div className="w-5 h-5 rounded-full bg-[#00BA4A]/10 flex items-center justify-center text-[#00BA4A]">
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
                                                 <span className="text-[12px] font-medium tracking-tight">Cập nhật nội dung vĩnh viễn</span>

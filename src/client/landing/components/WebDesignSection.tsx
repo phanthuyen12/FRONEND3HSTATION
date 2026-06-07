@@ -16,7 +16,7 @@ const WebDesignSection = () => {
   return (
     <section className="py-20 md:py-32 relative overflow-hidden bg-[#040706]">
       {/* Visual Accent */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#00ff9d]/5 rounded-full blur-[120px] -z-10"></div>
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#FDE047]/5 rounded-full blur-[120px] -z-10"></div>
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[100px] -z-10"></div>
 
       <div className="container mx-auto px-6">
@@ -27,7 +27,7 @@ const WebDesignSection = () => {
             <ScrollReveal direction="right">
               <div className="relative group max-w-[560px] w-full mx-auto lg:mx-0">
                 {/* Glow backdrop */}
-                <div className="absolute -inset-10 bg-[#00ff9d]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
+                <div className="absolute -inset-10 bg-[#FDE047]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
 
                 {/* Main image */}
                 <img
@@ -45,11 +45,11 @@ const WebDesignSection = () => {
             <ScrollReveal direction="left" delay={0.2}>
               <div className="space-y-8">
                 <div className="space-y-4">
-                  <div className="inline-block px-3 py-1 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
+                  <div className="inline-block px-3 py-1 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
                     Phát Triển Website
                   </div>
                   <h2 className="text-3xl md:text-4xl lg:text-[44px] font-extrabold tracking-tight leading-[1.1]">
-                    THIẾT KẾ <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-[#01c67c]">WEBSITE</span> BÁN HÀNG
+                    THIẾT KẾ <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-[#FDE047]">WEBSITE</span> BÁN HÀNG
                   </h2>
                   <p className="text-base md:text-lg text-gray-400 font-medium leading-relaxed max-w-xl">
                     Sở hữu website chuyên nghiệp, tối ưu chuyển đổi chỉ trong vài bước đơn giản. Chúng tôi biến ý tưởng của bạn thành hiện thực với công nghệ hiện đại nhất.
@@ -59,8 +59,8 @@ const WebDesignSection = () => {
                 <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 pt-2">
                   {points.map((point, index) => (
                     <li key={index} className="flex items-start gap-4 group">
-                      <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-lg bg-[#00ff9d]/10 flex items-center justify-center border border-[#00ff9d]/20 group-hover:bg-[#00ff9d]/20 group-hover:border-[#00ff9d]/50 transition-all duration-300">
-                        <FeatherIcon icon="check-circle" className="text-[#00ff9d]" size={14} />
+                      <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-lg bg-[#FDE047]/10 flex items-center justify-center border border-[#FDE047]/20 group-hover:bg-[#FDE047]/20 group-hover:border-[#FDE047]/50 transition-all duration-300">
+                        <FeatherIcon icon="check-circle" className="text-[#FDE047]" size={14} />
                       </div>
                       <span className="text-sm md:text-base text-gray-300 group-hover:text-white transition-colors duration-300">{point}</span>
                     </li>
@@ -68,7 +68,7 @@ const WebDesignSection = () => {
                 </ul>
 
                 <div className="pt-4">
-                  <button className="px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-xs flex items-center gap-3 group">
+                  <button className="px-10 py-4 bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 transition-all duration-300 uppercase tracking-wider text-xs flex items-center gap-3 group">
                     Dùng thử ngay
                     <FeatherIcon icon="arrow-right" size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>

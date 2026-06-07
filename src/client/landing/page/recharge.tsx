@@ -110,22 +110,22 @@ const RechargePage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
                 {/* Main Recharge Form Block */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white dark:bg-[#0d1412] rounded-[10px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden h-full">
-                        <div className="bg-gradient-to-r from-[#00BA4A] to-[#01c67c] px-6 py-4 flex items-center gap-3 text-force-white">
+                    <div className="bg-[#0d1412] rounded-[10px] shadow-sm border border-white/[0.03] overflow-hidden h-full">
+                        <div className="bg-gradient-to-r from-[#FBBF24] to-[#FDE047] px-6 py-4 flex items-center gap-3 text-force-white">
                             <FeatherIcon icon="home" size={18} />
                             <h2 className="text-[13px] font-black uppercase tracking-widest text-force-white">Nạp tiền qua ngân hàng</h2>
                         </div>
                         <div className="p-6 space-y-6">
                             {/* Input Amount */}
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Số tiền nạp <span className="text-red-500">*</span></label>
+                                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Số tiền nạp <span className="text-red-500">*</span></label>
                                 <div className="relative group">
                                     <input
                                         type="number"
                                         placeholder="Nhập số tiền VNĐ"
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
-                                        className="w-full h-12 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[8px] px-10 text-[15px] font-bold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all dark:text-white"
+                                        className="w-full h-12 bg-[#0d1412]/5 border border-white/10 rounded-[8px] px-10 text-[15px] font-bold outline-none focus:border-[#FBBF24] focus:ring-1 focus:ring-[#FBBF24]/20 transition-all dark:text-white"
                                     />
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₫</span>
                                 </div>
@@ -136,7 +136,7 @@ const RechargePage = () => {
                                         <button
                                             key={val}
                                             onClick={() => setAmount(val.toString())}
-                                            className={`py-2 rounded-lg text-[10px] font-black uppercase transition-all ${amount === val.toString() ? 'bg-[#00BA4A] text-white shadow-md' : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'}`}
+                                            className={`py-2 rounded-lg text-[10px] font-black uppercase transition-all ${amount === val.toString() ? 'bg-[#FBBF24] text-white shadow-md' : 'bg-[#0d1412]/5 text-gray-400 hover:bg-gray-200 dark:hover:bg-[#0d1412]/10'}`}
                                         >
                                             {val / 1000}K
                                         </button>
@@ -151,12 +151,12 @@ const RechargePage = () => {
 
                             {/* Bank Direct Dropdown */}
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Chọn ngân hàng <span className="text-red-500">*</span></label>
+                                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Chọn ngân hàng <span className="text-red-500">*</span></label>
                                 <div className="relative">
                                     <select
                                         value={selectedBank?.id}
                                         onChange={(e) => setSelectedBank(banks.find(b => b.id === e.target.value))}
-                                        className="w-full h-12 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[8px] px-4 text-[13px] font-bold outline-none cursor-pointer appearance-none dark:text-white focus:border-[#00BA4A]"
+                                        className="w-full h-12 bg-[#0d1412]/5 border border-white/10 rounded-[8px] px-4 text-[13px] font-bold outline-none cursor-pointer appearance-none dark:text-white focus:border-[#FBBF24]"
                                     >
                                         <option value="">-- Chọn ngân hàng --</option>
                                         {banks.map(bank => (
@@ -170,15 +170,15 @@ const RechargePage = () => {
                             </div>
 
                             {/* Summary / Receive Amount */}
-                            <div className="p-5 bg-gray-50/50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[10px] flex flex-col items-center justify-center space-y-1">
+                            <div className="p-5 bg-[#0d1412]/5 border border-white/10 rounded-[10px] flex flex-col items-center justify-center space-y-1">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Số tiền nhận được</span>
-                                <span className="text-3xl font-black text-[#00BA4A] tracking-tighter">{amount ? fmt(parseInt(amount)) : '0đ'}</span>
+                                <span className="text-3xl font-black text-[#FBBF24] tracking-tighter">{amount ? fmt(parseInt(amount)) : '0đ'}</span>
                             </div>
 
                             <button
                                 onClick={handleCreateBankTopup}
                                 disabled={creating}
-                                className="bg-[#00BA4A] h-[52px] w-full rounded-[10px] shadow-lg shadow-[#00BA4A]/20 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 text-force-white font-black text-xs uppercase tracking-[2px] flex items-center justify-center gap-3"
+                                className="bg-[#FBBF24] h-[52px] w-full rounded-[10px] shadow-lg shadow-[#FBBF24]/20 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 text-force-white font-black text-xs uppercase tracking-[2px] flex items-center justify-center gap-3"
                             >
                                 {creating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <FeatherIcon icon="file-plus" size={18} />}
                                 {creating ? 'ĐANG XỬ LÝ...' : 'Tạo hóa đơn nạp tiền'}
@@ -190,7 +190,7 @@ const RechargePage = () => {
                 {/* Sidebar: Promo & Note */}
                 <div className="space-y-6">
                     {/* Promotions Table */}
-                    <div className="bg-white dark:bg-[#0d1412] rounded-[10px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                    <div className="bg-[#0d1412] rounded-[10px] shadow-sm border border-white/[0.03] overflow-hidden">
                         <div className="bg-gradient-to-r from-[#1a73e8] to-[#2563EB] px-6 py-4 flex items-center gap-3 text-force-white">
                             <FeatherIcon icon="grid" size={18} />
                             <h2 className="text-[13px] font-black uppercase tracking-widest text-force-white">Khuyến mãi</h2>
@@ -198,27 +198,27 @@ const RechargePage = () => {
                         <div className="p-0">
                             <table className="w-full text-left text-[11px] font-bold">
                                 <thead>
-                                    <tr className="bg-gray-50/50 dark:bg-white/5 text-gray-400 uppercase tracking-widest">
+                                    <tr className="bg-[#0d1412]/5 text-gray-400 uppercase tracking-widest">
                                         <th className="px-6 py-3">Số tiền nạp</th>
                                         <th className="px-6 py-3">Khuyến mãi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                    <tr><td className="px-6 py-3 dark:text-white">≥ 100.000đ</td><td className="px-6 py-3 text-[#00BA4A]">+5%</td></tr>
-                                    <tr><td className="px-6 py-3 dark:text-white">≥ 1.000.000đ</td><td className="px-6 py-3 text-[#00BA4A]">+10%</td></tr>
-                                    <tr><td className="px-6 py-3 dark:text-white">≥ 10.000.000đ</td><td className="px-6 py-3 text-[#00BA4A]">+15%</td></tr>
+                                    <tr><td className="px-6 py-3 dark:text-white">≥ 100.000đ</td><td className="px-6 py-3 text-[#FBBF24]">+5%</td></tr>
+                                    <tr><td className="px-6 py-3 dark:text-white">≥ 1.000.000đ</td><td className="px-6 py-3 text-[#FBBF24]">+10%</td></tr>
+                                    <tr><td className="px-6 py-3 dark:text-white">≥ 10.000.000đ</td><td className="px-6 py-3 text-[#FBBF24]">+15%</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
                     {/* Compact Notes */}
-                    <div className="bg-orange-50/50 dark:bg-orange-500/5 border border-orange-200/50 dark:border-orange-500/10 p-6 rounded-[10px] space-y-4">
+                    <div className="bg-orange-500/5 border border-orange-500/10 p-6 rounded-[10px] space-y-4">
                         <div className="flex items-center gap-2 text-orange-600">
                             <FeatherIcon icon="alert-circle" size={18} />
                             <h3 className="text-[12px] font-black uppercase tracking-widest">Lưu ý quan trọng</h3>
                         </div>
-                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 leading-relaxed uppercase tracking-wider">
+                        <p className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
                             - Vui lòng chuyển khoản đúng số tiền và nội dung.<br />
                             - Thời gian xử lý tự động từ 1-5 phút.<br />
                             - Nếu sau 5 phút vẫn chưa nhận được tiền, vui lòng liên hệ hỗ trợ telegram <span className="text-blue-500">@ntthanhz</span>.
@@ -233,7 +233,7 @@ const RechargePage = () => {
         return (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
                 <div className="lg:col-span-2">
-                    <div className="bg-white dark:bg-[#0d1412] rounded-[10px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden h-full">
+                    <div className="bg-[#0d1412] rounded-[10px] shadow-sm border border-white/[0.03] overflow-hidden h-full">
                         <div className="bg-gradient-to-r from-[#26a17b] to-[#2d6c5a] px-6 py-4 flex items-center gap-3 text-force-white">
                             <FeatherIcon icon="zap" size={18} />
                             <h2 className="text-[13px] font-black uppercase tracking-widest text-force-white">Nạp tiền bằng Crypto (USDT)</h2>
@@ -244,19 +244,19 @@ const RechargePage = () => {
                             </div>
 
                             <div className="w-full space-y-4">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Số tiền USDT nạp <span className="text-red-500">*</span></label>
+                                <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Số tiền USDT nạp <span className="text-red-500">*</span></label>
                                 <div className="relative group">
                                     <input
                                         type="number"
                                         placeholder="Nhập số USDT"
                                         value={usdtAmount}
                                         onChange={(e) => setUsdtAmount(e.target.value)}
-                                        className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[12px] px-12 text-xl font-black text-[#26a17b] outline-none focus:border-[#26a17b] transition-all"
+                                        className="w-full h-14 bg-[#0d1412]/5 border border-white/10 rounded-[12px] px-12 text-xl font-black text-[#26a17b] outline-none focus:border-[#26a17b] transition-all"
                                     />
                                     <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[#26a17b] font-black italic">T</span>
                                     <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 font-black text-sm uppercase">USDT</span>
                                 </div>
-                                <div className="flex items-center justify-between p-3 bg-emerald-50/50 dark:bg-emerald-500/5 rounded-lg border border-emerald-100 dark:border-emerald-500/10">
+                                <div className="flex items-center justify-between p-3 bg-emerald-500/5 rounded-lg border border-emerald-500/10">
                                     <div className="flex items-center gap-2">
                                         <FeatherIcon icon="repeat" size={14} className="text-emerald-500" />
                                         <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Tỷ giá: 1 USDT = {cryptoRate.toLocaleString()}đ</span>
@@ -265,7 +265,7 @@ const RechargePage = () => {
                                 </div>
                             </div>
 
-                            <div className="w-full p-6 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-[12px] flex flex-col items-center justify-center space-y-1">
+                            <div className="w-full p-6 bg-[#0d1412]/5 border border-dashed border-white/10 rounded-[12px] flex flex-col items-center justify-center space-y-1">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Quy đổi sang VNĐ</span>
                                 <span className="text-4xl font-black dark:text-white tracking-tight">{usdtAmount ? fmt(parseFloat(usdtAmount) * cryptoRate) : '0đ'}</span>
                             </div>
@@ -298,10 +298,10 @@ const RechargePage = () => {
                             <li className="flex gap-3"><FeatherIcon icon="check-circle" size={14} className="text-emerald-400 shrink-0" />Thời gian xác nhận từ 2-10 phút phụ thuộc vào mạng lưới</li>
                         </ul>
                     </div>
-                    <div className="bg-white dark:bg-[#0d1412] p-6 rounded-[10px] border border-gray-100 dark:border-white/5 space-y-3">
+                    <div className="bg-[#0d1412] p-6 rounded-[10px] border border-white/[0.03] space-y-3">
                         <h4 className="text-[11px] font-black uppercase tracking-widest text-gray-400">Trạng thái mạng</h4>
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-gray-500 uppercase">Mạng TRC20</span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">Mạng TRC20</span>
                             <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Hoạt động
                             </span>
@@ -338,10 +338,10 @@ const RechargePage = () => {
         };
 
         return (
-            <div className="mt-12 bg-white dark:bg-[#0d1412] rounded-[10px] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden animate-in fade-in duration-700">
+            <div className="mt-12 bg-[#0d1412] rounded-[10px] border border-white/[0.03] shadow-sm overflow-hidden animate-in fade-in duration-700">
                 <div className="bg-gradient-to-r from-[#032030] to-[#04333b] px-6 py-4 flex items-center justify-between gap-3 text-force-white">
                     <div className="flex items-center gap-3">
-                        <FeatherIcon icon="rotate-ccw" size={18} className="text-[#00BA4A]" />
+                        <FeatherIcon icon="rotate-ccw" size={18} className="text-[#FBBF24]" />
                         <h2 className="text-[13px] font-black uppercase tracking-widest text-force-white">Lịch sử nạp tiền</h2>
                     </div>
                     <button onClick={loadData} className="text-[10px] font-black text-white/50 hover:text-white uppercase tracking-widest flex items-center gap-2 transition-all">
@@ -350,18 +350,18 @@ const RechargePage = () => {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="p-6 border-b border-gray-100 dark:border-white/5 space-y-4">
+                <div className="p-6 border-b border-white/[0.03] space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-3">
                         <input
                             placeholder="Mã giao dịch..."
                             value={filterCode}
                             onChange={(e) => setFilterCode(e.target.value)}
-                            className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg px-4 h-11 text-xs font-bold outline-none focus:border-[#00BA4A] dark:text-white"
+                            className="bg-[#0d1412]/5 border border-white/10 rounded-lg px-4 h-11 text-xs font-bold outline-none focus:border-[#FBBF24] dark:text-white"
                         />
                         <select
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
-                            className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg px-4 h-11 text-xs font-bold outline-none cursor-pointer dark:text-white"
+                            className="bg-[#0d1412]/5 border border-white/10 rounded-lg px-4 h-11 text-xs font-bold outline-none cursor-pointer dark:text-white"
                         >
                             <option value="">-- Trạng thái --</option>
                             <option value="da-duyet">Hoàn thành</option>
@@ -369,26 +369,26 @@ const RechargePage = () => {
                             <option value="expired">Hết hạn</option>
                         </select>
                         <div className="relative">
-                            <input type="text" placeholder="Chọn ngày..." className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg px-4 h-11 text-xs font-bold dark:text-white" />
+                            <input type="text" placeholder="Chọn ngày..." className="w-full bg-[#0d1412]/5 border border-white/10 rounded-lg px-4 h-11 text-xs font-bold dark:text-white" />
                             <FeatherIcon icon="calendar" size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         </div>
-                        <button className="bg-gray-200 dark:bg-white/10 h-11 rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#00BA4A] hover:text-white transition-all dark:text-white">
+                        <button className="bg-[#0d1412]/10 h-11 rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#FBBF24] hover:text-white transition-all dark:text-white">
                             <FeatherIcon icon="search" size={14} /> Tìm kiếm
                         </button>
-                        <button onClick={() => { setFilterCode(''); setFilterStatus(''); }} className="bg-gray-100 dark:bg-white/5 h-11 rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all text-gray-400">
+                        <button onClick={() => { setFilterCode(''); setFilterStatus(''); }} className="bg-[#0d1412]/5 h-11 rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all text-gray-400">
                             <FeatherIcon icon="trash-2" size={14} /> Bỏ lọc
                         </button>
                     </div>
 
-                    <div className="flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest border-t border-gray-50 dark:border-white/5 pt-4">
+                    <div className="flex items-center justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest border-t border-white/[0.03] pt-4">
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-white/10">
+                            <div className="flex items-center gap-2 bg-[#0d1412]/5 px-3 py-1.5 rounded-lg border border-white/10">
                                 <span className="opacity-60">HIỂN THỊ: </span>
                                 <select className="bg-transparent outline-none">
                                     <option>10 Dòng</option><option>20 Dòng</option><option>50 Dòng</option>
                                 </select>
                             </div>
-                            <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-white/10">
+                            <div className="flex items-center gap-2 bg-[#0d1412]/5 px-3 py-1.5 rounded-lg border border-white/10">
                                 <span className="opacity-60">SẮP XẾP: </span>
                                 <select className="bg-transparent outline-none">
                                     <option>Mới nhất</option><option>Cũ nhất</option>
@@ -401,7 +401,7 @@ const RechargePage = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-[11px] font-bold">
                         <thead>
-                            <tr className="bg-gray-50/50 dark:bg-white/5 text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5">
+                            <tr className="bg-[#0d1412]/5 text-gray-400 uppercase tracking-widest border-b border-white/[0.03]">
                                 <th className="px-6 py-5">Mã giao dịch</th>
                                 <th className="px-6 py-5 text-center">Trạng thái</th>
                                 <th className="px-6 py-5">Phương thức</th>
@@ -422,9 +422,9 @@ const RechargePage = () => {
                                     </td>
                                 </tr>
                             ) : paginated.map((t, i) => (
-                                <tr key={i} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                                <tr key={i} className="hover:bg-white/5 dark:hover:bg-[#0d1412]/5 transition-colors group">
                                     <td className="px-6 py-5">
-                                        <Link to={`/landing-topup/${t.code}`} className="text-blue-600 font-black hover:text-[#00BA4A] transition-colors flex items-center gap-2">
+                                        <Link to={`/landing-topup/${t.code}`} className="text-blue-600 font-black hover:text-[#FBBF24] transition-colors flex items-center gap-2">
                                             {t.code} <FeatherIcon icon="external-link" size={10} className="opacity-0 group-hover:opacity-100 transition-all" />
                                         </Link>
                                     </td>
@@ -435,11 +435,11 @@ const RechargePage = () => {
                                             {t.bank || 'USDT TRC20'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5 text-right dark:text-white">{fmt(t.amount)}</td>
-                                    <td className="px-6 py-5 text-right text-[#00BA4A]">{fmt(t.amount)}</td>
+                                    <td className="px-6 py-5 text-white">{fmt(t.amount)}</td>
+                                    <td className="px-6 py-5 text-right text-[#FBBF24]">{fmt(t.amount)}</td>
                                     <td className="px-6 py-5 text-right text-gray-400">{new Date(t.createdAt).toLocaleDateString('vi-VN')}</td>
                                     <td className="px-6 py-5 text-right">
-                                        <Link to={`/landing-topup/${t.code}`} className="p-2 bg-[#00BA4A]/5 text-[#00BA4A] hover:bg-[#00BA4A] hover:text-white rounded-lg transition-all inline-flex items-center">
+                                        <Link to={`/landing-topup/${t.code}`} className="p-2 bg-[#FBBF24]/5 text-[#FBBF24] hover:bg-[#FBBF24] hover:text-white rounded-lg transition-all inline-flex items-center">
                                             <FeatherIcon icon="eye" size={14} />
                                         </Link>
                                     </td>
@@ -450,12 +450,12 @@ const RechargePage = () => {
                 </div>
 
                 {/* Footer / Summary Info */}
-                <div className="p-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex items-center justify-center gap-8 text-[10px] font-black uppercase tracking-widest">
+                <div className="p-4 bg-[#0d1412]/5 border-t border-white/[0.03] flex items-center justify-center gap-8 text-[10px] font-black uppercase tracking-widest">
                     <div className="flex items-center gap-2">
                         <span className="text-gray-400">TỔNG ĐÃ NẠP:</span>
-                        <span className="text-[#00BA4A]">{fmt(history.filter(t => t.status === 'da-duyet').reduce((acc, curr) => acc + (curr.amount || 0), 0))}</span>
+                        <span className="text-[#FBBF24]">{fmt(history.filter(t => t.status === 'da-duyet').reduce((acc, curr) => acc + (curr.amount || 0), 0))}</span>
                     </div>
-                    <div className="w-1 h-3 bg-gray-200 dark:bg-white/10 rounded-full"></div>
+                    <div className="w-1 h-3 bg-[#0d1412]/10 rounded-full"></div>
                     <div className="flex items-center gap-2">
                         <span className="text-gray-400">CHỜ DUYỆT:</span>
                         <span className="text-amber-500">{fmt(history.filter(t => t.status !== 'da-duyet' && t.status !== 'expired').reduce((acc, curr) => acc + (curr.amount || 0), 0))}</span>
@@ -463,13 +463,13 @@ const RechargePage = () => {
                 </div>
 
                 {/* Simplified Pagination */}
-                <div className="p-6 border-t border-gray-100 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 bg-gray-50/30 dark:bg-white/[0.02]">
+                <div className="p-6 border-t border-white/[0.03] flex flex-col md:flex-row items-center justify-between gap-6 bg-[#0d1412]/[0.02]">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hiển thị {paginated.length} / {totalItems} giao dịch</span>
                     <div className="flex items-center gap-1.5">
                         <button
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage(prev => prev - 1)}
-                            className="w-10 h-10 rounded-xl border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#00BA4A] hover:text-white hover:border-[#00BA4A] transition-all disabled:opacity-30"
+                            className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#FBBF24] hover:text-white hover:border-[#FBBF24] transition-all disabled:opacity-30"
                         >
                             <FeatherIcon icon="chevron-left" size={16} />
                         </button>
@@ -479,7 +479,7 @@ const RechargePage = () => {
                                     <button
                                         key={p}
                                         onClick={() => setCurrentPage(p)}
-                                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-[12px] font-black transition-all ${currentPage === p ? 'bg-[#00BA4A] text-white shadow-lg' : 'bg-white dark:bg-white/5 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-[12px] font-black transition-all ${currentPage === p ? 'bg-[#FBBF24] text-white shadow-lg' : 'bg-[#0d1412]/5 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#0d1412]/10'}`}
                                     >
                                         {p}
                                     </button>
@@ -492,7 +492,7 @@ const RechargePage = () => {
                         <button
                             disabled={currentPage === totalPages}
                             onClick={() => setCurrentPage(prev => prev + 1)}
-                            className="w-10 h-10 rounded-xl border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#00BA4A] hover:text-white hover:border-[#00BA4A] transition-all disabled:opacity-30"
+                            className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#FBBF24] hover:text-white hover:border-[#FBBF24] transition-all disabled:opacity-30"
                         >
                             <FeatherIcon icon="chevron-right" size={16} />
                         </button>
@@ -504,25 +504,25 @@ const RechargePage = () => {
 
     return (
         <HostingLayout>
-            <div className="bg-gray-50 dark:bg-[#060a09] min-h-screen pb-20 transition-colors duration-500 overflow-x-hidden">
+            <div className="bg-[#060a09] min-h-screen pb-20 transition-colors duration-500 overflow-x-hidden">
                 {/* Breadcrumb Navigation - Standardized to match VPS Management Dashboard */}
                 <div className="max-w-7xl mx-auto px-4 py-3">
                     <nav className="flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[2px] transition-all duration-300">
-                        <Link to="/" className="text-gray-400 hover:text-[#00BA4A] flex items-center gap-1.5 transition-colors group">
+                        <Link to="/" className="text-gray-400 hover:text-[#FBBF24] flex items-center gap-1.5 transition-colors group">
                             <FeatherIcon icon="home" size={12} />
                             Trang chủ
                         </Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
-                        <span className="text-[#032030] dark:text-white">Nạp tiền vào ví</span>
+                        <span className="text-white">Nạp tiền vào ví</span>
                     </nav>
                 </div>
 
-                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#032030] border-y border-white/5 overflow-hidden">
+                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#032030] border-y border-white/[0.03] overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 py-10 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                             <div className="space-y-3">
                                 <h1 className="text-4xl md:text-6xl font-black !text-white uppercase tracking-tighter leading-none">
-                                    NẠP TIỀN <span className="text-[#00BA4A]">VÀO VÍ</span>
+                                    NẠP TIỀN <span className="text-[#FBBF24]">VÀO VÍ</span>
                                 </h1>
                                 <p className="text-[11px] font-bold !text-white/50 uppercase tracking-[3px]">
                                     Hệ thống xử lý tự động 24/7 - Không gián đoạn dịch vụ
@@ -531,13 +531,13 @@ const RechargePage = () => {
                             <div className="flex items-center gap-3">
                                 <Link
                                     to="/landing-recharge?pay=recharge-bank"
-                                    className={`px-8 h-12 rounded-xl font-black uppercase tracking-[2px] transition-all text-[10px] flex items-center gap-3 border shadow-lg ${type === 'recharge-bank' ? 'bg-[#00BA4A] text-white border-[#00BA4A] shadow-[#00BA4A]/20' : 'bg-white/5 text-white/40 hover:bg-white/10 border-white/5'}`}
+                                    className={`px-8 h-12 rounded-xl font-black uppercase tracking-[2px] transition-all text-[10px] flex items-center gap-3 border shadow-lg ${type === 'recharge-bank' ? 'bg-[#FBBF24] text-white border-[#FBBF24] shadow-[#FBBF24]/20' : 'bg-[#0d1412]/5 text-white/40 hover:bg-[#0d1412]/10 border-white/[0.03]'}`}
                                 >
                                     <FeatherIcon icon="home" size={14} /> BANK TRANSFER
                                 </Link>
                                 <Link
                                     to="/landing-recharge?pay=recharge-crypto"
-                                    className={`px-8 h-12 rounded-xl font-black uppercase tracking-[2px] transition-all text-[10px] flex items-center gap-3 border shadow-lg ${type === 'recharge-crypto' ? 'bg-[#26a17b] text-white border-[#26a17b] shadow-emerald-500/20' : 'bg-white/5 text-white/40 hover:bg-white/10 border-white/5'}`}
+                                    className={`px-8 h-12 rounded-xl font-black uppercase tracking-[2px] transition-all text-[10px] flex items-center gap-3 border shadow-lg ${type === 'recharge-crypto' ? 'bg-[#26a17b] text-white border-[#26a17b] shadow-emerald-500/20' : 'bg-[#0d1412]/5 text-white/40 hover:bg-[#0d1412]/10 border-white/[0.03]'}`}
                                 >
                                     <FeatherIcon icon="zap" size={14} /> CRYPTO USDT
                                 </Link>
@@ -545,7 +545,7 @@ const RechargePage = () => {
                         </div>
                     </div>
                     {/* Abstract background element */}
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#00BA4A]/10 to-transparent skew-x-12 transform translate-x-1/2"></div>
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#FBBF24]/10 to-transparent skew-x-12 transform translate-x-1/2"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 py-6">

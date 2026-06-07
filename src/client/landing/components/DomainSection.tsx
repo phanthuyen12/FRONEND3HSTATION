@@ -15,7 +15,7 @@ const DomainSection = () => {
   return (
     <section className="py-20 md:py-32 relative overflow-hidden bg-[#060a09]">
       {/* Background decoration */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[300px] h-[300px] bg-[#00ff9d]/5 rounded-full blur-[120px] -z-10"></div>
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[300px] h-[300px] bg-[#FDE047]/5 rounded-full blur-[120px] -z-10"></div>
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[150px] -z-10"></div>
 
       <div className="container mx-auto px-6">
@@ -26,11 +26,11 @@ const DomainSection = () => {
             <ScrollReveal direction="left">
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <div className="inline-block px-3 py-1 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
+                  <div className="inline-block px-3 py-1 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
                     Đăng Ký Tên Miền
                   </div>
                   <h2 className="text-3xl md:text-4xl lg:text-[44px] font-extrabold tracking-tight leading-[1.1]">
-                    ĐĂNG KÝ <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-[#01c67c]">TÊN MIỀN</span>
+                    ĐĂNG KÝ <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-[#FDE047]">TÊN MIỀN</span>
                   </h2>
                   <p className="text-base md:text-lg text-gray-400 font-medium max-w-lg mt-2">
                     3HSTATION: Đối tác đăng ký tên miền tin cậy & bảo mật cao, mang lại sự an tâm tuyệt đối cho thương hiệu của bạn.
@@ -40,8 +40,8 @@ const DomainSection = () => {
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                   {features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3 group">
-                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-[#00ff9d]/10 flex items-center justify-center border border-[#00ff9d]/30 group-hover:bg-[#00ff9d]/20 transition-all duration-300">
-                        <FeatherIcon icon="check" className="text-[#00ff9d]" size={12} strokeWidth={4} />
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-[#FDE047]/10 flex items-center justify-center border border-[#FDE047]/30 group-hover:bg-[#FDE047]/20 transition-all duration-300">
+                        <FeatherIcon icon="check" className="text-[#FDE047]" size={12} strokeWidth={4} />
                       </div>
                       <span className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300">{feature}</span>
                     </li>
@@ -49,9 +49,9 @@ const DomainSection = () => {
                 </ul>
 
                 <div className="pt-6">
-                  <button className="relative px-10 py-4 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 uppercase tracking-wider text-xs overflow-hidden group">
+                  <button className="relative px-10 py-4 bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-force-white font-bold rounded-full hover:shadow-[0_0_40px_rgba(0,255,157,0.5)] transform hover:-translate-y-1 active:scale-95 transition-all duration-500 uppercase tracking-wider text-xs overflow-hidden group">
                     <span className="relative z-10">Đăng ký ngay</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    <div className="absolute inset-0 bg-[#0d1412]/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                   </button>
                 </div>
               </div>
@@ -63,7 +63,7 @@ const DomainSection = () => {
             <ScrollReveal direction="right" delay={0.2}>
               <div className="relative group w-full">
                 {/* Glow backdrop */}
-                <div className="absolute -inset-10 bg-[#00ff9d]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
+                <div className="absolute -inset-10 bg-[#FDE047]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
 
                 <img
                   src="https://templates.hibootstrap.com/blim/default/assets/images/support-1.png"

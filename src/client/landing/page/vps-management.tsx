@@ -66,35 +66,35 @@ const VpsManagementPage = () => {
         switch (status) {
             case 'running': return <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase rounded-full">Đang chạy</span>;
             case 'stopped': return <span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black uppercase rounded-full">Đã dừng</span>;
-            default: return <span className="px-3 py-1 bg-gray-500/10 text-gray-500 text-[10px] font-black uppercase rounded-full">{status}</span>;
+            default: return <span className="px-3 py-1 bg-gray-500/10 text-gray-400 text-[10px] font-black uppercase rounded-full">{status}</span>;
         }
     };
 
     return (
         <HostingLayout>
-            <div className="bg-gray-50 dark:bg-[#060a09] min-h-screen pb-24 overflow-x-hidden">
+            <div className="bg-[#060a09] min-h-screen pb-24 overflow-x-hidden">
                 {/* Breadcrumb Navigation */}
                 <div className="max-w-7xl mx-auto px-4 py-3">
                     <nav className="flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[2px] transition-all duration-300">
-                        <Link to="/" className="text-gray-400 hover:text-[#00BA4A] flex items-center gap-1.5 transition-colors group">
+                        <Link to="/" className="text-gray-400 hover:text-[#FBBF24] flex items-center gap-1.5 transition-colors group">
                             <FeatherIcon icon="home" size={12} />
                             Trang chủ
                         </Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
-                        <Link to="/landing-vps" className="text-gray-400 hover:text-[#00BA4A] transition-colors">Dịch vụ</Link>
+                        <Link to="/landing-vps" className="text-gray-400 hover:text-[#FBBF24] transition-colors">Dịch vụ</Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
-                        <span className="text-gray-900 dark:text-white">Quản lý VPS</span>
+                        <span className="text-white">Quản lý VPS</span>
                     </nav>
                 </div>
 
                 {/* Hero Banner Section */}
-                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#032030] border-b border-white/5 overflow-hidden">
+                <div className="relative bg-gradient-to-r from-[#032030] via-[#04333b] to-[#032030] border-b border-white/[0.03] overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 py-10 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <h1 className="text-4xl md:text-6xl font-black !text-white uppercase tracking-tighter leading-none">
-                                        QUẢN LÝ <span className="text-[#00BA4A]">ĐƠN HÀNG VPS</span>
+                                        QUẢN LÝ <span className="text-[#FBBF24]">ĐƠN HÀNG VPS</span>
                                     </h1>
                                     <p className="text-[11px] font-bold !text-white/50 uppercase tracking-[2px]">
                                         Theo dõi, quản lý và gia hạn máy chủ đám mây của bạn
@@ -103,8 +103,8 @@ const VpsManagementPage = () => {
                             </div>
                             <Link 
                                 to="/landing-vps" 
-                                className="px-8 py-4 rounded-[10px] font-black uppercase tracking-[2px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#00BA4A]/20 text-[11px] flex items-center gap-3 mb-2"
-                                style={{ backgroundColor: '#00BA4A', color: '#FFFFFF' }}
+                                className="px-8 py-4 rounded-[10px] font-black uppercase tracking-[2px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#FBBF24]/20 text-[11px] flex items-center gap-3 mb-2"
+                                style={{ backgroundColor: '#FBBF24', color: '#FFFFFF' }}
                             >
                                 <FeatherIcon icon="plus" size={16} color="white" />
                                 Đăng ký VPS mới
@@ -112,25 +112,25 @@ const VpsManagementPage = () => {
                         </div>
                     </div>
                     {/* Background Detail */}
-                    <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#00BA4A]/10 to-transparent opacity-50"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#FBBF24]/10 to-transparent opacity-50"></div>
                     <FeatherIcon icon="server" size={200} className="absolute -right-20 -bottom-20 text-white/5 rotate-12" />
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 py-12">
 
-                    <div className="bg-white dark:bg-[#0d1412] rounded-[10px] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+                    <div className="bg-[#0d1412] rounded-[10px] border border-white/[0.03] shadow-sm overflow-hidden">
                         {/* Tabs Navigation */}
-                        <div className="flex items-center border-b border-gray-100 dark:border-white/5 px-6">
+                        <div className="flex items-center border-b border-white/[0.03] px-6">
                             {tabs.map(tab => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-2 py-5 px-6 text-[11px] font-black uppercase tracking-widest transition-all relative ${activeTab === tab.id ? 'text-[#00BA4A]' : 'text-gray-400 hover:text-gray-600 dark:hover:text-white'}`}
+                                    className={`flex items-center gap-2 py-5 px-6 text-[11px] font-black uppercase tracking-widest transition-all relative ${activeTab === tab.id ? 'text-[#FBBF24]' : 'text-gray-400 hover:text-gray-400 dark:hover:text-white'}`}
                                 >
                                     <FeatherIcon icon={tab.icon} size={14} />
                                     {tab.label}
                                     {activeTab === tab.id && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#00BA4A]" />
+                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#FBBF24]" />
                                     )}
                                 </button>
                             ))}
@@ -140,12 +140,12 @@ const VpsManagementPage = () => {
                         <div className="p-0">
                             {loading ? (
                                 <div className="py-24 flex flex-col items-center justify-center gap-4 opacity-50">
-                                    <div className="w-12 h-12 border-4 border-[#00BA4A] border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-12 h-12 border-4 border-[#FBBF24] border-t-transparent rounded-full animate-spin"></div>
                                     <p className="text-xs font-black uppercase tracking-widest">Đang tải dữ liệu...</p>
                                 </div>
                             ) : filteredVps.length === 0 ? (
                                 <div className="py-32 flex flex-col items-center justify-center gap-6 opacity-40 text-center">
-                                    <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center">
+                                    <div className="w-20 h-20 bg-[#0d1412]/5 rounded-full flex items-center justify-center">
                                         <FeatherIcon icon="inbox" size={40} />
                                     </div>
                                     <div className="space-y-2">
@@ -157,7 +157,7 @@ const VpsManagementPage = () => {
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
                                         <thead>
-                                            <tr className="bg-gray-50/50 dark:bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-[2px]">
+                                            <tr className="bg-[#0d1412]/5 text-[10px] font-black text-gray-400 uppercase tracking-[2px]">
                                                 <th className="p-6">Thông tin VPS</th>
                                                 <th className="p-6">Địa chỉ IP</th>
                                                 <th className="p-6 text-center">Cấu hình</th>
@@ -168,10 +168,10 @@ const VpsManagementPage = () => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                             {paginatedVps.map((vps) => (
-                                                <tr key={vps.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+                                                <tr key={vps.id} className="hover:bg-white/5/50 dark:hover:bg-[#0d1412]/[0.02] transition-colors group">
                                                     <td className="p-6">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 bg-gray-100 dark:bg-white/5 rounded-[10px] flex items-center justify-center text-gray-400 group-hover:bg-[#00BA4A]/10 group-hover:text-[#00BA4A] transition-all">
+                                                            <div className="w-10 h-10 bg-[#0d1412]/5 rounded-[10px] flex items-center justify-center text-gray-400 group-hover:bg-[#FBBF24]/10 group-hover:text-[#FBBF24] transition-all">
                                                                 <FeatherIcon icon="server" size={18} />
                                                             </div>
                                                             <div>
@@ -181,15 +181,15 @@ const VpsManagementPage = () => {
                                                         </div>
                                                     </td>
                                                     <td className="p-6">
-                                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/5 w-fit">
-                                                            <span className="text-[12px] font-black text-gray-700 dark:text-gray-300 font-mono tracking-tight">{vps.ip}</span>
-                                                            <button className="text-gray-400 hover:text-[#00BA4A]" title="Copy IP">
+                                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0d1412]/5 rounded-lg border border-white/[0.03] w-fit">
+                                                            <span className="text-[12px] font-black text-gray-300 font-mono tracking-tight">{vps.ip}</span>
+                                                            <button className="text-gray-400 hover:text-[#FBBF24]" title="Copy IP">
                                                                 <FeatherIcon icon="copy" size={12} />
                                                             </button>
                                                         </div>
                                                     </td>
                                                     <td className="p-6 text-center">
-                                                        <span className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tight">{vps.config}</span>
+                                                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-tight">{vps.config}</span>
                                                     </td>
                                                     <td className="p-6 text-center">
                                                         {getStatusBadge(vps.status)}
@@ -202,12 +202,12 @@ const VpsManagementPage = () => {
                                                     </td>
                                                     <td className="p-6 text-right">
                                                         <div className="flex items-center justify-end gap-3">
-                                                            <Link to={`/landing-vps-detail/${vps.id}`} className="p-2.5 rounded-[8px] border border-gray-100 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-400 hover:text-[#00BA4A]" title="Xem chi tiết">
+                                                            <Link to={`/landing-vps-detail/${vps.id}`} className="p-2.5 rounded-[8px] border border-white/[0.03] hover:bg-gray-100 dark:hover:bg-[#0d1412]/5 transition-all text-gray-400 hover:text-[#FBBF24]" title="Xem chi tiết">
                                                                 <FeatherIcon icon="eye" size={16} />
                                                             </Link>
                                                             <button 
-                                                                className="p-2.5 rounded-[8px] transition-all text-[10px] font-black uppercase tracking-widest px-4 shadow-lg shadow-[#00BA4A]/20 hover:scale-105 active:scale-95"
-                                                                style={{ backgroundColor: '#00BA4A', color: '#FFFFFF' }}
+                                                                className="p-2.5 rounded-[8px] transition-all text-[10px] font-black uppercase tracking-widest px-4 shadow-lg shadow-[#FBBF24]/20 hover:scale-105 active:scale-95"
+                                                                style={{ backgroundColor: '#FBBF24', color: '#FFFFFF' }}
                                                             >
                                                                 GIA HẠN DỊCH VỤ
                                                             </button>
@@ -219,7 +219,7 @@ const VpsManagementPage = () => {
                                     </table>
 
                                     {totalPages > 1 && (
-                                        <div className="flex flex-col md:flex-row items-center justify-between p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/30 dark:bg-white/[0.01] gap-4">
+                                        <div className="flex flex-col md:flex-row items-center justify-between p-6 border-t border-white/[0.03] bg-[#0d1412]/[0.01] gap-4">
                                             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                                                 Hiển thị { (currentPage - 1) * itemsPerPage + 1 } - { Math.min(currentPage * itemsPerPage, filteredVps.length) } / { filteredVps.length } máy chủ
                                             </div>
@@ -227,7 +227,7 @@ const VpsManagementPage = () => {
                                                 <button 
                                                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                                     disabled={currentPage === 1}
-                                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-100 dark:border-white/5 hover:bg-white dark:hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none transition-all text-gray-400"
+                                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/[0.03] hover:bg-[#0d1412] dark:hover:bg-[#0d1412]/5 disabled:opacity-30 disabled:pointer-events-none transition-all text-gray-400"
                                                 >
                                                     <FeatherIcon icon="chevron-left" size={16} />
                                                 </button>
@@ -235,7 +235,7 @@ const VpsManagementPage = () => {
                                                     <button
                                                         key={i}
                                                         onClick={() => setCurrentPage(i + 1)}
-                                                        className={`w-10 h-10 rounded-lg text-[11px] font-black transition-all ${currentPage === i + 1 ? 'bg-[#00BA4A] text-white shadow-lg shadow-[#00BA4A]/20' : 'border border-gray-100 dark:border-white/5 hover:bg-white dark:hover:bg-white/5 text-gray-400'}`}
+                                                        className={`w-10 h-10 rounded-lg text-[11px] font-black transition-all ${currentPage === i + 1 ? 'bg-[#FBBF24] text-white shadow-lg shadow-[#FBBF24]/20' : 'border border-white/[0.03] hover:bg-[#0d1412] dark:hover:bg-[#0d1412]/5 text-gray-400'}`}
                                                     >
                                                         {i + 1}
                                                     </button>
@@ -243,7 +243,7 @@ const VpsManagementPage = () => {
                                                 <button 
                                                     onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                                     disabled={currentPage === totalPages}
-                                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-100 dark:border-white/5 hover:bg-white dark:hover:bg-white/5 disabled:opacity-30 disabled:pointer-events-none transition-all text-gray-400"
+                                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-white/[0.03] hover:bg-[#0d1412] dark:hover:bg-[#0d1412]/5 disabled:opacity-30 disabled:pointer-events-none transition-all text-gray-400"
                                                 >
                                                     <FeatherIcon icon="chevron-right" size={16} />
                                                 </button>
@@ -263,7 +263,7 @@ const VpsManagementPage = () => {
                             { label: 'Sắp hết hạn', value: vpsList.filter(v => v.isExpiring).length, icon: 'alert-circle', color: 'amber' },
                             { label: 'Ngân sách t.tháng', value: fmt(vpsList.reduce((acc, v) => acc + v.price, 0)), icon: 'credit-card', color: 'indigo' },
                          ].map((stat, i) => (
-                             <div key={i} className="bg-white dark:bg-[#0d1412] p-6 rounded-[10px] border border-gray-100 dark:border-white/5 flex items-center gap-5 shadow-sm">
+                             <div key={i} className="bg-[#0d1412] p-6 rounded-[10px] border border-white/[0.03] flex items-center gap-5 shadow-sm">
                                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${stat.color}-500/10 text-${stat.color}-500`}>
                                     <FeatherIcon icon={stat.icon} size={24} />
                                 </div>

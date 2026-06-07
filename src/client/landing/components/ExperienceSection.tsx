@@ -18,16 +18,16 @@ const ExperienceSection = () => {
             <ScrollReveal direction="left">
               <div className="space-y-8">
                 <div className="space-y-6">
-                  <div className="inline-block px-3 py-1 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
+                  <div className="inline-block px-3 py-1 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
                     Câu Chuyện & Kinh Nghiệm
                   </div>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
-                    Được xây dựng bởi đội ngũ với <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-500">10+ năm kinh nghiệm</span>
+                    Được xây dựng bởi đội ngũ với <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-500">10+ năm kinh nghiệm</span>
                   </h2>
                   <p className="text-base md:text-lg text-gray-400 leading-relaxed max-w-xl">
                     Bắt đầu từ khát vọng nâng tầm hạ tầng số tại Việt Nam, chúng tôi tập hợp những kỹ sư hệ thống dày dạn kinh nghiệm thực chiến. Chúng tôi thấu hiểu sâu sắc nhu cầu của doanh nghiệp nội địa.
                   </p>
-                  <p className="text-sm text-gray-500 leading-relaxed max-w-lg">
+                  <p className="text-sm text-gray-400 leading-relaxed max-w-lg">
                     Chúng tôi không chỉ cung cấp hosting, mà xây dựng một nền tảng hạ tầng được tinh chỉnh từng chi tiết để đảm bảo website của bạn luôn vận hành ở trạng thái tốt nhất.
                   </p>
                 </div>
@@ -35,8 +35,8 @@ const ExperienceSection = () => {
                 <div className="grid grid-cols-3 gap-4 md:gap-8 pt-8 border-t border-white/10">
                   {stats.map((stat, idx) => (
                     <div key={idx} className="space-y-2 group">
-                      <p className="text-3xl md:text-4xl font-black text-white group-hover:text-[#00ff9d] transition-colors duration-500">{stat.value}</p>
-                      <p className="text-[9px] md:text-[10px] uppercase font-black tracking-widest text-gray-500">{stat.label}</p>
+                      <p className="text-3xl md:text-4xl font-black text-white group-hover:text-[#FDE047] transition-colors duration-500">{stat.value}</p>
+                      <p className="text-[9px] md:text-[10px] uppercase font-black tracking-widest text-gray-400">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -49,7 +49,7 @@ const ExperienceSection = () => {
             <ScrollReveal direction="right" delay={0.2}>
               <div className="relative group max-w-[540px]">
                 {/* Glow backdrops */}
-                <div className="absolute -inset-10 bg-[#00ff9d]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
+                <div className="absolute -inset-10 bg-[#FDE047]/5 blur-[80px] -z-10 rounded-full group-hover:bg-blue-500/5 transition-colors duration-1000"></div>
                 
                 <img 
                   src="https://unifato.com/hostc/assets/img/images/about7-image.png" 

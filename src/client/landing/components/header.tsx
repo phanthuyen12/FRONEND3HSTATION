@@ -10,10 +10,10 @@ const BottomNav = () => {
   const { pathname } = useLocation();
 
   const navItems = [
-    { key: 'hosting', icon: 'globe', label: 'Hosting n8n', to: '/landing-vps', grad: 'from-[#00BA4A] to-[#00963C]', mColor: '#00BA4A' },
-    { key: 'mmo', icon: 'book-open', label: 'Khóa học', to: '/landing-courses', grad: 'from-[#00BA4A] to-[#00963C]', mColor: '#00BA4A' },
-    { key: 'ai', icon: 'zap', label: 'Workflows N8N', to: '/landing-workflows', grad: 'from-[#00BA4A] to-[#00963C]', mColor: '#00BA4A' },
-    { key: 'tools', icon: 'command', label: 'Tool Marketing', to: '/landing-tools', grad: 'from-[#00BA4A] to-[#00963C]', mColor: '#00BA4A' },
+    { key: 'courses', icon: 'book-open', label: 'Khóa học', to: '/landing-courses', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
+    { key: 'learning', icon: 'play-circle', label: 'Đang học', to: '/landing-my-courses', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
+    { key: 'profile', icon: 'award', label: 'Thành tích', to: '/landing-profile', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
+    { key: 'topup', icon: 'credit-card', label: 'Nạp tiền', to: '/landing-recharge', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
   ];
 
   return (
@@ -21,7 +21,7 @@ const BottomNav = () => {
       <div className="max-w-7xl mx-auto px-0 md:px-4 w-full">
         {/* Mobile View: Shopee Style (Icons Above Text) */}
         <div
-          className="md:hidden flex items-center justify-around h-[70px] bg-white border-t border-gray-100 shadow-[0_-10px_40px_rgba(0,0,0,0.08)]"
+          className="md:hidden flex items-center justify-around h-[70px] bg-[#0d1412] border-t border-white/[0.03] shadow-[0_-10px_40px_rgba(0,0,0,0.08)]"
         >
           {navItems.map((item) => {
             const isActive = pathname === item.to;
@@ -53,7 +53,7 @@ const BottomNav = () => {
         </div>
 
         {/* Desktop View: Wide Feature Cards */}
-        <div
+        {/* <div
           className="hidden md:flex items-center justify-center gap-3 w-full"
         >
           {navItems.map((item) => {
@@ -91,7 +91,7 @@ const BottomNav = () => {
               </Link>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -122,19 +122,13 @@ const Header = () => {
     navigate('/landing-login');
   };
 
-  const fmt = (n: any) => {
-    const num = typeof n === 'string' ? parseFloat(n) : n;
-    if (isNaN(num)) return '0đ';
-    return num.toLocaleString('vi-VN') + 'đ';
-  };
-
   const isLoggedIn = !!user;
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50">
         {/* ── Top Header ── */}
-        <div className="bg-gradient-to-r from-[#032030] to-[#00BA4A] dark:from-[#080d0c] dark:to-[#0a1411] border-b border-white/5 py-1.5 md:py-2">
+        <div className="bg-gradient-to-r from-[#032030] to-[#FCD34D] dark:from-[#080d0c] dark:to-[#0a1411] border-b border-white/[0.03] py-1.5 md:py-2">
           <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between text-[10px] md:text-[11px] font-bold text-white/80">
             <div className="flex items-center gap-2 md:gap-4">
               <a href="#" className="hover:text-white transition-colors">Chính sách</a>
@@ -151,12 +145,11 @@ const Header = () => {
                 <span>Vietnamese</span>
                 <FeatherIcon icon="chevron-down" size={10} className="opacity-50" />
               </div>
-              <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
-                <FeatherIcon icon="database" size={12} className="text-amber-400" />
-                <span>VND</span>
-                <FeatherIcon icon="chevron-down" size={10} className="opacity-50" />
+              <div className="hidden sm:flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
+                <FeatherIcon icon="book-open" size={12} className="text-amber-400" />
+                <span>Learning</span>
               </div>
-              <div className="w-5 h-5 md:w-6 md:h-6 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all cursor-pointer">
+              <div className="w-5 h-5 md:w-6 md:h-6 rounded-lg bg-[#0d1412]/10 flex items-center justify-center hover:bg-[#0d1412]/20 transition-all cursor-pointer">
                 <FeatherIcon icon="settings" size={12} className="text-amber-400" />
               </div>
             </div>
@@ -178,19 +171,14 @@ const Header = () => {
         >
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-2.5 flex items-center justify-between gap-2">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 md:gap-2.5 shrink-0">
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: '#00BA4A' }}>
-                <FeatherIcon icon="zap" size={16} style={{ color: '#fff' }} fill="white" />
-              </div>
-              <span className="text-[17px] md:text-xl font-black tracking-tight whitespace-nowrap" style={{ color: isDark ? '#fff' : '#0B0B0B' }}>
-                3H<span style={{ color: '#00BA4A' }}>STATION</span>
-              </span>
+            <Link to="/landing-courses" className="flex items-center shrink-0">
+              <img src="/logo.png" alt="3H STATION" className="h-10 md:h-12 object-contain" />
             </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2 h-full">
-              <Link to="/" className={`px-4 py-2 text-[12px] font-black uppercase tracking-widest transition-all duration-300 rounded-xl ${pathname === '/' ? 'text-[#00BA4A] bg-[#00BA4A]/5' : 'text-gray-500 hover:text-[#00BA4A] hover:bg-gray-50 dark:hover:bg-white/5'}`}>
-                Trang Chủ
+              <Link to="/landing-courses" className={`px-4 py-2 text-[12px] font-black uppercase tracking-widest transition-all duration-300 rounded-xl ${pathname === '/landing-courses' || pathname === '/' ? 'text-[#FCD34D] bg-[#FCD34D]/5' : 'text-gray-400 hover:text-[#FCD34D] hover:bg-white/5 dark:hover:bg-[#0d1412]/5'}`}>
+                Trang học
               </Link>
 
               {/* Products Dropdown */}
@@ -199,8 +187,8 @@ const Header = () => {
                 onMouseEnter={() => setActiveMenu('categories')}
                 onMouseLeave={() => setActiveMenu(null)}
               >
-                <button className={`flex items-center gap-1 xl:gap-1.5 px-4 h-10 text-[12px] font-black uppercase tracking-widest transition-all rounded-xl ${activeMenu === 'categories' ? 'text-[#00BA4A] bg-[#00BA4A]/5' : 'text-gray-500'}`}>
-                  Danh Mục <FeatherIcon icon="chevron-down" size={14} className={`opacity-50 transition-transform duration-300 ${activeMenu === 'categories' ? 'rotate-180 text-[#00BA4A]' : ''}`} />
+                <button className={`flex items-center gap-1 xl:gap-1.5 px-4 h-10 text-[12px] font-black uppercase tracking-widest transition-all rounded-xl ${activeMenu === 'categories' ? 'text-[#FCD34D] bg-[#FCD34D]/5' : 'text-gray-400'}`}>
+                  Khóa học <FeatherIcon icon="chevron-down" size={14} className={`opacity-50 transition-transform duration-300 ${activeMenu === 'categories' ? 'rotate-180 text-[#FCD34D]' : ''}`} />
                 </button>
 
                 {/* Menu Con: Sử dụng top-full và pt-2 để nối liền vùng hover */}
@@ -208,34 +196,26 @@ const Header = () => {
                   className={`absolute top-[90%] left-1/2 -translate-x-1/2 pt-3 transition-all duration-300 z-[100] ${activeMenu === 'categories' ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none'
                     }`}
                 >
-                  <div className="w-[300px] bg-white dark:bg-[#0d1412] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-white/10 p-3 space-y-1">
-                    <Link to="/landing-vps" className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#00BA4A]/5 group/item transition-all">
-                      <div className="w-11 h-11 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="server" size={20} /></div>
-                      <div>
-                        <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-[#00BA4A]">Cloud VPS</div>
-                        <div className="text-[10px] font-medium text-gray-400">Server tốc độ cao, uptime 99.9%</div>
-                      </div>
-                    </Link>
-
+                  <div className="w-[300px] bg-[#0d1412] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 p-3 space-y-1">
                     <Link to="/landing-courses" className="flex items-center gap-4 p-3 rounded-xl hover:bg-sky-500/5 group/item transition-all">
                       <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="book-open" size={20} /></div>
                       <div>
-                        <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-sky-500">Khóa học MMO</div>
-                        <div className="text-[10px] font-medium text-gray-400">Đào tạo kinh doanh online</div>
+                        <div className="text-[12px] font-black uppercase tracking-tight text-white group-hover/item:text-sky-500">Thư viện khóa học</div>
+                        <div className="text-[10px] font-medium text-gray-400">Khám phá lộ trình học phù hợp</div>
                       </div>
                     </Link>
-                    <Link to="/landing-workflows" className="flex items-center gap-4 p-3 rounded-xl hover:bg-purple-500/5 group/item transition-all">
-                      <div className="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="zap" size={20} /></div>
+                    <Link to="/landing-my-courses" className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#FCD34D]/5 group/item transition-all">
+                      <div className="w-11 h-11 rounded-xl bg-[#FCD34D]/10 flex items-center justify-center text-[#FCD34D] transition-all group-hover/item:scale-110"><FeatherIcon icon="play-circle" size={20} /></div>
                       <div>
-                        <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-purple-500">Automation AI</div>
-                        <div className="text-[10px] font-medium text-gray-400">Quy trình tự động hóa</div>
+                        <div className="text-[12px] font-black uppercase tracking-tight text-white group-hover/item:text-[#FCD34D]">Khóa học của tôi</div>
+                        <div className="text-[10px] font-medium text-gray-400">Tiếp tục bài học và tiến độ</div>
                       </div>
                     </Link>
-                    <Link to="/landing-tools" className="flex items-center gap-4 p-3 rounded-xl hover:bg-amber-500/5 group/item transition-all">
-                      <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="command" size={20} /></div>
+                    <Link to="/landing-profile" className="flex items-center gap-4 p-3 rounded-xl hover:bg-emerald-500/5 group/item transition-all">
+                      <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="award" size={20} /></div>
                       <div>
-                        <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-amber-500">MMO Tools</div>
-                        <div className="text-[10px] font-medium text-gray-400">Phần mềm hỗ trợ MMO</div>
+                        <div className="text-[12px] font-black uppercase tracking-tight text-white group-hover/item:text-emerald-500">Thành tích học tập</div>
+                        <div className="text-[10px] font-medium text-gray-400">Hồ sơ, chứng chỉ và mục tiêu</div>
                       </div>
                     </Link>
                   </div>
@@ -244,84 +224,44 @@ const Header = () => {
 
               {isLoggedIn && (
                 <>
-                  {/* Orders Dropdown - Reimagined as "My Services" */}
+                  {/* Learning Dropdown */}
                   <div
                     className="relative py-2 flex items-center"
                     onMouseEnter={() => setActiveMenu('orders')}
                     onMouseLeave={() => setActiveMenu(null)}
                   >
-                    <button className={`flex items-center gap-1 xl:gap-1.5 px-4 h-10 text-[12px] font-black uppercase tracking-widest transition-all rounded-xl ${activeMenu === 'orders' ? 'text-[#00BA4A] bg-[#00BA4A]/5' : 'text-gray-500 hover:text-[#00BA4A]'}`}>
-                      Đơn Hàng <FeatherIcon icon="chevron-down" size={14} className={`opacity-50 transition-transform duration-300 ${activeMenu === 'orders' ? 'rotate-180 text-[#00BA4A]' : ''}`} />
+                    <button className={`flex items-center gap-1 xl:gap-1.5 px-4 h-10 text-[12px] font-black uppercase tracking-widest transition-all rounded-xl ${activeMenu === 'orders' ? 'text-[#FCD34D] bg-[#FCD34D]/5' : 'text-gray-400 hover:text-[#FCD34D]'}`}>
+                      Học Tập <FeatherIcon icon="chevron-down" size={14} className={`opacity-50 transition-transform duration-300 ${activeMenu === 'orders' ? 'rotate-180 text-[#FCD34D]' : ''}`} />
                     </button>
 
                     <div
                       className={`absolute top-[90%] left-1/2 -translate-x-1/2 pt-3 transition-all duration-300 z-[100] ${activeMenu === 'orders' ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none'
                         }`}
                     >
-                      <div className="w-[320px] bg-white dark:bg-[#0d1412] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-white/10 p-3 space-y-1">
-                        <Link to="/landing-my-courses" className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#00BA4A]/5 group/item transition-all">
+                      <div className="w-[320px] bg-[#0d1412] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 p-3 space-y-1">
+                        <Link to="/landing-my-courses" className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#FCD34D]/5 group/item transition-all">
                           <div className="w-11 h-11 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="book-open" size={20} /></div>
                           <div className="flex-1">
-                            <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-[#00BA4A]">Khóa học online</div>
+                            <div className="text-[12px] font-black uppercase tracking-tight text-white group-hover/item:text-[#FCD34D]">Khóa học online</div>
                             <div className="text-[10px] font-medium text-gray-400">Xem bài giảng & tài liệu</div>
                           </div>
                         </Link>
-                        <Link to="/landing-software-management" className="flex items-center gap-4 p-3 rounded-xl hover:bg-sky-500/5 group/item transition-all">
-                          <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="key" size={20} /></div>
+                        <Link to="/landing-courses" className="flex items-center gap-4 p-3 rounded-xl hover:bg-sky-500/5 group/item transition-all">
+                          <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="search" size={20} /></div>
                           <div className="flex-1">
-                            <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-sky-500">Quản lý Software</div>
-                            <div className="text-[10px] font-medium text-gray-400">Quản lý key & bản quyền</div>
-                          </div>
-                        </Link>
-                        <Link to="/landing-vps-management" className="flex items-center gap-4 p-3 rounded-xl hover:bg-amber-500/5 group/item transition-all">
-                          <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="server" size={20} /></div>
-                          <div className="flex-1">
-                            <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-amber-500">Cloud VPS</div>
-                            <div className="text-[10px] font-medium text-gray-400">Điều khiển & gia hạn Server</div>
-                          </div>
-                        </Link>
-                        <Link to="/landing-my-workflows" className="flex items-center gap-4 p-3 rounded-xl hover:bg-purple-500/5 group/item transition-all">
-                          <div className="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 transition-all group-hover/item:scale-110"><FeatherIcon icon="zap" size={20} /></div>
-                          <div className="flex-1">
-                            <div className="text-[12px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover/item:text-purple-500">Quy trình n8n</div>
-                            <div className="text-[10px] font-medium text-gray-400">Automation AI và MMO</div>
+                            <div className="text-[12px] font-black uppercase tracking-tight text-white group-hover/item:text-sky-500">Khám phá khóa học</div>
+                            <div className="text-[10px] font-medium text-gray-400">Tìm khóa học mới để bắt đầu</div>
                           </div>
                         </Link>
 
-                        <div className="h-[1px] bg-gray-100 dark:bg-white/5 mx-2 my-2" />
+                        <div className="h-[1px] bg-[#0d1412]/5 mx-2 my-2" />
 
-                        <Link to="/landing-profile?tab=orders" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors group/link">
+                        <Link to="/landing-profile" className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-[#0d1412]/5 transition-colors group/link">
                           <div className="flex items-center gap-3">
-                            <FeatherIcon icon="list" size={16} className="text-gray-400 group-hover/link:text-[#00BA4A]" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-400 group-hover/link:text-gray-900 dark:group-hover/link:text-white">Toàn bộ đơn hàng</span>
+                            <FeatherIcon icon="award" size={16} className="text-gray-400 group-hover/link:text-[#FCD34D]" />
+                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-400 group-hover/link:text-white dark:group-hover/link:text-white">Hồ sơ học tập</span>
                           </div>
                           <FeatherIcon icon="arrow-right" size={12} className="text-gray-300 opacity-0 group-hover/link:opacity-100 -translate-x-2 group-hover/link:translate-x-0 transition-all" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Deposit Dropdown */}
-                  <div
-                    className="relative py-2 flex items-center"
-                    onMouseEnter={() => setActiveMenu('recharge')}
-                    onMouseLeave={() => setActiveMenu(null)}
-                  >
-                    <button className={`flex items-center gap-1 xl:gap-1.5 px-4 h-10 text-[12px] font-black uppercase tracking-widest transition-all rounded-xl ${activeMenu === 'recharge' ? 'text-[#00BA4A] bg-[#00BA4A]/5' : 'text-gray-500'}`}>
-                      Nạp Tiền <FeatherIcon icon="chevron-down" size={14} className={`opacity-50 transition-transform duration-300 ${activeMenu === 'recharge' ? 'rotate-180 text-[#00BA4A]' : ''}`} />
-                    </button>
-
-                    <div
-                      className={`absolute top-[90%] left-1/2 -translate-x-1/2 pt-3 transition-all duration-300 z-[100] ${activeMenu === 'recharge' ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none'
-                        }`}
-                    >
-                      <div className="w-[280px] bg-white dark:bg-[#0d1412] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-white/10 p-2 space-y-0.5">
-                        <Link to="/landing-recharge?pay=recharge-bank" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-[#00BA4A] transition-colors">
-                          <FeatherIcon icon="credit-card" size={16} /> Nạp ngân hàng
-                        </Link>
-                        <div className="h-[1px] bg-gray-100 dark:bg-white/5 mx-2 my-1" />
-                        <Link to="/landing-recharge?pay=recharge-crypto" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-[#00BA4A] transition-colors">
-                          <FeatherIcon icon="cpu" size={16} /> Nạp Crypto
                         </Link>
                       </div>
                     </div>
@@ -329,47 +269,54 @@ const Header = () => {
                 </>
               )}
 
-              <Link to="/support" className="px-4 py-2 text-[12px] font-black uppercase tracking-widest text-gray-500 hover:text-[#00BA4A] hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all">
+              <Link to="/support" className="px-4 py-2 text-[12px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FCD34D] hover:bg-white/5 dark:hover:bg-[#0d1412]/5 rounded-xl transition-all">
                 Hỗ Trợ
               </Link>
             </nav>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 md:gap-4 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {isLoggedIn ? (
-                <div className="flex items-center gap-3 lg:gap-4">
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/landing-recharge"
+                    className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-[8px] border border-[#FCD34D]/25 bg-[#FCD34D]/10 px-3 text-[10px] font-black uppercase tracking-[1px] text-[#FCD34D] transition-all hover:border-[#FCD34D]/60 hover:bg-[#FCD34D] hover:text-black"
+                  >
+                    <FeatherIcon icon="credit-card" size={13} />
+                    Nạp tiền
+                  </Link>
                   <div
-                    className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-white/10 cursor-pointer relative py-2"
+                    className="relative flex cursor-pointer items-center gap-2 border-l border-white/[0.06] py-1.5 pl-3"
                     onMouseEnter={() => setActiveMenu('profile')}
                     onMouseLeave={() => setActiveMenu(null)}
                   >
-                    <div className={`w-9 h-9 rounded-full overflow-hidden border-2 p-0.5 transition-all ${activeMenu === 'profile' ? 'border-[#00BA4A]' : 'border-[#00BA4A]/20'}`}>
-                      <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.name}&background=00BA4A&color=fff`} className="w-full h-full object-cover rounded-full" alt="Avatar" />
+                    <div className={`h-8 w-8 shrink-0 overflow-hidden rounded-full border p-0.5 transition-all ${activeMenu === 'profile' ? 'border-[#FCD34D]/80' : 'border-[#FCD34D]/25'}`}>
+                      <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.name}&background=FCD34D&color=000`} className="w-full h-full object-cover rounded-full" alt="Avatar" />
                     </div>
-                    <div className="hidden md:flex flex-col">
-                      <span className={`text-[12px] font-black uppercase tracking-tight transition-colors ${activeMenu === 'profile' ? 'text-[#00BA4A]' : 'text-gray-900 dark:text-white'}`}>{user.name}</span>
-                      <span className="text-[12px] font-black text-[#00BA4A] tracking-tighter">{fmt(user.balance || 0)}</span>
+                    <div className="hidden max-w-[118px] flex-col md:flex">
+                      <span className={`truncate text-[11px] font-black uppercase leading-4 tracking-tight transition-colors ${activeMenu === 'profile' ? 'text-[#FCD34D]' : 'text-white'}`}>{user.name}</span>
+                      <span className="text-[10px] font-black leading-3 text-[#FCD34D]">Học viên</span>
                     </div>
 
                     <div
-                      className={`absolute top-[90%] right-0 pt-3 transition-all duration-300 z-[100] ${activeMenu === 'profile' ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none'
+                      className={`absolute right-0 top-full z-[100] pt-2 transition-all duration-300 ${activeMenu === 'profile' ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none'
                         }`}
                     >
-                      <div className="w-56 bg-white dark:bg-[#0d1412] rounded-[10px] shadow-2xl border border-gray-100 dark:border-white/10 py-3">
-                        <div className="px-5 py-3 mb-2 border-b dark:border-white/5">
-                          <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Mã khách hàng</div>
-                          <div className="text-xs font-black dark:text-white">USER_{user.id || 'N/A'}</div>
+                      <div className="w-[210px] overflow-hidden rounded-[8px] border border-white/[0.06] bg-[#0b100f] py-2 shadow-[0_18px_48px_rgba(0,0,0,0.35)]">
+                        <div className="mx-3 mb-1 border-b border-white/[0.05] px-2 py-2.5">
+                          <div className="mb-1 text-[9px] font-black uppercase tracking-[1.5px] text-gray-400">Mã khách hàng</div>
+                          <div className="truncate text-[11px] font-black text-white">USER_{user.id || 'N/A'}</div>
                         </div>
-                        <Link to="/landing-profile?tab=info" className="flex items-center gap-3 px-5 py-2.5 text-[11px] font-black text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-[#00BA4A] uppercase tracking-tight transition-colors">
-                          <FeatherIcon icon="user" size={14} /> Hồ sơ cá nhân
+                        <Link to="/landing-profile?tab=info" className="flex items-center gap-2.5 px-4 py-2 text-[10px] font-black uppercase tracking-tight text-gray-400 transition-colors hover:bg-white/[0.035] hover:text-[#FCD34D]">
+                          <FeatherIcon icon="user" size={13} /> Hồ sơ cá nhân
                         </Link>
                         {user?.role === 'admin' && (
-                          <Link to="/admin" target="_blank" className="flex items-center gap-3 px-5 py-2.5 text-[11px] font-black text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 uppercase tracking-tight transition-colors">
-                            <FeatherIcon icon="shield" size={14} /> Quản trị Admin
+                          <Link to="/admin" target="_blank" className="flex items-center gap-2.5 px-4 py-2 text-[10px] font-black uppercase tracking-tight text-amber-500 transition-colors hover:bg-amber-500/10">
+                            <FeatherIcon icon="shield" size={13} /> Quản trị Admin
                           </Link>
                         )}
-                        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-5 py-2.5 text-[11px] font-black text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 uppercase tracking-tight transition-colors">
-                          <FeatherIcon icon="log-out" size={14} /> Đăng xuất
+                        <button onClick={handleLogout} className="flex w-full items-center gap-2.5 px-4 py-2 text-[10px] font-black uppercase tracking-tight text-red-500 transition-colors hover:bg-red-500/10">
+                          <FeatherIcon icon="log-out" size={13} /> Đăng xuất
                         </button>
                       </div>
                     </div>
@@ -377,10 +324,10 @@ const Header = () => {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Link to="/landing-login" className="hidden sm:block text-xs font-black uppercase tracking-widest px-4 py-2 hover:text-[#00BA4A] transition-all" style={{ color: isDark ? '#D1D5DB' : '#374151' }}>
+                  <Link to="/landing-login" className="hidden sm:block text-xs font-black uppercase tracking-widest px-4 py-2 hover:text-[#FCD34D] transition-all" style={{ color: isDark ? '#D1D5DB' : '#374151' }}>
                     Đăng nhập
                   </Link>
-                  <Link to="/landing-register" className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all duration-200 hover:-translate-y-px bg-[#00BA4A] text-force-white shadow-lg shadow-[#00BA4A]/20">
+                  <Link to="/landing-register" className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all duration-200 hover:-translate-y-px bg-[#FCD34D] text-black shadow-lg shadow-[#FCD34D]/20">
                     Tham gia ngay <FeatherIcon icon="arrow-right" size={14} color="white" />
                   </Link>
                 </div>

@@ -118,7 +118,7 @@ const Home: React.FC = () => {
 
         {/* Premium Upgrade Card */}
         <div className="mt-auto pt-10">
-          <div className="relative bg-[#002B2C] border border-white/5 p-5 rounded-3xl overflow-hidden">
+          <div className="relative bg-[#002B2C] border border-white/[0.03] p-5 rounded-3xl overflow-hidden">
             <div className="absolute -top-4 -right-4 w-20 h-20 bg-teal-500/10 rounded-full blur-2xl" />
             <div className="bg-[#003839] w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-black/20">
               <Rocket className="text-teal-400" size={24} />

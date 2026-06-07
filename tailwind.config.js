@@ -5,7 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "node_modules/@frostui/tailwindcss/dist/*.js"
   ],
-  darkMode: ['class', '[data-mode="dark"]'],
+  darkMode: 'class',
   theme: {
     container: {
       center: true,
@@ -15,8 +15,8 @@ export default {
     },
     extend: {
       colors: {
-        'primary': '#3073F1',
-        'secondary': '#68625D',
+        'primary': '#FCD34D',
+        'secondary': '#1F2937',
         'success': '#1CB454',
         'warning': '#E2A907',
         'info': '#0895D8',

@@ -6,6 +6,7 @@ import FileUploader from "./FileUploader";
 import CustomFlatpickr from "./CustomFlatpickr";
 import CustomDatepicker from "./CustomDatepicker";
 import ScrollToTop from "./ScrollToTop";
+import ScrollToTopOnNavigate from "./ScrollToTopOnNavigate";
 import ThemeCustomizer from "./ThemeCustomizer";
 import TopBarSearch from "./TopBarSearch";
 import LanguageDropdown from "./LanguageDropdown";
@@ -24,6 +25,7 @@ export {
   CustomFlatpickr,
   CustomDatepicker,
   ScrollToTop,
+  ScrollToTopOnNavigate,
   ThemeCustomizer,
   TopBarSearch,
   LanguageDropdown,

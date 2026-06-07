@@ -61,7 +61,7 @@ const SoftwareSection = () => {
   const handleNext = () => setCurrentSlide(s => Math.min(totalSlides - 1, s + 1));
 
   const SoftCard = ({ soft }: { soft: typeof softwares[0] }) => (
-    <div className="group bg-[#080d0c] rounded-[32px] border border-white/[0.06] overflow-hidden hover:border-[#00ff9d]/30 transition-all duration-700 shadow-2xl flex flex-col h-full relative">
+    <div className="group bg-[#080d0c] rounded-[32px] border border-white/[0.06] overflow-hidden hover:border-[#FDE047]/30 transition-all duration-700 shadow-2xl flex flex-col h-full relative">
       {/* Thumbnail */}
       <div className="relative aspect-square overflow-hidden">
         <img
@@ -77,12 +77,12 @@ const SoftwareSection = () => {
 
       {/* Content */}
       <div className="p-6 md:p-8 flex flex-col flex-grow space-y-4">
-        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-400">
           <div className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
             <FeatherIcon icon="git-branch" size={12} />
             <span>{soft.version}</span>
           </div>
-          <div className="w-1 h-1 bg-white/10 rounded-full"></div>
+          <div className="w-1 h-1 bg-[#0d1412]/10 rounded-full"></div>
           <div className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
             <FeatherIcon icon="layers" size={12} />
             <span>{soft.compatibility}</span>
@@ -93,12 +93,12 @@ const SoftwareSection = () => {
           {soft.title}
         </h3>
 
-        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3 flex-grow font-medium">
+        <p className="text-xs text-gray-400 leading-relaxed line-clamp-3 flex-grow font-medium">
           {soft.desc}
         </p>
 
         <div className="pt-4 md:pt-6 mt-auto">
-          <button className="w-full py-3 md:py-4 rounded-2xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-[#00ff9d] hover:text-force-white hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95">
+          <button className="w-full py-3 md:py-4 rounded-2xl bg-[#0d1412]/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-[#FDE047] hover:text-force-white hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95">
             Tải phần mềm
           </button>
         </div>
@@ -123,11 +123,11 @@ const SoftwareSection = () => {
         {/* Top Header */}
         <ScrollReveal direction="up">
           <div className="text-center space-y-6 mb-16">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-[#00ff9d]">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-[#0d1412]/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-[#FDE047]">
               Digital Ecosystem
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              Digital Tools, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-500">Elevate Business</span>
+              Digital Tools, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-500">Elevate Business</span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
               Khám phá kho phần mềm và công cụ hỗ trợ kinh doanh trực tuyến, giúp bạn tối ưu hóa quy trình và tăng trưởng doanh thu.
@@ -140,7 +140,7 @@ const SoftwareSection = () => {
                    <button
                      key={cat}
                      onClick={() => handleTabChange(cat)}
-                     className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-blue-500 to-[#00ff9d] text-black shadow-[0_10px_20px_rgba(59,130,246,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                     className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-blue-500 to-[#FDE047] text-black shadow-[0_10px_20px_rgba(59,130,246,0.2)]' : 'text-gray-400 hover:text-white hover:bg-[#0d1412]/5'}`}
                    >
                      {cat === 'All' ? 'Tất cả' : cat}
                    </button>
@@ -183,7 +183,7 @@ const SoftwareSection = () => {
               <button
                 onClick={handlePrev}
                 disabled={safeSlide === 0}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-blue-400 hover:text-blue-400 hover:bg-blue-400/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-400 hover:bg-blue-400/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-left" size={16} />
               </button>
@@ -192,14 +192,14 @@ const SoftwareSection = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}
-                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-blue-400' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
+                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-blue-400' : 'w-2 h-2 bg-[#0d1412]/20 hover:bg-[#0d1412]/40'}`}
                   />
                 ))}
               </div>
               <button
                 onClick={handleNext}
                 disabled={safeSlide === totalSlides - 1}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-blue-400 hover:text-blue-400 hover:bg-blue-400/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-400 hover:bg-blue-400/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-right" size={16} />
               </button>

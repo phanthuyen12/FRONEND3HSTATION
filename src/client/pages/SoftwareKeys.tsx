@@ -183,7 +183,7 @@ const SoftwareKeys: React.FC = () => {
                     >
                       {buying === pkg.id ? (
                           <span className="flex items-center justify-center">
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/50 border-t-white mr-2"></div> Đang xử lý...
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/[0.03]0 border-t-white mr-2"></div> Đang xử lý...
                           </span>
                       ) : "MUA GÓI NGAY"}
                     </button>

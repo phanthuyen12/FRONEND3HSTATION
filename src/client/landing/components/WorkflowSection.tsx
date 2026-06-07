@@ -77,12 +77,12 @@ const WorkflowSection = () => {
 
       {/* Content */}
       <div className="p-6 md:p-8 flex flex-col flex-grow space-y-4">
-        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-400">
           <div className="flex items-center gap-1.5 hover:text-[#ff4d4d] transition-colors">
             <FeatherIcon icon="share-2" size={12} />
             <span>{flow.nodes}</span>
           </div>
-          <div className="w-1 h-1 bg-white/10 rounded-full"></div>
+          <div className="w-1 h-1 bg-[#0d1412]/10 rounded-full"></div>
           <div className="flex items-center gap-1.5 hover:text-[#ff4d4d] transition-colors">
             <FeatherIcon icon="activity" size={12} />
             <span>{flow.complexity}</span>
@@ -98,7 +98,7 @@ const WorkflowSection = () => {
         </p>
 
         <div className="pt-4 md:pt-6 mt-auto">
-          <button className="w-full py-3 md:py-4 rounded-2xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-[#ff4d4d] hover:to-[#ff8080] hover:text-white hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95 flex items-center justify-center gap-2">
+          <button className="w-full py-3 md:py-4 rounded-2xl bg-[#0d1412]/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-gradient-to-r hover:from-[#ff4d4d] hover:to-[#ff8080] hover:text-white hover:border-transparent transition-all duration-500 transform group-hover:translate-y-0 group-active:scale-95 flex items-center justify-center gap-2">
             Clone Workflow
             <FeatherIcon icon="copy" size={12} />
           </button>
@@ -125,7 +125,7 @@ const WorkflowSection = () => {
         {/* Top Header */}
         <ScrollReveal direction="up">
           <div className="text-center space-y-6 mb-16">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-[#ff4d4d]">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-[#0d1412]/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-[#ff4d4d]">
               n8n Automation Engine
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
@@ -142,7 +142,7 @@ const WorkflowSection = () => {
                   <button
                     key={cat}
                     onClick={() => handleTabChange(cat)}
-                    className={`px-5 py-2 rounded-[10px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#ff4d4d] to-[#ff8080] text-white shadow-[0_10px_20px_rgba(255,77,77,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                    className={`px-5 py-2 rounded-[10px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#ff4d4d] to-[#ff8080] text-white shadow-[0_10px_20px_rgba(255,77,77,0.2)]' : 'text-gray-400 hover:text-white hover:bg-[#0d1412]/5'}`}
                   >
                     {cat === 'All' ? 'Tất cả' : cat}
                   </button>
@@ -185,7 +185,7 @@ const WorkflowSection = () => {
               <button
                 onClick={handlePrev}
                 disabled={safeSlide === 0}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#ff4d4d] hover:text-[#ff4d4d] hover:bg-[#ff4d4d]/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#ff4d4d] hover:text-[#ff4d4d] hover:bg-[#ff4d4d]/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-left" size={16} />
               </button>
@@ -194,14 +194,14 @@ const WorkflowSection = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}
-                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-[#ff4d4d]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
+                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-[#ff4d4d]' : 'w-2 h-2 bg-[#0d1412]/20 hover:bg-[#0d1412]/40'}`}
                   />
                 ))}
               </div>
               <button
                 onClick={handleNext}
                 disabled={safeSlide === totalSlides - 1}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#ff4d4d] hover:text-[#ff4d4d] hover:bg-[#ff4d4d]/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#ff4d4d] hover:text-[#ff4d4d] hover:bg-[#ff4d4d]/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-right" size={16} />
               </button>

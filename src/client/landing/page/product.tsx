@@ -118,11 +118,11 @@ const ProductCard = ({ p }: { p: typeof products[0] }) => {
   return (
     <div
       onClick={() => navigate('/product-mmo/' + p.id)}
-      className="group relative flex flex-col bg-white dark:bg-[#060a09] rounded-xl md:rounded-2xl overflow-hidden border border-gray-100 dark:border-white/[0.05] hover:border-[#00ff9d]/40 transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-none hover:shadow-xl cursor-pointer"
+      className="group relative flex flex-col bg-[#060a09] rounded-xl md:rounded-2xl overflow-hidden border border-white/[0.05] hover:border-[#FDE047]/40 transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-none hover:shadow-xl cursor-pointer"
     >
 
       {/* ── IMAGE AREA ── */}
-      <div className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden bg-gray-50 dark:bg-[#0a100d]">
+      <div className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden bg-[#0a100d]">
         <img
           src={p.cover}
           alt={p.name}
@@ -144,7 +144,7 @@ const ProductCard = ({ p }: { p: typeof products[0] }) => {
         {/* Brand overlay at bottom */}
         <div className="absolute bottom-2 left-2 right-2 flex items-center pr-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center p-0.5 shadow-sm shrink-0">
+            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#0d1412] flex items-center justify-center p-0.5 shadow-sm shrink-0">
               <img src={p.logo} alt={p.brand} className="w-full h-full object-contain rounded-full" />
             </div>
             <span className="text-[10px] md:text-[11px] font-bold text-white tracking-wide drop-shadow-md truncate">
@@ -156,19 +156,19 @@ const ProductCard = ({ p }: { p: typeof products[0] }) => {
 
       {/* ── INFO AREA ── */}
       <div className="p-2.5 md:p-3 flex flex-col flex-grow gap-1.5">
-        <h3 className="font-bold text-gray-800 dark:text-gray-100 text-[13px] md:text-sm leading-snug line-clamp-2 md:line-clamp-1 min-h-[38px] md:min-h-0 group-hover:text-rose-500 dark:group-hover:text-[#00ff9d] transition-colors">
+        <h3 className="font-bold text-gray-100 text-[13px] md:text-sm leading-snug line-clamp-2 md:line-clamp-1 min-h-[38px] md:min-h-0 group-hover:text-rose-500 dark:group-hover:text-[#FDE047] transition-colors">
           {p.name}
         </h3>
 
         {/* Rating & Sold inline */}
-        <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 font-medium whitespace-nowrap">
+        <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-400 font-medium whitespace-nowrap">
           <div className="flex items-center gap-0.5 text-amber-500">
             <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
             <span>{p.rating}</span>
           </div>
-          <span className="w-[1px] h-2 bg-gray-300 dark:bg-gray-700" />
+          <span className="w-[1px] h-2 bg-gray-700" />
           <span className="truncate">Đã bán {formatSold(p.sold)}</span>
         </div>
 
@@ -178,7 +178,7 @@ const ProductCard = ({ p }: { p: typeof products[0] }) => {
             <span className="text-[10px] md:text-[11px] text-gray-400 line-through leading-none mb-0.5 truncate">
               {fmt(p.originalPrice)}
             </span>
-            <span className="text-sm md:text-base font-black text-rose-500 dark:text-[#00ff9d] leading-none truncate">
+            <span className="text-sm md:text-base font-black text-[#FDE047] leading-none truncate">
               {fmt(p.price)}
             </span>
           </div>
@@ -188,7 +188,7 @@ const ProductCard = ({ p }: { p: typeof products[0] }) => {
               e.stopPropagation();
               // handle add to cart
             }}
-            className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 dark:from-[#00ff9d] dark:to-[#01c67c] flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-white dark:text-[#060a09] shadow-md dark:shadow-none shrink-0"
+            className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 dark:from-[#FDE047] dark:to-[#FDE047] flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-[#060a09] shadow-none shrink-0"
           >
             <FeatherIcon icon="shopping-cart" size={13} className="ml-[-1px] md:w-3.5 md:h-3.5" />
           </button>
@@ -218,19 +218,19 @@ const ProductMMOPage = () => {
         {/* ── Hero ─────────────────────────────────────────── */}
         <div className="relative pt-8 pb-12 overflow-hidden">
           <div className="absolute inset-0 -z-10 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[500px] h-[400px] bg-[#00ff9d]/8 rounded-full blur-[140px]" />
+            <div className="absolute top-0 left-1/4 w-[500px] h-[400px] bg-[#FDE047]/8 rounded-full blur-[140px]" />
             <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-blue-600/6 rounded-full blur-[120px]" />
           </div>
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
               <div className="space-y-4 max-w-xl">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00ff9d] animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FDE047] animate-pulse" />
                   Kho sản phẩm MMO — giảm đến 90%
                 </div>
                 <h1 className="text-[28px] md:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.1]">
                   Phần mềm{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">Premium</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-400">Premium</span>
                   <br />
                   <span className="text-white">giá tốt nhất thị trường</span>
                 </h1>
@@ -239,10 +239,10 @@ const ProductMMOPage = () => {
                   Bảo hành trọn đời, hỗ trợ 24/7.
                 </p>
                 <div className="flex flex-wrap gap-3 pt-2">
-                  <button className="px-8 py-3.5 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] font-black text-xs rounded-full uppercase tracking-wider hover:shadow-[0_0_30px_rgba(0,255,157,0.45)] hover:-translate-y-0.5 transition-all duration-300">
+                  <button className="px-8 py-3.5 bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-[#060a09] font-black text-xs rounded-full uppercase tracking-wider hover:shadow-[0_0_30px_rgba(0,255,157,0.45)] hover:-translate-y-0.5 transition-all duration-300">
                     Xem tất cả sản phẩm
                   </button>
-                  <button className="px-7 py-3.5 rounded-full border border-[rgba(255,255,255,0.1)] text-white/70 text-xs font-black uppercase tracking-wider hover:border-[#00ff9d]/40 hover:text-white hover:bg-[#00ff9d]/5 transition-all duration-300">
+                  <button className="px-7 py-3.5 rounded-full border border-[rgba(255,255,255,0.1)] text-white/70 text-xs font-black uppercase tracking-wider hover:border-[#FDE047]/40 hover:text-white hover:bg-[#FDE047]/5 transition-all duration-300">
                     Chính sách bảo hành
                   </button>
                 </div>
@@ -250,7 +250,7 @@ const ProductMMOPage = () => {
               {/* Stats cards */}
               <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {[
-                  { value: '50+', label: 'Sản phẩm', color: '#00ff9d' },
+                  { value: '50+', label: 'Sản phẩm', color: '#FDE047' },
                   { value: '18K+', label: 'Đã bán', color: '#60a5fa' },
                   { value: '5K+', label: 'Khách hàng', color: '#f472b6' },
                 ].map((s) => (
@@ -259,7 +259,7 @@ const ProductMMOPage = () => {
                     className="flex-shrink-0 flex flex-col items-center justify-center text-center bg-[#050807] border border-[rgba(255,255,255,0.06)] rounded-2xl w-24 md:w-24 h-20 md:h-24 gap-1 hover:border-[rgba(255,255,255,0.15)] transition-all duration-300"
                   >
                     <span className="text-2xl font-black leading-none" style={{ color: s.color }}>{s.value}</span>
-                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{s.label}</span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{s.label}</span>
                   </div>
                 ))}
               </div>
@@ -272,12 +272,12 @@ const ProductMMOPage = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-black  leading-none">Chọn sản phẩm bạn quan tâm</h2>
-              <p className="text-[11px] text-gray-500 mt-1">Click vào thương hiệu để lọc sản phẩm</p>
+              <p className="text-[11px] text-gray-400 mt-1">Click vào thương hiệu để lọc sản phẩm</p>
             </div>
             {selectedBrand && (
               <button
                 onClick={() => setSelectedBrand(null)}
-                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] text-gray-400 hover:text-white hover:border-white/20 transition-all font-bold"
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0d1412]/5 border border-white/10 text-[11px] text-gray-400 hover:text-white hover:border-white/20 transition-all font-bold"
               >
                 <FeatherIcon icon="x" size={11} />
                 Bỏ lọc
@@ -300,7 +300,7 @@ const ProductMMOPage = () => {
                   }}
                 >
                   {/* Logo */}
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-md overflow-hidden flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[#0d1412] flex items-center justify-center shadow-md overflow-hidden flex-shrink-0">
                     <img
                       src={b.logo}
                       alt={b.name}
@@ -340,9 +340,9 @@ const ProductMMOPage = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-black  leading-none">Sản phẩm bán chạy</h2>
-              <p className="text-[11px] text-gray-500 mt-1">Được hàng nghìn khách hàng tin dùng.</p>
+              <p className="text-[11px] text-gray-400 mt-1">Được hàng nghìn khách hàng tin dùng.</p>
             </div>
-            <button className="hidden md:flex items-center text-[11px] font-black text-gray-500 hover:text-[#00ff9d] transition-colors uppercase tracking-widest">
+            <button className="hidden md:flex items-center text-[11px] font-black text-gray-400 hover:text-[#FDE047] transition-colors uppercase tracking-widest">
               Xem tất cả
             </button>
           </div>
@@ -357,12 +357,12 @@ const ProductMMOPage = () => {
           <div className="sticky top-[72px] md:top-4 z-40 flex flex-col gap-3 mb-6 md:mb-8 bg-[#060a09]/95 backdrop-blur-xl p-3 md:p-4 rounded-xl md:rounded-2xl border border-white/[0.06] shadow-2xl">
             {/* Search */}
             <div className="relative w-full">
-              <FeatherIcon icon="search" size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+              <FeatherIcon icon="search" size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm sản phẩm..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-[#00ff9d]/40 focus:bg-white/[0.06] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0d1412]/[0.04] border border-white/[0.07] text-white text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#FDE047]/40 focus:bg-[#0d1412]/[0.06] transition-all"
               />
             </div>
             {/* Category pills */}
@@ -372,8 +372,8 @@ const ProductMMOPage = () => {
                   key={cat.label}
                   onClick={() => setSelectedCategory(cat.label)}
                   className={`flex-shrink-0 whitespace-nowrap px-4 py-2 text-[11px] md:text-[10px] rounded-[10px] font-black uppercase tracking-wider transition-all duration-300 ${selectedCategory === cat.label
-                      ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] shadow-[0_4px_20px_rgba(0,255,157,0.25)]'
-                      : 'text-gray-500 hover:text-white hover:bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.05)]'
+                      ? 'bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-[#060a09] shadow-[0_4px_20px_rgba(0,255,157,0.25)]'
+                      : 'text-gray-400 hover:text-white hover:bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.05)]'
                     }`}
                 >
                   {cat.label}
@@ -384,11 +384,11 @@ const ProductMMOPage = () => {
 
           {/* Result header */}
           <div className="flex items-center justify-between mb-5">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               Tìm thấy <span className="text-white font-black">{filtered.length}</span> sản phẩm
-              {selectedBrand && <span className="text-[#00ff9d]"> · {selectedBrand}</span>}
+              {selectedBrand && <span className="text-[#FDE047]"> · {selectedBrand}</span>}
             </p>
-            <div className="flex items-center gap-2 text-[11px] text-gray-600 font-bold border border-white/[0.06] rounded-xl px-3 py-2 bg-[#080d0c] cursor-pointer hover:border-white/15 transition-all">
+            <div className="flex items-center gap-2 text-[11px] text-gray-400 font-bold border border-white/[0.06] rounded-xl px-3 py-2 bg-[#080d0c] cursor-pointer hover:border-white/15 transition-all">
               <FeatherIcon icon="sliders" size={12} />
               Bán chạy nhất
             </div>
@@ -401,16 +401,16 @@ const ProductMMOPage = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-24 gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center">
-                <FeatherIcon icon="search" size={26} className="text-gray-600" />
+              <div className="w-16 h-16 rounded-2xl bg-[#0d1412]/[0.04] border border-white/10 flex items-center justify-center">
+                <FeatherIcon icon="search" size={26} className="text-gray-400" />
               </div>
               <div className="text-center">
                 <p className="text-gray-400 font-black text-lg">Không tìm thấy sản phẩm</p>
-                <p className="text-gray-600 text-sm mt-1">Thử thay đổi bộ lọc hoặc từ khoá tìm kiếm</p>
+                <p className="text-gray-400 text-sm mt-1">Thử thay đổi bộ lọc hoặc từ khoá tìm kiếm</p>
               </div>
               <button
                 onClick={() => { setSearch(''); setSelectedCategory('Tất cả'); setSelectedBrand(null); }}
-                className="px-6 py-2.5 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[#00ff9d] text-xs font-black uppercase tracking-widest hover:bg-[#00ff9d]/20 transition-all"
+                className="px-6 py-2.5 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[#FDE047] text-xs font-black uppercase tracking-widest hover:bg-[#FDE047]/20 transition-all"
               >
                 Xoá tất cả bộ lọc
               </button>
@@ -423,12 +423,12 @@ const ProductMMOPage = () => {
           <div className="relative rounded-[20px] md:rounded-[28px] border border-white/[0.07] overflow-hidden p-6 md:p-12 bg-[#060a09]">
             {/* Decorative bg */}
             <div className="absolute inset-0 -z-10 pointer-events-none">
-              <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#00ff9d]/8 rounded-full blur-[100px]" />
+              <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#FDE047]/8 rounded-full blur-[100px]" />
               <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-blue-600/6 rounded-full blur-[80px]" />
               <div
                 className="absolute inset-0 opacity-[0.03]"
                 style={{
-                  backgroundImage: 'linear-gradient(#00ff9d 1px, transparent 1px), linear-gradient(90deg, #00ff9d 1px, transparent 1px)',
+                  backgroundImage: 'linear-gradient(#FDE047 1px, transparent 1px), linear-gradient(90deg, #FDE047 1px, transparent 1px)',
                   backgroundSize: '40px 40px',
                 }}
               />
@@ -436,12 +436,12 @@ const ProductMMOPage = () => {
 
             <div className="relative flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="space-y-4 max-w-md">
-                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/20 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/20 text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
                   Cam kết chất lượng
                 </div>
                 <h3 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mt-2">
                   Bảo hành{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-400">
                     trọn đời
                   </span>
                   <br />— không lo rủi ro
@@ -450,7 +450,7 @@ const ProductMMOPage = () => {
                   Mua một lần, dùng mãi mãi. Tất cả sản phẩm đều được bảo hành không giới hạn thời gian. Đội ngũ kỹ thuật hỗ trợ xuyên suốt.
                 </p>
                 <div className="pt-4">
-                  <button className="px-8 py-3.5 bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#060a09] font-black text-xs rounded-full uppercase tracking-wider hover:shadow-[0_0_30px_rgba(0,255,157,0.4)] hover:-translate-y-0.5 transition-all duration-300">
+                  <button className="px-8 py-3.5 bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-[#060a09] font-black text-xs rounded-full uppercase tracking-wider hover:shadow-[0_0_30px_rgba(0,255,157,0.4)] hover:-translate-y-0.5 transition-all duration-300">
                     Mua ngay — giảm đến 90%
                   </button>
                 </div>
@@ -458,7 +458,7 @@ const ProductMMOPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 w-full md:w-auto">
                 {[
-                  { label: 'Bảo hành', value: 'Vĩnh viễn', color: '#00ff9d' },
+                  { label: 'Bảo hành', value: 'Vĩnh viễn', color: '#FDE047' },
                   { label: 'Hỗ trợ', value: '24/7', color: '#60a5fa' },
                   { label: 'Hoàn tiền', value: '100%', color: '#f472b6' },
                 ].map((s) => (
@@ -469,7 +469,7 @@ const ProductMMOPage = () => {
                     style={{ borderColor: `${s.color}20` }}
                   >
                     <p className="text-2xl font-black mb-1 leading-none" style={{ color: s.color }}>{s.value}</p>
-                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{s.label}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{s.label}</p>
                   </div>
                 ))}
               </div>

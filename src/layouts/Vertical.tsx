@@ -9,7 +9,7 @@ import * as layoutConstants from "../constants/layout";
 import { useViewPort } from "../hooks";
 import { changeHTMLAttribute } from "../utils/layout";
 import { changeSideBarType } from "../redux/actions";
-import { Preloader } from "../components";
+import { Preloader, ScrollToTopOnNavigate } from "../components";
 
 // code splitting and lazy loading
 // https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52
@@ -97,6 +97,7 @@ const VerticalLayout = ({ children }: VerticalLayoutProps) => {
 
   return (
     <>
+      <ScrollToTopOnNavigate />
       <Suspense fallback={loading()}>
         <div className="flex wrapper">
           <Suspense fallback={loading()}>

@@ -17,6 +17,8 @@ const LandingRegisterPage = () => {
     ref: searchParams.get('ref') || '',
     agree: false
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (authService.isAuthenticated()) {
@@ -78,16 +80,16 @@ const LandingRegisterPage = () => {
 
   return (
     <HostingLayout>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFB] dark:bg-[#060a09] py-12 px-4">
+      <div className="min-h-[80vh] flex flex-col items-center justify-center bg-[#060b0a] py-8 px-4">
         
-        <div className="w-full max-w-[420px] bg-white dark:bg-[#0d1412] rounded-xl border border-gray-100 dark:border-white/5 shadow-sm p-6 md:p-8 space-y-6 animate-in fade-in zoom-in duration-500">
+        <div className="w-full max-w-[420px] bg-[#0d1412] rounded-xl border border-white/[0.03] shadow-sm p-6 md:p-8 space-y-5 animate-in fade-in zoom-in duration-500">
            
            <div className="text-center space-y-1">
-              <div className="w-12 h-12 bg-[#00BA4A]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FeatherIcon icon="user-plus" size={24} className="text-[#00BA4A]" />
+              <div className="w-12 h-12 bg-[#FCD34D]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FeatherIcon icon="user-plus" size={24} className="text-[#FCD34D]" />
               </div>
-              <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Đăng ký tài khoản</h2>
-              <p className="text-[13px] font-medium text-gray-500 dark:text-gray-400">Vui lòng nhập thông tin để đăng ký</p>
+              <h2 className="text-xl font-black text-white uppercase tracking-tight">Đăng ký tài khoản</h2>
+              <p className="text-[13px] font-medium text-gray-400">Vui lòng nhập thông tin để đăng ký</p>
            </div>
 
            <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,7 +103,7 @@ const LandingRegisterPage = () => {
                         onChange={handleChange}
                         type="text" 
                         placeholder="Ví dụ: Nguyễn Văn A" 
-                        className="w-full h-11 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all text-gray-900 dark:text-white" 
+                        className="w-full h-11 bg-black/20 border border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#FCD34D] focus:ring-1 focus:ring-[#FCD34D]/20 transition-all text-white" 
                     />
                  </div>
 
@@ -114,34 +116,52 @@ const LandingRegisterPage = () => {
                         onChange={handleChange}
                         type="email" 
                         placeholder="mail@example.com" 
-                        className="w-full h-11 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all text-gray-900 dark:text-white" 
+                        className="w-full h-11 bg-black/20 border border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#FCD34D] focus:ring-1 focus:ring-[#FCD34D]/20 transition-all text-white" 
                     />
                  </div>
 
                  {/* Mật khẩu */}
                  <div className="space-y-1.5">
                     <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Mật khẩu</label>
-                    <input 
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        type="password" 
-                        placeholder="••••••••" 
-                        className="w-full h-11 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all text-gray-900 dark:text-white" 
-                    />
+                    <div className="relative">
+                      <input 
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="••••••••" 
+                          className="w-full h-11 bg-black/20 border border-white/10 rounded-lg px-4 pr-10 text-sm font-semibold outline-none focus:border-[#FCD34D] focus:ring-1 focus:ring-[#FCD34D]/20 transition-all text-white" 
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FCD34D] transition-colors focus:outline-none"
+                      >
+                        <FeatherIcon icon={showPassword ? "eye" : "eye-off"} size={16} />
+                      </button>
+                    </div>
                  </div>
 
                  {/* Nhập lại mật khẩu */}
                  <div className="space-y-1.5">
                     <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Nhập lại mật khẩu</label>
-                    <input 
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        type="password" 
-                        placeholder="••••••••" 
-                        className="w-full h-11 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all text-gray-900 dark:text-white" 
-                    />
+                    <div className="relative">
+                      <input 
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          type={showConfirmPassword ? "text" : "password"} 
+                          placeholder="••••••••" 
+                          className="w-full h-11 bg-black/20 border border-white/10 rounded-lg px-4 pr-10 text-sm font-semibold outline-none focus:border-[#FCD34D] focus:ring-1 focus:ring-[#FCD34D]/20 transition-all text-white" 
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#FCD34D] transition-colors focus:outline-none"
+                      >
+                        <FeatherIcon icon={showConfirmPassword ? "eye" : "eye-off"} size={16} />
+                      </button>
+                    </div>
                  </div>
 
                  {/* Mã giới thiệu */}
@@ -153,7 +173,7 @@ const LandingRegisterPage = () => {
                         onChange={handleChange}
                         type="text" 
                         placeholder="Nhập mã giới thiệu" 
-                        className="w-full h-11 bg-white dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#00BA4A] focus:ring-1 focus:ring-[#00BA4A]/20 transition-all text-gray-900 dark:text-white" 
+                        className="w-full h-11 bg-black/20 border border-white/10 rounded-lg px-4 text-sm font-semibold outline-none focus:border-[#FCD34D] focus:ring-1 focus:ring-[#FCD34D]/20 transition-all text-white" 
                     />
                  </div>
               </div>
@@ -166,10 +186,10 @@ const LandingRegisterPage = () => {
                     onChange={handleChange}
                     type="checkbox" 
                     id="terms" 
-                    className="w-5 h-5 mt-0.5 rounded border-gray-300 text-[#00BA4A] focus:ring-[#00BA4A] transition-all cursor-pointer" 
+                    className="w-5 h-5 mt-0.5 rounded border-white/20 text-[#FCD34D] focus:ring-[#FCD34D] transition-all cursor-pointer" 
                  />
-                 <label htmlFor="terms" className="text-[12px] font-medium text-gray-500 dark:text-gray-400 cursor-pointer select-none leading-relaxed">
-                    Tôi đồng ý với <Link to="#" className="text-[#00BA4A] font-bold hover:underline">Điều khoản</Link> & <Link to="#" className="text-[#00BA4A] font-bold hover:underline">Chính sách</Link> hệ thống
+                 <label htmlFor="terms" className="text-[12px] font-medium text-gray-400 cursor-pointer select-none leading-relaxed">
+                    Tôi đồng ý với <Link to="#" className="text-[#FCD34D] font-bold hover:underline">Điều khoản</Link> & <Link to="#" className="text-[#FCD34D] font-bold hover:underline">Chính sách</Link> hệ thống
                  </label>
               </div>
 
@@ -177,7 +197,7 @@ const LandingRegisterPage = () => {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 mt-4 bg-gradient-to-r from-[#032030] to-[#00BA4A] hover:shadow-lg hover:shadow-[#00BA4A]/20 text-white rounded-lg text-[13px] font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-11 mt-4 bg-gradient-to-r from-[#032030] to-[#FCD34D] hover:shadow-lg hover:shadow-[#FCD34D]/20 text-white rounded-lg text-[13px] font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-50"
               >
                  {loading ? 'ĐANG XỬ LÝ...' : 'ĐĂNG KÝ NGAY'}
               </button>
@@ -185,8 +205,8 @@ const LandingRegisterPage = () => {
 
            {/* Footer Link */}
            <div className="text-center pt-2">
-              <p className="text-[13px] font-medium text-gray-500 dark:text-gray-400">
-                Bạn đã có tài khoản? <Link to="/landing-login" className="text-[#00BA4A] font-bold hover:underline">Đăng Nhập</Link>
+              <p className="text-[13px] font-medium text-gray-400">
+                Bạn đã có tài khoản? <Link to="/landing-login" className="text-[#FCD34D] font-bold hover:underline">Đăng Nhập</Link>
               </p>
            </div>
         </div>

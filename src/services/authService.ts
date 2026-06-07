@@ -36,6 +36,7 @@ class AuthService {
   private tokenKey = 'auth_token';
   private refreshTokenKey = 'refresh_token';
   private userKey = 'auth_user';
+  private sessionSocket: WebSocket | null = null;
 
   constructor(apiUrl: string = "") {
     this.api = apiUrl;
@@ -104,10 +105,12 @@ class AuthService {
     if (refreshToken) {
       localStorage.setItem(this.refreshTokenKey, refreshToken);
     }
+    this.startSessionWatcher();
   }
 
   // Xóa token và user khỏi localStorage
   private clearAuth() {
+    this.stopSessionWatcher();
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     localStorage.removeItem(this.refreshTokenKey);
@@ -121,6 +124,51 @@ class AuthService {
   // Public method để clear session (có thể gọi từ bên ngoài)
   clearSession() {
     this.clearAuth();
+  }
+
+  startSessionWatcher(onReplaced?: () => void) {
+    const token = this.getToken();
+    if (!token || typeof window === 'undefined' || !('WebSocket' in window)) return;
+
+    this.stopSessionWatcher();
+
+    const wsBase = (this.api || window.location.origin)
+      .replace(/^http/i, 'ws')
+      .replace(/\/$/, '');
+
+    const socket = new WebSocket(`${wsBase}/ws/session?token=${encodeURIComponent(token)}`);
+    this.sessionSocket = socket;
+
+    socket.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload?.type === 'SESSION_REPLACED') {
+          this.clearAuth();
+          onReplaced?.();
+          window.dispatchEvent(new CustomEvent('auth:session-replaced'));
+        }
+      } catch {
+        // Ignore non-JSON websocket payloads.
+      }
+    };
+
+    socket.onclose = () => {
+      if (this.sessionSocket === socket) {
+        this.sessionSocket = null;
+      }
+    };
+  }
+
+  stopSessionWatcher() {
+    if (!this.sessionSocket) return;
+    const socket = this.sessionSocket;
+    this.sessionSocket = null;
+
+    try {
+      socket.close();
+    } catch {
+      // Ignore close errors.
+    }
   }
 
   // Lấy token từ localStorage
@@ -323,4 +371,3 @@ class AuthService {
 }
 
 export default AuthService;
-

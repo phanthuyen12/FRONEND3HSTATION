@@ -77,7 +77,7 @@ const CoursesSection = () => {
   const handleNext = () => setCurrentSlide(s => Math.min(totalSlides - 1, s + 1));
 
   const CourseCard = ({ course }: { course: typeof courses[0] }) => (
-    <div className="group bg-[#080c0b] rounded-[32px] border border-white/[0.06] overflow-hidden hover:border-[#00ff9d]/30 transition-all duration-700 shadow-2xl flex flex-col h-full relative">
+    <div className="group bg-[#080c0b] rounded-[32px] border border-white/[0.06] overflow-hidden hover:border-[#FDE047]/30 transition-all duration-700 shadow-2xl flex flex-col h-full relative">
       {/* Thumbnail */}
       <div className="relative aspect-[16/10] overflow-hidden">
         <img
@@ -85,7 +85,7 @@ const CoursesSection = () => {
           alt={course.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-60 group-hover:opacity-100"
         />
-        <div className="absolute top-5 left-5 px-3 py-1 bg-[#00ff9d] text-force-white text-[9px] font-black uppercase rounded-lg shadow-lg">
+        <div className="absolute top-5 left-5 px-3 py-1 bg-[#FDE047] text-force-white text-[9px] font-black uppercase rounded-lg shadow-lg">
           {course.category}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#080c0b] via-transparent to-transparent opacity-60"></div>
@@ -93,39 +93,39 @@ const CoursesSection = () => {
 
       {/* Content */}
       <div className="p-6 md:p-8 flex flex-col flex-grow space-y-4">
-        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-[#00ff9d]/60">
+        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-[#FDE047]/60">
           <div className="flex items-center gap-1.5">
             <FeatherIcon icon="calendar" size={12} />
             <span>{course.date}</span>
           </div>
-          <div className="w-1 h-1 bg-white/10 rounded-full"></div>
+          <div className="w-1 h-1 bg-[#0d1412]/10 rounded-full"></div>
           <div className="flex items-center gap-1.5">
             <FeatherIcon icon="book-open" size={12} />
             <span>{course.duration}</span>
           </div>
         </div>
 
-        <h3 className="text-lg md:text-xl font-bold leading-tight group-hover:text-[#00ff9d] transition-colors duration-300 line-clamp-2">
+        <h3 className="text-lg md:text-xl font-bold leading-tight group-hover:text-[#FDE047] transition-colors duration-300 line-clamp-2">
           {course.title}
         </h3>
 
-        <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 flex-grow font-medium">
+        <p className="text-sm text-gray-400 leading-relaxed line-clamp-2 flex-grow font-medium">
           {course.desc}
         </p>
 
         <div className="pt-6 mt-auto border-t border-white/[0.05]">
           <a href="#" className="flex items-center justify-between group/link">
-            <span className="text-[#00ff9d] text-[10px] font-black uppercase tracking-[0.2em] group-hover/link:tracking-[0.3em] transition-all duration-500">
+            <span className="text-[#FDE047] text-[10px] font-black uppercase tracking-[0.2em] group-hover/link:tracking-[0.3em] transition-all duration-500">
               Join Course
             </span>
-            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover/link:bg-[#00ff9d] group-hover/link:text-force-white group-hover/link:border-[#00ff9d] transition-all duration-500">
+            <div className="w-8 h-8 rounded-full bg-[#0d1412]/5 border border-white/10 flex items-center justify-center group-hover/link:bg-[#FDE047] group-hover/link:text-force-white group-hover/link:border-[#FDE047] transition-all duration-500">
               <FeatherIcon icon="arrow-right" size={14} />
             </div>
           </a>
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-[#00ff9d] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
+      <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-[#FDE047] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
     </div>
   );
 
@@ -133,7 +133,7 @@ const CoursesSection = () => {
     <section className="py-20 md:py-32 bg-[#050807] relative overflow-hidden">
       {/* Background Shapes */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-[#00ff9d]/5 rounded-full blur-[120px]"></div>
+        <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-[#FDE047]/5 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px]"></div>
       </div>
 
@@ -142,11 +142,11 @@ const CoursesSection = () => {
         {/* Top Header */}
         <ScrollReveal direction="up">
           <div className="text-center space-y-6 mb-16">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-[#00ff9d]">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-[#0d1412]/5 border border-white/[0.03] text-[10px] font-black uppercase tracking-[0.2em] text-[#FDE047]">
               Learning Center
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              Stay Informed, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-[#01c67c]">Stay Ahead</span>
+              Stay Informed, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-[#FDE047]">Stay Ahead</span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
               Nâng cao kỹ năng quản trị web và marketing với thư viện khóa học chuyên sâu từ các chuyên gia hàng đầu.
@@ -159,7 +159,7 @@ const CoursesSection = () => {
                   <button
                     key={cat}
                     onClick={() => handleTabChange(cat)}
-                    className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#00ff9d] to-[#01c67c] text-[#000000] shadow-[0_10px_20px_rgba(0,255,157,0.2)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                    className={`px-5 py-2 rounded-[7px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-500 ${activeTab === cat ? 'bg-gradient-to-r from-[#FDE047] to-[#FDE047] text-[#000000] shadow-[0_10px_20px_rgba(0,255,157,0.2)]' : 'text-gray-400 hover:text-white hover:bg-[#0d1412]/5'}`}
                   >
                     {cat === 'All' ? 'Tất cả' : cat}
                   </button>
@@ -202,7 +202,7 @@ const CoursesSection = () => {
               <button
                 onClick={handlePrev}
                 disabled={safeSlide === 0}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-left" size={16} />
               </button>
@@ -211,14 +211,14 @@ const CoursesSection = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}
-                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-[#00ff9d]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
+                    className={`transition-all duration-300 rounded-full ${safeSlide === i ? 'w-6 h-2 bg-[#FDE047]' : 'w-2 h-2 bg-[#0d1412]/20 hover:bg-[#0d1412]/40'}`}
                   />
                 ))}
               </div>
               <button
                 onClick={handleNext}
                 disabled={safeSlide === totalSlides - 1}
-                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 disabled:opacity-30"
+                className="w-9 h-9 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300 disabled:opacity-30"
               >
                 <FeatherIcon icon="chevron-right" size={16} />
               </button>
@@ -229,15 +229,15 @@ const CoursesSection = () => {
         {/* Desktop Footer Pagination */}
         <ScrollReveal direction="up" delay={0.4}>
           <div className="hidden md:flex items-center justify-center gap-4 mt-16">
-            <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300">
+            <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300">
               <FeatherIcon icon="chevron-left" size={20} />
             </button>
             <div className="flex gap-2">
-              <button className="w-12 h-12 rounded-[10px] bg-gradient-to-br from-[#00ff9d] to-[#01c67c] text-force-white flex items-center justify-center font-black text-sm shadow-[0_10px_20px_rgba(0,255,157,0.3)]">1</button>
-              <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 font-black text-sm">2</button>
-              <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300 font-black text-sm">3</button>
+              <button className="w-12 h-12 rounded-[10px] bg-gradient-to-br from-[#FDE047] to-[#FDE047] text-force-white flex items-center justify-center font-black text-sm shadow-[0_10px_20px_rgba(0,255,157,0.3)]">1</button>
+              <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300 font-black text-sm">2</button>
+              <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300 font-black text-sm">3</button>
             </div>
-            <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-500 hover:border-[#00ff9d] hover:text-[#00ff9d] hover:bg-[#00ff9d]/5 transition-all duration-300">
+            <button className="w-12 h-12 rounded-[10px] border border-white/10 flex items-center justify-center text-gray-400 hover:border-[#FDE047] hover:text-[#FDE047] hover:bg-[#FDE047]/5 transition-all duration-300">
               <FeatherIcon icon="chevron-right" size={20} />
             </button>
           </div>

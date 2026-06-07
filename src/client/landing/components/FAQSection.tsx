@@ -36,7 +36,7 @@ const FAQSection = () => {
     <section className="py-20 md:py-32 bg-[#040706] relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute inset-0 pointer-events-none -z-10">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#00ff9d]/5 rounded-full blur-[150px]"></div>
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FDE047]/5 rounded-full blur-[150px]"></div>
         <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[120px]"></div>
       </div>
 
@@ -48,34 +48,34 @@ const FAQSection = () => {
             <ScrollReveal direction="left">
               <div className="space-y-8 lg:sticky lg:top-32">
                 <div className="space-y-5">
-                  <span className="inline-flex px-3 py-1.5 bg-[#00ff9d]/10 border border-[#00ff9d]/20 rounded-full text-[10px] font-black uppercase tracking-widest text-[#00ff9d]">
+                  <span className="inline-flex px-3 py-1.5 bg-[#FDE047]/10 border border-[#FDE047]/20 rounded-full text-[10px] font-black uppercase tracking-widest text-[#FDE047]">
                     FAQ's
                   </span>
                   <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-[1.1]">
                     Bạn có thắc mắc?<br/>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff9d] to-blue-400">Chúng tôi có lời giải!</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] to-blue-400">Chúng tôi có lời giải!</span>
                   </h2>
                   <p className="text-gray-400 text-base leading-relaxed">
                     Không tìm thấy câu trả lời bạn cần? Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7.
                   </p>
                 </div>
                 
-                <div className="p-8 rounded-[28px] bg-gradient-to-br from-[#00ff9d]/10 to-blue-500/5 border border-[#00ff9d]/20 space-y-6 backdrop-blur-sm">
+                <div className="p-8 rounded-[28px] bg-gradient-to-br from-[#FDE047]/10 to-blue-500/5 border border-[#FDE047]/20 space-y-6 backdrop-blur-sm">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-[#00ff9d] to-[#01c67c] rounded-2xl flex items-center justify-center shadow-[0_10px_30px_rgba(0,255,157,0.3)] flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-[#FDE047] to-[#FDE047] rounded-2xl flex items-center justify-center shadow-[0_10px_30px_rgba(0,255,157,0.3)] flex-shrink-0">
                       <FeatherIcon icon="headphones" className="text-force-white" size={24} />
                     </div>
                     <div>
                       <p className="font-black text-white text-base">Hỗ trợ 24/7</p>
-                      <p className="text-[10px] text-[#00ff9d]/60 font-black uppercase tracking-widest mt-0.5">Always Online</p>
+                      <p className="text-[10px] text-[#FDE047]/60 font-black uppercase tracking-widest mt-0.5">Always Online</p>
                     </div>
                   </div>
                   <p className="text-sm text-gray-400 leading-relaxed">
                     Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng giúp đỡ bạn mọi lúc, mọi nơi để đảm bảo website vận hành mượt mà nhất.
                   </p>
-                  <button className="flex items-center gap-3 text-[#00ff9d] text-sm font-black group mt-2 hover:gap-4 transition-all duration-300">
+                  <button className="flex items-center gap-3 text-[#FDE047] text-sm font-black group mt-2 hover:gap-4 transition-all duration-300">
                     Liên hệ ngay
-                    <div className="w-7 h-7 rounded-full bg-[#00ff9d]/10 border border-[#00ff9d]/30 flex items-center justify-center group-hover:bg-[#00ff9d] group-hover:text-force-white group-hover:border-[#00ff9d] transition-all duration-500">
+                    <div className="w-7 h-7 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/30 flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-force-white group-hover:border-[#FDE047] transition-all duration-500">
                       <FeatherIcon icon="arrow-right" size={14} />
                     </div>
                   </button>
@@ -91,16 +91,16 @@ const FAQSection = () => {
                 <div 
                   className={`group transition-all duration-500 border rounded-[24px] overflow-hidden cursor-pointer ${
                     activeIndex === idx 
-                      ? 'bg-[#00ff9d]/5 border-[#00ff9d]/30 shadow-[0_20px_40px_rgba(0,255,157,0.08)]' 
-                      : 'bg-white/[0.02] border-white/[0.06] hover:border-white/20 hover:bg-white/[0.04]'
+                      ? 'bg-[#FDE047]/5 border-[#FDE047]/30 shadow-[0_20px_40px_rgba(0,255,157,0.08)]' 
+                      : 'bg-[#0d1412]/[0.02] border-white/[0.06] hover:border-white/20 hover:bg-[#0d1412]/[0.04]'
                   }`}
                   onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
                 >
                   <div className="w-full px-8 py-6 flex items-start justify-between gap-6">
-                    <span className={`text-base md:text-lg font-bold transition-colors duration-300 leading-snug ${activeIndex === idx ? 'text-[#00ff9d]' : 'text-gray-200 group-hover:text-white'}`}>
+                    <span className={`text-base md:text-lg font-bold transition-colors duration-300 leading-snug ${activeIndex === idx ? 'text-[#FDE047]' : 'text-gray-200 group-hover:text-white'}`}>
                       {faq.q}
                     </span>
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${activeIndex === idx ? 'bg-[#00ff9d] text-force-white rotate-180 shadow-[0_0_20px_#00ff9d]' : 'bg-white/5 text-gray-400 border border-white/10 group-hover:border-white/30'}`}>
+                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${activeIndex === idx ? 'bg-[#FDE047] text-force-white rotate-180 shadow-[0_0_20px_#FDE047]' : 'bg-[#0d1412]/5 text-gray-400 border border-white/10 group-hover:border-white/30'}`}>
                       <FeatherIcon icon="chevron-down" size={16} strokeWidth={3} />
                     </div>
                   </div>
@@ -110,7 +110,7 @@ const FAQSection = () => {
                       activeIndex === idx ? 'max-h-[250px] opacity-100' : 'max-h-0 opacity-0'
                     }`}
                   >
-                    <p className="px-8 pb-8 text-gray-400 leading-relaxed text-sm md:text-base font-medium border-t border-white/5 pt-4">
+                    <p className="px-8 pb-8 text-gray-400 leading-relaxed text-sm md:text-base font-medium border-t border-white/[0.03] pt-4">
                       {faq.a}
                     </p>
                   </div>

@@ -49,10 +49,10 @@
 html[data-menu-color="light"] {
     --tw-menu-bg:                               white;
     --tw-menu-item-color:                       rgb(108, 117, 125);
-    --tw-menu-item-active-color:                rgb(30, 133, 255);
-    --tw-menu-item-active-bg:                   rgba(30, 133, 255, 0.1);
-    --tw-menu-item-hover-color:                 rgb(30, 133, 255);
-    --tw-menu-item-hover-bg:                    rgba(30, 133, 255, 0.1);
+    --tw-menu-item-active-color:                rgb(252, 211, 77);
+    --tw-menu-item-active-bg:                   rgba(252, 211, 77, 0.1);
+    --tw-menu-item-hover-color:                 rgb(252, 211, 77);
+    --tw-menu-item-hover-bg:                    rgba(252, 211, 77, 0.1);
 }
 
 // Dark Menu
@@ -60,10 +60,10 @@ html[data-menu-color="dark"],
 html[data-mode="dark"][data-menu-color="light"] {
     --tw-menu-bg:                               #050816;
     --tw-menu-item-color:                       rgb(144, 151, 167);
-    --tw-menu-item-active-color:                rgb(200, 205, 220);
-    --tw-menu-item-active-bg:                   rgba(30, 133, 255, 0.1);
-    --tw-menu-item-hover-color:                 rgb(200, 205, 220);
-    --tw-menu-item-hover-bg:                    rgba(255, 255, 255, 0.04);
+    --tw-menu-item-active-color:                rgb(252, 211, 77);
+    --tw-menu-item-active-bg:                   rgba(252, 211, 77, 0.1);
+    --tw-menu-item-hover-color:                 rgb(252, 211, 77);
+    --tw-menu-item-hover-bg:                    rgba(252, 211, 77, 0.1);
 }
 
 // Brand Menu
@@ -78,12 +78,12 @@ html[data-menu-color="brand"] {
 
 // Gradient Menu
 html[data-menu-color="gradient"] {
-    --tw-menu-bg:                             linear-gradient(135deg, #6379c3 0%, #546ee5 60%);
-    --tw-menu-item-color:                     rgb(206, 220, 228);
-    --tw-menu-item-active-color:              rgb(255, 255, 255);
-    --tw-menu-item-active-bg:                 rgba(255, 255, 255, 0.2);
-    --tw-menu-item-hover-color:               rgb(255, 255, 255);
-    --tw-menu-item-hover-bg:                  rgba(255, 255, 255, 0.2);
+    --tw-menu-bg:                             linear-gradient(135deg, #FCD34D 0%, #F59E0B 60%);
+    --tw-menu-item-color:                     rgb(31, 41, 55);
+    --tw-menu-item-active-color:              rgb(0, 0, 0);
+    --tw-menu-item-active-bg:                 rgba(0, 0, 0, 0.1);
+    --tw-menu-item-hover-color:               rgb(0, 0, 0);
+    --tw-menu-item-hover-bg:                  rgba(0, 0, 0, 0.1);
 }
 
 // ==================================================== //
@@ -94,10 +94,10 @@ html[data-menu-color="gradient"] {
 html[data-topbar-color="light"] {
     --tw-topbar-bg:                           rgb(255, 255, 255);
     --tw-topbar-item-color:                   rgb(108, 117, 125);
-    --tw-topbar-item-active-bg:               rgba(30, 133, 255, 0.2);
-    --tw-topbar-item-active-color:            rgb(30, 133, 255);
-    --tw-topbar-item-hover-bg:                rgba(30, 133, 255, 0.2);
-    --tw-topbar-item-hover-color:             rgb(30, 133, 255);
+    --tw-topbar-item-active-bg:               rgba(252, 211, 77, 0.2);
+    --tw-topbar-item-active-color:            rgb(252, 211, 77);
+    --tw-topbar-item-hover-bg:                rgba(252, 211, 77, 0.2);
+    --tw-topbar-item-hover-color:             rgb(252, 211, 77);
 }
 
 // Dark Topbar
@@ -105,10 +105,10 @@ html[data-topbar-color="dark"],
 html[data-mode="dark"][data-topbar-color="light"] {
     --tw-topbar-bg:                           rgb(30, 41, 59);
     --tw-topbar-item-color:                   rgb(131, 145, 162);
-    --tw-topbar-item-active-bg:               rgb(70, 79, 91);
-    --tw-topbar-item-active-color:            rgb(188, 206, 228);
-    --tw-topbar-item-hover-bg:                rgb(70, 79, 91);
-    --tw-topbar-item-hover-color:             rgb(188, 206, 228);
+    --tw-topbar-item-active-bg:               rgb(252, 211, 77);
+    --tw-topbar-item-active-color:            rgb(0, 0, 0);
+    --tw-topbar-item-hover-bg:                rgb(220, 180, 40);
+    --tw-topbar-item-hover-color:             rgb(0, 0, 0);
 }
 
 // Brand Topbar
@@ -123,10 +123,10 @@ html[data-topbar-color="brand"] {
 
 // Gradient Topbar
 html[data-topbar-color="gradient"] {
-    --tw-topbar-bg:                           linear-gradient(135deg, #6379c3 0%, #546ee5 60%);
-    --tw-topbar-item-color:                   rgba(255, 255, 255, 0.7);
-    --tw-topbar-item-active-bg:               rgba(255, 255, 255, 0.1);
-    --tw-topbar-item-active-color:            rgb(255, 255, 255);
-    --tw-topbar-item-hover-bg:                rgba(255, 255, 255, 0.1);
-    --tw-topbar-item-hover-color:             rgb(255, 255, 255);
+    --tw-topbar-bg:                           linear-gradient(135deg, #FCD34D 0%, #F59E0B 60%);
+    --tw-topbar-item-color:                   rgba(0, 0, 0, 0.7);
+    --tw-topbar-item-active-bg:               rgba(0, 0, 0, 0.1);
+    --tw-topbar-item-active-color:            rgb(0, 0, 0);
+    --tw-topbar-item-hover-bg:                rgba(0, 0, 0, 0.1);
+    --tw-topbar-item-hover-color:             rgb(0, 0, 0);
 }

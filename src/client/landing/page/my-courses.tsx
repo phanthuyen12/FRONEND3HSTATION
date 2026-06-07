@@ -63,28 +63,28 @@ const MyCoursesPage = () => {
 
     return (
         <HostingLayout>
-            <div className="bg-gray-50 dark:bg-[#060b0a] min-h-screen pb-24 overflow-x-hidden">
+            <div className="bg-[#060b0a] min-h-screen pb-24 overflow-x-hidden">
                 {/* Breadcrumb Navigation */}
                 <div className="max-w-7xl mx-auto px-4 py-3">
                     <nav className="flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[2px]">
-                        <Link to="/" className="text-gray-400 hover:text-[#00BA4A] flex items-center gap-1.5 transition-colors">
+                        <Link to="/" className="text-gray-400 hover:text-[#FBBF24] flex items-center gap-1.5 transition-colors">
                             <FeatherIcon icon="home" size={12} />
                             Trang chủ
                         </Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
-                        <Link to="/landing-courses" className="text-gray-400 hover:text-[#00BA4A] transition-colors">Khóa học</Link>
+                        <Link to="/landing-courses" className="text-gray-400 hover:text-[#FBBF24] transition-colors">Khóa học</Link>
                         <FeatherIcon icon="chevron-right" size={10} className="text-gray-300" />
-                        <span className="text-gray-900 dark:text-white">Khóa học của tôi</span>
+                        <span className="text-white">Khóa học của tôi</span>
                     </nav>
                 </div>
 
                 {/* Hero section */}
-                <div className="relative bg-gradient-to-r from-[#0d1412] to-[#1a2624] border-b border-white/5 py-12">
+                <div className="relative bg-gradient-to-r from-[#0d1412] to-[#1a2624] border-b border-white/[0.03] py-12">
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                             <div className="space-y-2">
                                 <h1 className="text-4xl md:text-5xl font-black !text-white uppercase tracking-tighter leading-none">
-                                    KHÓA HỌC <span className="text-[#00BA4A]">CỦA TÔI</span>
+                                    KHÓA HỌC <span className="text-[#FBBF24]">CỦA TÔI</span>
                                 </h1>
                                 <p className="text-[11px] font-bold !text-white/50 uppercase tracking-[2px]">
                                     Nâng cao kỹ năng mỗi ngày cùng đội ngũ chuyên gia 3HSTATION
@@ -93,7 +93,7 @@ const MyCoursesPage = () => {
                         </div>
                     </div>
                     {/* Decorative element */}
-                    <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#00BA4A]/10 to-transparent"></div>
+                    <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#FBBF24]/10 to-transparent"></div>
                     <FeatherIcon icon="book-open" size={160} className="absolute -right-10 -bottom-10 text-white/5 rotate-12" />
                 </div>
 
@@ -108,7 +108,7 @@ const MyCoursesPage = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-[10px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-[#00BA4A] text-white shadow-lg shadow-[#00BA4A]/20' : 'bg-white dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-100 dark:border-white/5'}`}
+                                className={`flex items-center gap-2 px-6 py-3 rounded-[10px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-[#FBBF24] text-white shadow-lg shadow-[#FBBF24]/20' : 'bg-[#0d1412]/5 text-gray-400 hover:text-white dark:hover:text-white border border-white/[0.03]'}`}
                             >
                                 <FeatherIcon icon={tab.icon} size={12} />
                                 {tab.label}
@@ -118,24 +118,24 @@ const MyCoursesPage = () => {
 
                     {loading ? (
                         <div className="py-24 flex flex-col items-center justify-center gap-4 opacity-50">
-                            <div className="w-12 h-12 border-4 border-[#00BA4A] border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-12 h-12 border-4 border-[#FBBF24] border-t-transparent rounded-full animate-spin"></div>
                             <p className="text-xs font-black uppercase tracking-widest">Đang tải danh sách...</p>
                         </div>
                     ) : paginatedCourses.length === 0 ? (
-                        <div className="py-32 flex flex-col items-center justify-center text-center bg-white dark:bg-[#0d1412] rounded-[10px] border border-dashed border-gray-200 dark:border-white/10">
-                            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 text-gray-300">
+                        <div className="py-32 flex flex-col items-center justify-center text-center bg-[#0d1412] rounded-[10px] border border-dashed border-white/10">
+                            <div className="w-20 h-20 bg-[#0d1412]/5 rounded-full flex items-center justify-center mb-6 text-gray-300">
                                 <FeatherIcon icon="layers" size={40} />
                             </div>
                             <h3 className="text-xl font-black dark:text-white uppercase mb-2">Chưa có khóa học nào</h3>
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">Bạn chưa đăng ký khóa học nào trong mục này</p>
-                            <Link to="/landing-courses" className="px-8 py-4 bg-[#00BA4A] text-white rounded-[10px] font-black uppercase text-[11px] tracking-widest hover:scale-105 transition-all shadow-lg shadow-[#00BA4A]/20">
+                            <Link to="/landing-courses" className="px-8 py-4 bg-[#FBBF24] text-white rounded-[10px] font-black uppercase text-[11px] tracking-widest hover:scale-105 transition-all shadow-lg shadow-[#FBBF24]/20">
                                 Xem tất cả khóa học
                             </Link>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {paginatedCourses.map(course => (
-                                <div key={course.id} className="bg-white dark:bg-[#0d1412] rounded-[10px] overflow-hidden border border-gray-100 dark:border-white/5 shadow-sm group hover:shadow-xl hover:shadow-[#00BA4A]/5 transition-all duration-500 flex flex-col">
+                                <div key={course.id} className="bg-[#0d1412] rounded-[10px] overflow-hidden border border-white/[0.03] shadow-sm group hover:shadow-xl hover:shadow-[#FBBF24]/5 transition-all duration-500 flex flex-col">
                                     {/* Thumbnail on Top */}
                                     <div className="aspect-video relative overflow-hidden flex-shrink-0">
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -146,11 +146,11 @@ const MyCoursesPage = () => {
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                             />
                                         ) : (
-                                            <div className="w-full h-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                                            <div className="w-full h-full bg-[#0d1412]/5 flex items-center justify-center">
                                                 <FeatherIcon icon="image" size={32} className="text-gray-300" />
                                             </div>
                                         )}
-                                        <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-[#00BA4A] text-white text-[9px] font-black uppercase rounded-full shadow-lg">
+                                        <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-[#FBBF24] text-white text-[9px] font-black uppercase rounded-full shadow-lg">
                                             {course.category}
                                         </div>
                                     </div>
@@ -162,17 +162,17 @@ const MyCoursesPage = () => {
                                                 <FeatherIcon icon="user" size={10} />
                                                 GIẢNG VIÊN: {course.instructor}
                                             </div>
-                                            <h3 className="text-[14px] font-black dark:text-white uppercase leading-tight group-hover:text-[#00BA4A] transition-colors line-clamp-2 h-10">
+                                            <h3 className="text-[14px] font-black dark:text-white uppercase leading-tight group-hover:text-[#FBBF24] transition-colors line-clamp-2 h-10">
                                                 {course.title}
                                             </h3>
                                             
-                                            <div className="flex items-center justify-between py-2 border-y border-gray-50 dark:border-white/5">
-                                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-gray-500 uppercase tracking-widest">
-                                                    <FeatherIcon icon="play-circle" size={12} className="text-[#00BA4A]" />
+                                            <div className="flex items-center justify-between py-2 border-y border-white/[0.03]">
+                                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                                                    <FeatherIcon icon="play-circle" size={12} className="text-[#FBBF24]" />
                                                     {course.lessons} Bài học
                                                 </div>
-                                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-gray-500 uppercase tracking-widest">
-                                                    <FeatherIcon icon="clock" size={12} className="text-[#00BA4A]" />
+                                                <div className="flex items-center gap-1.5 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                                                    <FeatherIcon icon="clock" size={12} className="text-[#FBBF24]" />
                                                     {course.lastAccessed}
                                                 </div>
                                             </div>
@@ -181,11 +181,11 @@ const MyCoursesPage = () => {
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-end">
                                                     <span className="text-[9px] font-black uppercase tracking-widest dark:text-gray-400">Tiến độ</span>
-                                                    <span className="text-[11px] font-black text-[#00BA4A]">{course.progress}%</span>
+                                                    <span className="text-[11px] font-black text-[#FBBF24]">{course.progress}%</span>
                                                 </div>
-                                                <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                                <div className="h-1.5 bg-[#0d1412]/5 rounded-full overflow-hidden">
                                                     <div 
-                                                        className="h-full bg-[#00BA4A] rounded-full transition-all duration-1000" 
+                                                        className="h-full bg-[#FBBF24] rounded-full transition-all duration-1000" 
                                                         style={{ width: `${course.progress}%` }}
                                                     ></div>
                                                 </div>
@@ -194,12 +194,12 @@ const MyCoursesPage = () => {
 
                                         <div className="mt-8 flex items-center gap-3">
                                             <Link 
-                                                to={`/courses/${course.id}`}
-                                                className="flex-grow py-3 bg-[#00BA4A] hover:bg-[#00a340] text-white text-center rounded-[10px] font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-[#00BA4A]/20 active:scale-95"
+                                                to={`/landing-courses/${course.id}`}
+                                                className="flex-grow py-3 bg-[#FBBF24] hover:bg-[#F59E0B] text-white text-center rounded-[10px] font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-[#FBBF24]/20 active:scale-95"
                                             >
                                                 VÀO HỌC NGAY
                                             </Link>
-                                            <button className="p-3 bg-gray-50 dark:bg-white/5 rounded-[10px] text-gray-400 hover:text-[#00BA4A] transition-all hover:bg-[#00BA4A]/10 border border-gray-100 dark:border-white/5">
+                                            <button className="p-3 bg-[#0d1412]/5 rounded-[10px] text-gray-400 hover:text-[#FBBF24] transition-all hover:bg-[#FBBF24]/10 border border-white/[0.03]">
                                                 <FeatherIcon icon="settings" size={16} />
                                             </button>
                                         </div>
@@ -215,7 +215,7 @@ const MyCoursesPage = () => {
                             <button 
                                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                 disabled={currentPage === 1}
-                                className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white dark:bg-[#0d1412] border border-gray-100 dark:border-white/5 text-gray-400 disabled:opacity-30 hover:text-[#00BA4A] hover:border-[#00BA4A] transition-all"
+                                className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-[#0d1412] border border-white/[0.03] text-gray-400 disabled:opacity-30 hover:text-[#FBBF24] hover:border-[#FBBF24] transition-all"
                             >
                                 <FeatherIcon icon="chevron-left" size={16} />
                             </button>
@@ -223,7 +223,7 @@ const MyCoursesPage = () => {
                                 <button
                                     key={i}
                                     onClick={() => setCurrentPage(i + 1)}
-                                    className={`w-10 h-10 flex items-center justify-center rounded-[10px] text-[11px] font-black transition-all ${currentPage === i + 1 ? 'bg-[#00BA4A] text-white shadow-lg shadow-[#00BA4A]/20' : 'bg-white dark:bg-[#0d1412] border border-gray-100 dark:border-white/5 text-gray-400 hover:bg-gray-50'}`}
+                                    className={`w-10 h-10 flex items-center justify-center rounded-[10px] text-[11px] font-black transition-all ${currentPage === i + 1 ? 'bg-[#FBBF24] text-white shadow-lg shadow-[#FBBF24]/20' : 'bg-[#0d1412] border border-white/[0.03] text-gray-400 hover:bg-white/5'}`}
                                 >
                                     {i + 1}
                                 </button>
@@ -231,7 +231,7 @@ const MyCoursesPage = () => {
                             <button 
                                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                 disabled={currentPage === totalPages}
-                                className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white dark:bg-[#0d1412] border border-gray-100 dark:border-white/5 text-gray-400 disabled:opacity-30 hover:text-[#00BA4A] hover:border-[#00BA4A] transition-all"
+                                className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-[#0d1412] border border-white/[0.03] text-gray-400 disabled:opacity-30 hover:text-[#FBBF24] hover:border-[#FBBF24] transition-all"
                             >
                                 <FeatherIcon icon="chevron-right" size={16} />
                             </button>

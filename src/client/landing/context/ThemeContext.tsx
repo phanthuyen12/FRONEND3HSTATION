@@ -17,14 +17,19 @@ const ThemeContext = createContext<ThemeContextType>({
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  // Mặc định ép dùng giao diện sáng (Light Mode) theo yêu cầu của người dùng
-  const theme: Theme = 'light';
+  // Mặc định ép dùng giao diện tối (Dark Mode) theo yêu cầu của người dùng
+  const theme: Theme = 'dark';
   const toggleTheme = () => {
-    console.log("Tính năng chuyển đổi giao diện đã bị vô hiệu hóa. Mặc định là Light Mode.");
+    console.log("Tính năng chuyển đổi giao diện đã bị vô hiệu hóa. Mặc định là Dark Mode.");
   };
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-mode', 'dark');
+    document.documentElement.classList.add('dark');
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: false }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: true }}>
       {children}
     </ThemeContext.Provider>
   );

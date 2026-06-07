@@ -117,7 +117,7 @@ const LandingProfilePage = () => {
          text: 'Tính năng tự động cập nhật thông tin đang được đồng bộ hóa. Vui lòng liên hệ quản trị viên nếu cần thay đổi gấp.',
          icon: 'info',
          confirmButtonText: 'Đã hiểu',
-         confirmButtonColor: '#00BA4A'
+         confirmButtonColor: '#FBBF24'
       });
    };
 
@@ -309,7 +309,7 @@ const LandingProfilePage = () => {
          text: "Bạn có chắc chắn muốn thoát phiên làm việc?",
          icon: 'question',
          showCancelButton: true,
-         confirmButtonColor: '#00BA4A',
+         confirmButtonColor: '#FBBF24',
          cancelButtonColor: '#d33',
          confirmButtonText: 'Đăng xuất ngay',
          cancelButtonText: 'Hủy'
@@ -337,19 +337,19 @@ const LandingProfilePage = () => {
    ];
 
    const InfoItem = ({ label, value, icon, copy, status, action }: any) => (
-      <div className="flex items-center justify-between p-6 hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+      <div className="flex items-center justify-between p-6 hover:bg-white/5/50 dark:hover:bg-[#0d1412]/[0.02] transition-colors group">
          <div className="flex items-center gap-5">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${status === 'warning' ? 'bg-amber-500/10 text-amber-500' : 'bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-[#00BA4A]/10 group-hover:text-[#00BA4A]'}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${status === 'warning' ? 'bg-amber-500/10 text-amber-500' : 'bg-[#0d1412]/5 text-gray-400 group-hover:bg-[#FBBF24]/10 group-hover:text-[#FBBF24]'}`}>
                <FeatherIcon icon={icon} size={18} />
             </div>
             <div className="space-y-0.5">
                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[2px]">{label}</p>
                <div className="flex items-center gap-2">
-                  <span className={`text-[15px] font-black tracking-tight ${status === 'warning' ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
+                  <span className={`text-[15px] font-black tracking-tight ${status === 'warning' ? 'text-amber-500' : 'text-white'}`}>
                      {value}
                   </span>
                   {copy && (
-                     <button onClick={() => { navigator.clipboard.writeText(value); Swal.fire({ toast: true, position: 'bottom-end', icon: 'success', title: 'Đã sao chép!', showConfirmButton: false, timer: 1500 }); }} className="text-gray-300 hover:text-[#00BA4A] transition-colors p-1">
+                     <button onClick={() => { navigator.clipboard.writeText(value); Swal.fire({ toast: true, position: 'bottom-end', icon: 'success', title: 'Đã sao chép!', showConfirmButton: false, timer: 1500 }); }} className="text-gray-300 hover:text-[#FBBF24] transition-colors p-1">
                         <FeatherIcon icon="copy" size={12} />
                      </button>
                   )}
@@ -361,7 +361,7 @@ const LandingProfilePage = () => {
    );
 
    const getStatusStyle = (status: string) => {
-      if (['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(status)) return { bg: 'rgba(0,186,74,0.1)', text: '#00BA4A', icon: 'check-circle' };
+      if (['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(status)) return { bg: 'rgba(251,191,36,0.1)', text: '#FBBF24', icon: 'check-circle' };
       if (['pending', 'dang-cho-xu-ly', 'cho-duyet'].includes(status)) return { bg: 'rgba(245,158,11,0.1)', text: '#F59E0B', icon: 'clock' };
       if (['cancelled', 'da-huy'].includes(status)) return { bg: 'rgba(239,68,68,0.1)', text: '#EF4444', icon: 'x-circle' };
       return { bg: 'rgba(107,114,128,0.1)', text: '#6B7280', icon: 'info' };
@@ -390,10 +390,10 @@ const LandingProfilePage = () => {
                               <span className="text-white/40 font-bold uppercase tracking-widest text-[13px]">VNĐ</span>
                            </div>
                            <div className="flex gap-4 pt-2">
-                              <button onClick={() => handleTabChange('deposit')} className="bg-[#00BA4A] text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest hover:bg-[#009a3d] transition-all shadow-lg active:scale-95 flex items-center gap-3">
+                              <button onClick={() => handleTabChange('deposit')} className="bg-[#FBBF24] text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest hover:bg-[#009a3d] transition-all shadow-lg active:scale-95 flex items-center gap-3">
                                  <FeatherIcon icon="plus-circle" size={18} /> Nạp tiền ngay
                               </button>
-                              <button onClick={() => Swal.fire({ title: 'Rút tiền', text: 'Chức năng rút tiền về ngân hàng đang trong quá trình bảo trì nâng cấp.', icon: 'info', confirmButtonText: 'Đã hiểu' })} className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest transition-all border border-white/20 flex items-center gap-3 backdrop-blur-md">
+                              <button onClick={() => Swal.fire({ title: 'Rút tiền', text: 'Chức năng rút tiền về ngân hàng đang trong quá trình bảo trì nâng cấp.', icon: 'info', confirmButtonText: 'Đã hiểu' })} className="bg-[#0d1412]/10 hover:bg-[#0d1412]/20 text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest transition-all border border-white/20 flex items-center gap-3 backdrop-blur-md">
                                  <FeatherIcon icon="arrow-up-right" size={18} /> Rút tiền
                               </button>
                            </div>
@@ -401,11 +401,11 @@ const LandingProfilePage = () => {
                      </div>
                   </div>
 
-                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
-                     <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/30 dark:bg-black/20">
+                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
+                     <div className="px-8 py-6 border-b border-white/[0.03] flex items-center justify-between bg-black/20">
                         <div className="flex items-center gap-4">
-                           <div className="w-12 h-12 bg-white dark:bg-white/5 shadow-sm rounded-[12px] flex items-center justify-center border border-gray-100 dark:border-white/10">
-                              <FeatherIcon icon="file-text" size={20} className="text-[#00BA4A]" />
+                           <div className="w-12 h-12 bg-[#0d1412]/5 shadow-sm rounded-[12px] flex items-center justify-center border border-white/10">
+                              <FeatherIcon icon="file-text" size={20} className="text-[#FBBF24]" />
                            </div>
                            <div>
                               <h3 className="text-sm font-black uppercase tracking-[2px] dark:text-white">Chi tiết hồ sơ</h3>
@@ -425,9 +425,9 @@ const LandingProfilePage = () => {
          case 'password':
             return (
                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
-                     <div className="bg-[#032030] dark:bg-black/40 px-6 py-4 flex items-center gap-3 text-white">
-                        <div className="bg-[#00BA4A] w-7 h-7 rounded-full flex items-center justify-center">
+                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
+                     <div className="bg-black/40 px-6 py-4 flex items-center gap-3 text-white">
+                        <div className="bg-[#FBBF24] w-7 h-7 rounded-full flex items-center justify-center">
                            <FeatherIcon icon="lock" size={14} />
                         </div>
                         <span className="text-xs font-black uppercase tracking-widest">Thay đổi mật khẩu hệ thống</span>
@@ -437,7 +437,7 @@ const LandingProfilePage = () => {
                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Mật khẩu hiện tại</label>
                            <input
                               type="password"
-                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              className="w-full h-14 bg-[#0d1412]/5 border border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#FBBF24] transition-all"
                               placeholder="••••••••"
                               value={passwordData.currentPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
@@ -447,7 +447,7 @@ const LandingProfilePage = () => {
                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Mật khẩu mới</label>
                            <input
                               type="password"
-                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              className="w-full h-14 bg-[#0d1412]/5 border border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#FBBF24] transition-all"
                               placeholder="Tối thiểu 6 ký tự"
                               value={passwordData.newPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
@@ -457,7 +457,7 @@ const LandingProfilePage = () => {
                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">Xác nhận mật khẩu mới</label>
                            <input
                               type="password"
-                              className="w-full h-14 bg-[#f8f9fb] dark:bg-white/5 border border-[#eff2f6] dark:border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#00BA4A] transition-all"
+                              className="w-full h-14 bg-[#0d1412]/5 border border-white/10 rounded-[12px] px-6 text-sm font-bold outline-none dark:text-white focus:border-[#FBBF24] transition-all"
                               placeholder="Nhập lại mật khẩu mới"
                               value={passwordData.confirmPassword}
                               onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
@@ -466,7 +466,7 @@ const LandingProfilePage = () => {
                         <button
                            onClick={handleChangePassword}
                            disabled={saving}
-                           className="w-full h-14 bg-[#00BA4A] text-white rounded-[12px] font-black text-xs uppercase tracking-widest shadow-xl shadow-[#00BA4A]/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                           className="w-full h-14 bg-[#FBBF24] text-white rounded-[12px] font-black text-xs uppercase tracking-widest shadow-xl shadow-[#FBBF24]/20 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                         >
                            {saving ? 'ĐANG CẬP NHẬT...' : 'XÁC NHẬN ĐỔI MẬT KHẨU'}
                         </button>
@@ -477,22 +477,22 @@ const LandingProfilePage = () => {
          case 'orders':
             return (
                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] p-5 flex flex-col md:flex-row items-center justify-between gap-4">
                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-[#00BA4A]/10 text-[#00BA4A] rounded-xl flex items-center justify-center shadow-sm"><FeatherIcon icon="file-text" size={16} /></div>
+                        <div className="w-9 h-9 bg-[#FBBF24]/10 text-[#FBBF24] rounded-xl flex items-center justify-center shadow-sm"><FeatherIcon icon="file-text" size={16} /></div>
                         <div>
                            <h2 className="text-[15px] font-black dark:text-white uppercase tracking-tight">Đơn hàng của tôi</h2>
                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Tổng cộng {orders.length} đơn hàng</p>
                         </div>
                      </div>
-                     <div className="flex w-full md:w-[320px] items-center gap-3 h-10 px-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 focus-within:border-[#00BA4A]/30 transition-all">
+                     <div className="flex w-full md:w-[320px] items-center gap-3 h-10 px-4 bg-[#0d1412]/5 rounded-xl border border-white/[0.03] focus-within:border-[#FBBF24]/30 transition-all">
                         <FeatherIcon icon="search" size={13} className="text-gray-400" />
                         <input type="text" placeholder="Tìm theo mã hoặc loại sản phẩm..." value={orderSearch} onChange={(e) => { setOrderSearch(e.target.value); setOrderCurrentPage(1); }} className="bg-transparent flex-1 text-[10px] font-bold outline-none dark:text-white placeholder:text-gray-400/50" />
                      </div>
                   </div>
 
                   <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                     <div className="flex gap-1.5 p-1 bg-white dark:bg-[#0d1412] border border-gray-100 dark:border-white/5 rounded-2xl w-full md:w-auto">
+                     <div className="flex gap-1.5 p-1 bg-[#0d1412] border border-white/[0.03] rounded-2xl w-full md:w-auto">
                         {[
                            { id: 'tat-ca', label: 'Tất cả', count: orders.length },
                            { id: 'cho-xu-ly', label: 'Chờ thanh toán', count: orders.filter(o => ['pending', 'dang-cho-xu-ly', 'cho-duyet'].includes(o.status)).length },
@@ -505,14 +505,14 @@ const LandingProfilePage = () => {
                               onClick={() => { setOrderStatusFilter(tab.id); setOrderCurrentPage(1); }}
                               className={`relative group px-4 py-2 rounded-xl text-[8.5px] font-black uppercase tracking-[2px] flex items-center justify-center text-center gap-2 transition-all min-h-[48px] ${orderStatusFilter === tab.id
                                     ? 'bg-[#032030] text-white shadow-xl shadow-[#032030]/20'
-                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                                    : 'text-gray-400 hover:bg-white/5 dark:hover:bg-[#0d1412]/5'
                                  }`}
                               style={{ color: orderStatusFilter === tab.id ? '#ffffff' : undefined }}
                            >
                               <span className="max-w-[80px] leading-tight">{tab.label}</span>
                               <span className={`px-1.5 py-0.5 rounded-lg text-[8px] font-black transition-colors ${orderStatusFilter === tab.id
-                                    ? 'bg-[#00BA4A] text-white'
-                                    : 'bg-gray-100 dark:bg-white/10 text-gray-400'
+                                    ? 'bg-[#FBBF24] text-white'
+                                    : 'bg-[#0d1412]/10 text-gray-400'
                                  }`}>
                                  {tab.count}
                               </span>
@@ -521,11 +521,11 @@ const LandingProfilePage = () => {
                      </div>
                   </div>
 
-                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
                      <div className="overflow-x-auto overflow-y-hidden">
                         <table className="w-full text-left border-collapse min-w-[800px]">
                            <thead>
-                              <tr className="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5 text-[8px] font-black text-gray-400 uppercase tracking-[2px]">
+                              <tr className="bg-[#0d1412]/5 border-b border-white/[0.03] text-[8px] font-black text-gray-400 uppercase tracking-[2px]">
                                  <th className="px-6 py-3.5">CHI TIẾT</th>
                                  <th className="px-6 py-3.5">SẢN PHẨM / DỊCH VỤ</th>
                                  <th className="px-6 py-3.5 text-center">TỔNG TIỀN</th>
@@ -540,26 +540,26 @@ const LandingProfilePage = () => {
                               ) : paginatedOrders.map((order: any, i: number) => {
                                  const status = getStatusStyle(order.status);
                                  return (
-                                    <tr key={i} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                                    <tr key={i} className="hover:bg-white/5/50 dark:hover:bg-[#0d1412]/5 transition-colors group">
                                        <td className="px-6 py-4">
                                           <button
                                              onClick={() => handleViewOrderDetail(order.id)}
-                                             className="flex items-center gap-1.5 text-[9px] font-black text-[#00BA4A] hover:bg-[#00BA4A]/10 px-2.5 py-1.5 rounded-lg transition-all uppercase tracking-widest"
+                                             className="flex items-center gap-1.5 text-[9px] font-black text-[#FBBF24] hover:bg-[#FBBF24]/10 px-2.5 py-1.5 rounded-lg transition-all uppercase tracking-widest"
                                           >
                                              <FeatherIcon icon="eye" size={11} /> View
                                           </button>
                                        </td>
                                        <td className="px-6 py-4">
                                           <div className="flex flex-col gap-0.5">
-                                             <span className="text-[12px] font-black text-gray-900 dark:text-white uppercase tracking-tight truncate max-w-[200px]">{order.type.replace(/_/g, ' ')}</span>
+                                             <span className="text-[12px] font-black text-white uppercase tracking-tight truncate max-w-[200px]">{order.type.replace(/_/g, ' ')}</span>
                                              <div className="flex items-center gap-2">
-                                                <span className="text-[8.5px] font-black text-[#00BA4A] uppercase tracking-wider bg-[#00BA4A]/10 px-1.5 py-0.5 rounded">ID: #{order.item_id || 'N/A'}</span>
+                                                <span className="text-[8.5px] font-black text-[#FBBF24] uppercase tracking-wider bg-[#FBBF24]/10 px-1.5 py-0.5 rounded">ID: #{order.item_id || 'N/A'}</span>
                                              </div>
                                           </div>
                                        </td>
-                                       <td className="px-6 py-4 text-center text-[12.5px] font-black text-gray-900 dark:text-white">{fmt(order.amount)}</td>
+                                       <td className="px-6 py-4 text-center text-[12.5px] font-black text-white">{fmt(order.amount)}</td>
                                        <td className="px-6 py-4 text-center">
-                                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-gray-100 dark:border-white/5" style={{ background: status.bg, color: status.text }}>
+                                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-white/[0.03]" style={{ background: status.bg, color: status.text }}>
                                              <div className="w-1 h-1 rounded-full" style={{ backgroundColor: status.text }}></div>
                                              <span className="text-[8.5px] font-black uppercase tracking-widest">{order.status}</span>
                                           </div>
@@ -567,7 +567,7 @@ const LandingProfilePage = () => {
                                        <td className="px-6 py-4 text-[11px] font-black text-gray-400 font-mono">PO{String(order.id).padStart(7, '0')}</td>
                                        <td className="px-6 py-4">
                                           <div className="flex flex-col">
-                                             <span className="text-[10px] font-black text-gray-800 dark:text-white">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
+                                             <span className="text-[10px] font-black text-white">{new Date(order.created_at).toLocaleDateString('vi-VN')}</span>
                                              <span className="text-[8.5px] font-bold text-gray-400 uppercase">{new Date(order.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
                                           </div>
                                        </td>
@@ -579,7 +579,7 @@ const LandingProfilePage = () => {
                      </div>
 
                      {totalOrderPages > 1 && (
-                        <div className="px-6 py-5 border-t border-gray-50 dark:border-white/5 bg-gray-50/20 dark:bg-black/10 flex items-center justify-between">
+                        <div className="px-6 py-5 border-t border-white/[0.03] bg-black/10 flex items-center justify-between">
                            <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest hidden md:block">
                               Trang {orderCurrentPage} / {totalOrderPages}
                            </div>
@@ -587,7 +587,7 @@ const LandingProfilePage = () => {
                               <button
                                  disabled={orderCurrentPage === 1}
                                  onClick={() => { setOrderCurrentPage(p => p - 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
-                                 className="w-10 h-10 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-[#00BA4A] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                                 className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#0d1412] dark:hover:bg-[#0d1412]/5 hover:text-[#FBBF24] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                               >
                                  <FeatherIcon icon="chevron-left" size={16} />
                               </button>
@@ -605,8 +605,8 @@ const LandingProfilePage = () => {
                                        key={idx}
                                        onClick={() => { setOrderCurrentPage(page); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
                                        className={`w-10 h-10 rounded-xl text-[11px] font-black transition-all ${orderCurrentPage === page
-                                             ? 'bg-[#00BA4A] text-white shadow-lg shadow-[#00BA4A]/30 scale-110'
-                                             : 'bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 text-gray-500 hover:border-[#00BA4A]/50 hover:text-[#00BA4A]'
+                                             ? 'bg-[#FBBF24] text-white shadow-lg shadow-[#FBBF24]/30 scale-110'
+                                             : 'bg-[#0d1412]/5 border border-white/10 text-gray-400 hover:border-[#FBBF24]/50 hover:text-[#FBBF24]'
                                           }`}
                                     >
                                        {page}
@@ -617,7 +617,7 @@ const LandingProfilePage = () => {
                               <button
                                  disabled={orderCurrentPage === totalOrderPages}
                                  onClick={() => { setOrderCurrentPage(p => p + 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
-                                 className="w-10 h-10 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-[#00BA4A] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                                 className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#0d1412] dark:hover:bg-[#0d1412]/5 hover:text-[#FBBF24] transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                               >
                                  <FeatherIcon icon="chevron-right" size={16} />
                               </button>
@@ -630,7 +630,7 @@ const LandingProfilePage = () => {
          case 'balance':
             return (
                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-white dark:bg-[#0d1412] p-8 rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <div className="bg-[#0d1412] p-8 rounded-[16px] shadow-sm border border-white/[0.03] flex items-center justify-between">
                      <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-[#3e6665] text-white rounded-[12px] flex items-center justify-center shadow-lg"><FeatherIcon icon="credit-card" size={20} /></div>
                         <div>
@@ -640,11 +640,11 @@ const LandingProfilePage = () => {
                      </div>
                   </div>
 
-                  <div className="bg-white dark:bg-[#0d1412] rounded-[16px] shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
                      <div className="overflow-x-auto">
                         <table className="w-full text-left">
                            <thead>
-                              <tr className="bg-[#f8f9fb] dark:bg-white/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                              <tr className="bg-[#0d1412]/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                                  <th className="px-8 py-5">Mã Giao Dịch</th>
                                  <th className="px-8 py-5">Số Tiền</th>
                                  <th className="px-8 py-5">Phương Thức</th>
@@ -658,10 +658,10 @@ const LandingProfilePage = () => {
                               ) : topups.slice(0, visibleTopups).map((t, i) => {
                                  const status = getStatusStyle(t.status);
                                  return (
-                                    <tr key={i} className="text-xs font-bold transition-colors hover:bg-gray-50/50 dark:hover:bg-white/5">
+                                    <tr key={i} className="text-xs font-bold transition-colors hover:bg-white/5/50 dark:hover:bg-[#0d1412]/5">
                                        <td className="px-8 py-5 text-[#297c6d] font-black uppercase">{t.code}</td>
                                        <td className="px-8 py-5 text-sm font-black dark:text-white">+{fmt(t.amount)}</td>
-                                       <td className="px-8 py-5 text-gray-500 uppercase tracking-tight">{t.bank}</td>
+                                       <td className="px-8 py-5 text-gray-400 uppercase tracking-tight">{t.bank}</td>
                                        <td className="px-8 py-5 text-center">
                                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full uppercase text-[9px] font-black" style={{ background: status.bg, color: status.text }}>
                                              <FeatherIcon icon={status.icon} size={10} /> {t.status}
@@ -676,8 +676,8 @@ const LandingProfilePage = () => {
                      </div>
 
                      {topups.length > visibleTopups && (
-                        <div className="px-8 py-6 border-t border-gray-50 dark:border-white/5 flex justify-center">
-                           <button onClick={() => setVisibleTopups(prev => prev + 10)} className="px-10 py-3 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[12px] text-[10px] font-black uppercase tracking-[2px] flex items-center gap-3 hover:bg-[#032030] hover:text-white transition-all shadow-sm">
+                        <div className="px-8 py-6 border-t border-white/[0.03] flex justify-center">
+                           <button onClick={() => setVisibleTopups(prev => prev + 10)} className="px-10 py-3 bg-[#0d1412]/5 border border-white/10 rounded-[12px] text-[10px] font-black uppercase tracking-[2px] flex items-center gap-3 hover:bg-[#032030] hover:text-white transition-all shadow-sm">
                               <FeatherIcon icon="refresh-cw" size={12} /> Tải thêm lịch sử ({topups.length - visibleTopups} còn lại)
                            </button>
                         </div>
@@ -692,18 +692,18 @@ const LandingProfilePage = () => {
 
    return (
       <HostingLayout>
-         <div className="min-h-screen bg-[#F8FAFB] dark:bg-[#060a09] pt-0 pb-24">
+         <div className="min-h-screen bg-[#060a09] pt-0 pb-24">
 
             {/* ── BREADCRUMBS ── */}
             <div className="hidden md:block max-w-[1200px] mx-auto px-4 md:px-6 lg:px-8 mb-6">
-               <div className="flex items-center gap-2 text-[13px] text-gray-500 font-medium">
-                  <Link to="/landing1" className="hover:text-[#00BA4A] transition-colors flex items-center gap-1.5 grayscale opacity-70 hover:opacity-100 hover:grayscale-0">
+               <div className="flex items-center gap-2 text-[13px] text-gray-400 font-medium">
+                  <Link to="/landing1" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1.5 grayscale opacity-70 hover:opacity-100 hover:grayscale-0">
                      <FeatherIcon icon="home" size={14} /> Trang chủ
                   </Link>
                   <FeatherIcon icon="chevron-right" size={12} className="opacity-30" />
                   <span className="opacity-70">Tài khoản</span>
                   <FeatherIcon icon="chevron-right" size={12} className="opacity-30" />
-                  <span className="text-gray-900 dark:text-white font-bold uppercase tracking-tight">{user?.name || 'Hồ sơ cá nhân'}</span>
+                  <span className="text-white font-bold uppercase tracking-tight">{user?.name || 'Hồ sơ cá nhân'}</span>
                </div>
             </div>
 
@@ -712,16 +712,16 @@ const LandingProfilePage = () => {
 
                   <div className="lg:w-[320px] shrink-0 space-y-6">
                      {/* ── ACCOUNT CARD ── */}
-                     <div className="bg-white dark:bg-[#0d1412] p-6 rounded-[16px] shadow-sm border border-[#eff2f6] dark:border-white/5 flex items-center gap-5 transition-all hover:shadow-md">
+                     <div className="bg-[#0d1412] p-6 rounded-[16px] shadow-sm border border-white/[0.03] flex items-center gap-5 transition-all hover:shadow-md">
                         <div className="relative shrink-0">
-                           <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=00BA4A&color=fff`} className="w-16 h-16 rounded-full border-2 border-[#eff2f6] dark:border-white/10 object-cover p-0.5" alt="Avatar" />
-                           <span className="absolute bottom-1 right-1 w-4 h-4 bg-[#00BA4A] border-4 border-white dark:border-[#0d1412] rounded-full"></span>
+                           <img src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=00BA4A&color=fff`} className="w-16 h-16 rounded-full border-2 border-white/10 object-cover p-0.5" alt="Avatar" />
+                           <span className="absolute bottom-1 right-1 w-4 h-4 bg-[#FBBF24] border-4 border-[#0d1412] rounded-full"></span>
                         </div>
                         <div className="min-w-0 flex-1">
-                           <h3 className="text-[17px] font-black text-gray-900 dark:text-white uppercase tracking-tight truncate leading-tight">{user?.name || '---'}</h3>
+                           <h3 className="text-[17px] font-black text-white uppercase tracking-tight truncate leading-tight">{user?.name || '---'}</h3>
                            <div className="mt-2 space-y-0.5">
                               <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Số dư hiện tại</p>
-                              <p className="text-[15px] font-black text-[#00BA4A] tracking-tight">{fmt(user?.balance || 0)}</p>
+                              <p className="text-[15px] font-black text-[#FBBF24] tracking-tight">{fmt(user?.balance || 0)}</p>
                            </div>
                         </div>
                      </div>
@@ -747,16 +747,16 @@ const LandingProfilePage = () => {
                                        key={i}
                                        onClick={() => { handleTabChange(item.id); setSelectedOrder(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                                        className={`w-full flex items-center justify-between p-4 rounded-[16px] transition-all group border ${isCurrent
-                                             ? 'bg-[#00BA4A] border-[#00BA4A] shadow-lg shadow-[#00BA4A]/20'
-                                             : 'bg-white dark:bg-[#0d1412] border-[#eff2f6] dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-gray-200 dark:hover:border-white/20'
+                                             ? 'bg-[#FBBF24] border-[#FBBF24] shadow-lg shadow-[#FBBF24]/20'
+                                             : 'bg-[#0d1412] border-white/[0.03] hover:bg-white/5 dark:hover:bg-[#0d1412]/10 hover:border-white/10 dark:hover:border-white/20'
                                           }`}
                                     >
                                        <div className="flex items-center gap-4">
-                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isCurrent ? 'bg-white text-[#00BA4A] shadow-lg' : 'bg-gray-50 dark:bg-white/5 text-gray-400 group-hover:text-[#00BA4A]'
+                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isCurrent ? 'bg-[#0d1412] text-[#FBBF24] shadow-lg' : 'bg-[#0d1412]/5 text-gray-400 group-hover:text-[#FBBF24]'
                                              }`}>
                                              <FeatherIcon icon={item.icon} size={18} />
                                           </div>
-                                          <span className={`text-[13px] font-bold tracking-tight transition-colors ${isCurrent ? 'text-white' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
+                                          <span className={`text-[13px] font-bold tracking-tight transition-colors ${isCurrent ? 'text-white' : 'text-gray-400 group-hover:text-white dark:group-hover:text-white'
                                              }`}>
                                              {item.label}
                                           </span>
@@ -764,7 +764,7 @@ const LandingProfilePage = () => {
                                        <FeatherIcon
                                           icon="chevron-right"
                                           size={14}
-                                          className={`transition-all ${isCurrent ? 'text-[#00BA4A] translate-x-0.5' : 'text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5'}`}
+                                          className={`transition-all ${isCurrent ? 'text-[#FBBF24] translate-x-0.5' : 'text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5'}`}
                                        />
                                     </button>
                                  );
@@ -773,16 +773,16 @@ const LandingProfilePage = () => {
                         ))}
 
                         {/* ── LOGOUT CARD ── */}
-                        <div className="pt-3 mt-3 border-t border-gray-100 dark:border-white/5">
+                        <div className="pt-3 mt-3 border-t border-white/[0.03]">
                            <button
                               onClick={handleLogout}
-                              className="w-full flex items-center justify-between p-3.5 rounded-[14px] bg-white dark:bg-[#0d1412] border border-[#eff2f6] dark:border-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-100 dark:hover:border-red-500/20 transition-all group"
+                              className="w-full flex items-center justify-between p-3.5 rounded-[14px] bg-[#0d1412] border border-white/[0.03] hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-100 dark:hover:border-red-500/20 transition-all group"
                            >
                               <div className="flex items-center gap-4">
-                                 <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/5 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
+                                 <div className="w-10 h-10 rounded-xl bg-red-500/5 text-red-500 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
                                     <FeatherIcon icon="log-out" size={18} />
                                  </div>
-                                 <span className="text-[13px] font-bold text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400">Đăng xuất hệ thống</span>
+                                 <span className="text-[13px] font-bold text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400">Đăng xuất hệ thống</span>
                               </div>
                               <FeatherIcon icon="chevron-right" size={14} className="text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5" />
                            </button>
