@@ -78,7 +78,7 @@ export interface CourseCreatePayload {
   description: string;
   categoryId: string;
   thumbnail?: string | null;
-  price: string;
+  price?: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
   duration?: string;
   lessons?: number;
@@ -938,5 +938,4 @@ class AdminElearningService {
 }
 
 export default AdminElearningService;
-
 

@@ -20,8 +20,6 @@ const CourseDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [accessDenied, setAccessDenied] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
-    const [isEnrolled, setIsEnrolled] = useState(false);
-    const [enrolling, setEnrolling] = useState(false);
     const [detailTab, setDetailTab] = useState<'content' | 'about'>('content');
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
@@ -30,17 +28,15 @@ const CourseDetailPage = () => {
         try {
             setLoading(true);
             setAccessDenied(false);
-            const [courseData, sectionsData, videosData, enrollmentData] = await Promise.all([
+            const [courseData, sectionsData, videosData] = await Promise.all([
                 elearningService.getClientCourse(id),
                 elearningService.getClientCourseSections(id),
                 elearningService.getClientCourseVideos(id),
-                elearningService.checkEnrollment(id).catch(() => ({ isEnrolled: false })),
             ]);
 
             setCourse(courseData);
             setSections(sectionsData || []);
             setVideos(videosData || []);
-            setIsEnrolled(enrollmentData?.isEnrolled || false);
 
             if (sectionsData && sectionsData.length > 0) {
                 setExpandedSections(sectionsData.map(s => String(s.id)));
@@ -73,70 +69,6 @@ const CourseDetailPage = () => {
         );
     };
 
-    const handleEnroll = async () => {
-        const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
-        if (!token) {
-            const loginRes = await Swal.fire({
-                title: 'Bạn chưa đăng nhập',
-                text: 'Vui lòng đăng nhập để đăng ký và bắt đầu học tập.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Đăng nhập ngay',
-                cancelButtonText: 'Để sau'
-            });
-            if (loginRes.isConfirmed) navigate('/landing-login');
-            return;
-        }
-
-        if (!id || !course) return;
-
-        const isFree = [true, 1, '1'].includes(course.is_free as any);
-        const priceValue = typeof course.price === 'number' ? course.price : parseFloat(course.price as any) || 0;
-
-        const result = await Swal.fire({
-            title: 'Xác nhận đăng ký?',
-            text: isFree || priceValue === 0 ? 'Bạn sẽ tham gia khóa học này miễn phí.' : `Bạn sẽ đăng ký khóa học "${course.title}" với giá ${priceValue.toLocaleString('vi-VN')}₫. Tiền sẽ được trừ trực tiếp vào tài khoản của bạn.`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Xác nhận thanh toán',
-            cancelButtonText: 'Hủy'
-        });
-
-        if (result.isConfirmed) {
-            try {
-                setEnrolling(true);
-                await elearningService.enrollCourse(id);
-                
-                await Swal.fire({
-                    title: 'Thành công!',
-                    text: 'Giao dịch hoàn tất. Nội dung đã được mở khóa!',
-                    icon: 'success',
-                    timer: 2000
-                });
-                
-                fetchData();
-            } catch (error: any) {
-                console.error('Enroll error:', error);
-                if (error.message?.toLowerCase().includes('balance') || error.message?.toLowerCase().includes('số dư')) {
-                    Swal.fire({
-                        title: 'Số dư không đủ',
-                        text: 'Vui lòng nạp thêm tiền vào tài khoản để mở khóa khóa học này.',
-                        icon: 'error',
-                        showCancelButton: true,
-                        confirmButtonText: 'Nạp tiền ngay',
-                        cancelButtonText: 'Để sau'
-                    }).then((r) => {
-                        if (r.isConfirmed) navigate('/landing-profile?tab=deposit');
-                    });
-                } else {
-                    Swal.fire('Lỗi', error.message || 'Có lỗi xảy ra khi xử lý thanh toán.', 'error');
-                }
-            } finally {
-                setEnrolling(false);
-            }
-        }
-    };
-
     const fmt = (n: any) => {
         if (n === 0 || n === '0' || n === 'Miễn phí') return 'Miễn phí';
         const num = typeof n === 'string' ? parseFloat(n) : n;
@@ -159,6 +91,7 @@ const CourseDetailPage = () => {
 
     if (!course && !accessDenied) return null;
     const currentCourse = course as Course;
+    const isEnrolled = currentCourse?.can_view_full !== false;
 
     return (
         <HostingLayout>
@@ -233,12 +166,12 @@ const CourseDetailPage = () => {
                             <div className="bg-[#0d1513] rounded-[10px] border border-white/[0.03] p-8 shadow-sm">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                     <div className="space-y-2">
-                                        <span className="px-3 py-1 rounded-[10px] bg-[#FBBF24]/10 text-[#FBBF24] text-[10px] font-bold uppercase">ĐÃ SỞ HỮU</span>
+                                        <span className="px-3 py-1 rounded-[10px] bg-[#FBBF24]/10 text-[#FBBF24] text-[10px] font-bold uppercase">ĐÃ CẤP QUYỀN</span>
                                         <h1 className="text-3xl font-black dark:text-white tracking-tight">{currentCourse.title}</h1>
                                     </div>
-                                    <Link to={`/courses/${currentCourse.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
+                                    {/* <Link to={`/courses/${currentCourse.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
                                         VÀO HỌC CHUYÊN SÂU
-                                    </Link>
+                                    </Link> */}
                                 </div>
 
                                 <div className="flex items-center gap-4 mt-8 border-t border-white/[0.03] pt-8">
@@ -370,34 +303,34 @@ const CourseDetailPage = () => {
                                 </div>
                             </div>
 
-                            {/* RIGHT COLUMN - Refined Checkout Card */}
+                            {/* RIGHT COLUMN - Access Card */}
                             <div className="w-full lg:w-[360px] shrink-0 lg:sticky lg:top-24">
                                 <div className="bg-[#0d1513] rounded-[10px] p-6 border border-white/[0.03] shadow-[0_15px_40px_-5px_rgba(0,0,0,0.08)] space-y-7">
                                     
                                     <div className="space-y-1">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Giá trọn gói</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Quyền truy cập</p>
                                         <div className="flex flex-col">
-                                            <div className="text-4xl font-black text-[#FBBF24] tracking-tighter leading-none">
-                                                {fmt(currentCourse.price)}
+                                            <div className="text-2xl font-black text-[#FBBF24] tracking-tighter leading-none">
+                                                {currentCourse.can_view_full ? 'Được phép xem' : 'Bị khóa theo rank'}
                                             </div>
-                                            <p className="text-[10px] font-medium text-gray-400 mt-2 italic opacity-60">* Thanh toán một lần, sở hữu vĩnh viễn</p>
+                                            <p className="text-[10px] font-medium text-gray-400 mt-2 italic opacity-60">* Nội dung được mở theo role/rank tài khoản</p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
                                         <div className="space-y-2.5">
-                                            <button 
-                                                onClick={handleEnroll}
-                                                disabled={enrolling}
-                                                className="w-full h-14 bg-gradient-to-r from-[#FBBF24] to-[#F59E0B] hover:brightness-105 active:scale-[0.98] text-black rounded-[10px] font-bold text-[15px] transition-all flex flex-col items-center justify-center leading-tight shadow-lg shadow-[#FBBF24]/20 disabled:opacity-50"
+                                            <Link
+                                                to="/landing-courses"
+                                                className="w-full h-14 bg-gradient-to-r from-[#FBBF24] to-[#F59E0B] hover:brightness-105 active:scale-[0.98] text-black rounded-[10px] font-bold text-[15px] transition-all flex items-center justify-center leading-tight shadow-lg shadow-[#FBBF24]/20"
                                             >
-                                                <span>{enrolling ? 'Đang xử lý...' : 'Đăng ký học ngay'}</span>
-                                                {!enrolling && <span className="text-[10px] font-medium opacity-70">Kích hoạt tài khoản tức thì</span>}
-                                            </button>
-                                            
-                                            <button className="w-full h-12 bg-transparent border border-white/10 hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-white rounded-[10px] font-bold text-[13px] transition-all">
-                                                Thêm vào giỏ hàng
-                                            </button>
+                                                Quay lại danh sách khóa học
+                                            </Link>
+                                            <Link
+                                                to={`/courses/${currentCourse.id}`}
+                                                className="w-full h-12 bg-transparent border border-white/10 hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-white rounded-[10px] font-bold text-[13px] transition-all flex items-center justify-center"
+                                            >
+                                                Vào trang học chuyên sâu
+                                            </Link>
                                         </div>
 
                                         <div className="pt-6 border-t border-white/[0.03] space-y-3">
@@ -405,19 +338,19 @@ const CourseDetailPage = () => {
                                                 <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
-                                                <span className="text-[12px] font-medium tracking-tight">Thanh toán bảo mật 100%</span>
+                                                <span className="text-[12px] font-medium tracking-tight">Kiểm tra quyền tự động</span>
                                             </div>
                                             <div className="flex items-center gap-3 text-gray-300">
                                                 <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
-                                                <span className="text-[12px] font-medium tracking-tight">Kích hoạt học ngay tức thì</span>
+                                                <span className="text-[12px] font-medium tracking-tight">Kiểm tra quyền truy cập tự động</span>
                                             </div>
                                             <div className="flex items-center gap-3 text-gray-300">
                                                 <div className="w-5 h-5 rounded-full bg-[#FBBF24]/10 flex items-center justify-center text-[#FBBF24]">
                                                     <FeatherIcon icon="check" size={10} strokeWidth={4} />
                                                 </div>
-                                                <span className="text-[12px] font-medium tracking-tight">Cập nhật nội dung vĩnh viễn</span>
+                                                <span className="text-[12px] font-medium tracking-tight">Mở nội dung theo role/rank</span>
                                             </div>
                                         </div>
                                     </div>

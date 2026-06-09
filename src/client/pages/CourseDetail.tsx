@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
 
@@ -18,16 +18,12 @@ interface CourseLesson {
 
 const CourseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [sections, setSections] = useState<CourseSection[]>([]);
   const [videos, setVideos] = useState<CourseVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [accessDenied, setAccessDenied] = useState<boolean>(false);
   const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
-  const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
-  const [showEnrollModal, setShowEnrollModal] = useState<boolean>(false);
-  const [enrolling, setEnrolling] = useState<boolean>(false);
 
   useEffect(() => {
     if (!id) return;
@@ -36,11 +32,10 @@ const CourseDetail: React.FC = () => {
       try {
         setLoading(true);
         setAccessDenied(false);
-        const [courseData, sectionsData, videosData, enrollmentData] = await Promise.all([
+        const [courseData, sectionsData, videosData] = await Promise.all([
           elearningService.getClientCourse(id),
           elearningService.getClientCourseSections(id),
           elearningService.getClientCourseVideos(id),
-          elearningService.checkEnrollment(id).catch(() => ({ isEnrolled: false })),
         ]);
 
         if (courseData) {
@@ -54,9 +49,6 @@ const CourseDetail: React.FC = () => {
           // Set first video as selected
           const firstVideo = videosData.find(v => v.preview) || videosData[0];
           setSelectedVideo(firstVideo);
-        }
-        if (enrollmentData) {
-          setIsEnrolled(enrollmentData.isEnrolled);
         }
       } catch (error) {
         const message = (error as any)?.message || '';
@@ -73,64 +65,8 @@ const CourseDetail: React.FC = () => {
     loadCourse();
   }, [id]);
 
-  const handleEnroll = async () => {
-    if (!id || !course) return;
-
-    setEnrolling(true);
-    try {
-      await elearningService.enrollCourse(id);
-      setIsEnrolled(true);
-      setShowEnrollModal(false);
-      // Show success message
-      alert('Đăng ký khóa học thành công!');
-      // Reload page to update enrollment status
-      window.location.reload();
-    } catch (error: any) {
-      alert(error.message || 'Đăng ký khóa học thất bại. Vui lòng thử lại.');
-    } finally {
-      setEnrolling(false);
-    }
-  };
-
   const currentVideo = selectedVideo || videos[0];
-
-  // Helper function to get course price display
-  const getCoursePriceDisplay = (course: Course | null): string => {
-    if (!course) return "Liên hệ";
-
-    const isFree = [true, 1, '1'].includes(course.is_free as any);
-    const priceValue = typeof course.price === 'number'
-      ? course.price
-      : typeof course.price === 'string'
-        ? parseFloat(course.price) || 0
-        : 0;
-
-    if (isFree || priceValue === 0) {
-      return "Miễn phí";
-    }
-
-    if (isNaN(priceValue) || priceValue <= 0) {
-      return "Liên hệ";
-    }
-
-    // Format số nguyên (loại bỏ phần thập phân) và thêm định dạng VND
-    const priceInt = Math.floor(priceValue);
-    return `${priceInt.toLocaleString('vi-VN')}₫`;
-  };
-
-  // Helper function to check if course requires payment
-  const requiresPayment = (course: Course | null): boolean => {
-    if (!course) return false;
-
-    const isFree = [true, 1, '1'].includes(course.is_free as any);
-    const priceValue = typeof course.price === 'number'
-      ? course.price
-      : typeof course.price === 'string'
-        ? parseFloat(course.price) || 0
-        : 0;
-
-    return !isFree && !isNaN(priceValue) && priceValue > 0;
-  };
+  const canViewFull = course?.can_view_full !== false;
 
   if (loading) {
     return (
@@ -259,7 +195,7 @@ const CourseDetail: React.FC = () => {
                         <div className="space-y-2">
                           {sectionVideos.map((video) => {
                             const active = currentVideo?.id === video.id;
-                            const locked = !isEnrolled && !video.preview;
+                            const locked = !canViewFull && !video.preview;
                             return (
                               <button
                                 key={video.id}
@@ -312,12 +248,6 @@ const CourseDetail: React.FC = () => {
                   </div>
                 )}
               </div>
-              {!isEnrolled && (
-                <div className="border-t border-slate-100 px-4 py-3 bg-amber-50/60 text-[11px] text-amber-700">
-                  Một số bài được mở xem thử. Đăng ký khoá học để mở khoá toàn bộ
-                  nội dung video.
-                </div>
-              )}
             </div>
           </div>
 
@@ -333,9 +263,9 @@ const CourseDetail: React.FC = () => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Học phí:</span>
+                <span className="text-slate-500">Quyền xem:</span>
                 <span className="font-semibold text-primary">
-                  {getCoursePriceDisplay(course)}
+                  {course.can_view_full !== false ? 'Được phép' : 'Bị khóa'}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -366,27 +296,12 @@ const CourseDetail: React.FC = () => {
 
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title mb-0">Hành động</h4>
+                <h4 className="card-title mb-0">Hành động</h4>
             </div>
             <div className="p-6 space-y-3">
-              {isEnrolled ? (
-                <button
-                  className="btn bg-amber-500 hover:bg-amber-600 text-white w-full transition-colors"
-                  onClick={() => {
-                    // User is enrolled, can continue learning
-                  }}
-                >
-                  Tiếp tục học
-                </button>
-              ) : (
-                <button
-                  className="btn bg-amber-500 hover:bg-amber-600 text-white w-full transition-colors"
-                  onClick={() => setShowEnrollModal(true)}
-                  disabled={enrolling}
-                >
-                  {enrolling ? "Đang xử lý..." : "Đăng ký ngay"}
-                </button>
-              )}
+              <div className="rounded-lg border border-amber-100 bg-amber-50/60 px-4 py-3 text-xs text-amber-700">
+                Khóa học này được mở theo quyền role/rank của tài khoản.
+              </div>
               <Link
                 to="/courses"
                 className="btn border-slate-200 text-slate-700 w-full bg-white"
@@ -398,54 +313,6 @@ const CourseDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Enrollment Confirmation Modal */}
-      {showEnrollModal && course && (() => {
-        const displayPrice = getCoursePriceDisplay(course);
-        const isFree = [true, 1, '1'].includes(course.is_free as any);
-        const priceValue = typeof course.price === 'number'
-          ? course.price
-          : typeof course.price === 'string'
-            ? parseFloat(course.price) || 0
-            : 0;
-        const shouldShowPaymentWarning = !isFree && !isNaN(priceValue) && priceValue > 0;
-
-        return (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold mb-4">Xác nhận đăng ký khóa học</h3>
-              <div className="space-y-3 mb-6">
-                <p className="text-sm text-slate-600">
-                  <span className="font-medium">Khóa học:</span> {course.title}
-                </p>
-                <p className="text-sm text-slate-600">
-                  <span className="font-medium">Giá:</span> {displayPrice}
-                </p>
-                {shouldShowPaymentWarning && (
-                  <p className="text-xs text-amber-600">
-                    Số tiền sẽ được trừ từ tài khoản của bạn
-                  </p>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <button
-                  className="btn border-slate-200 text-slate-700 flex-1 bg-white"
-                  onClick={() => setShowEnrollModal(false)}
-                  disabled={enrolling}
-                >
-                  Hủy
-                </button>
-                <button
-                  className="btn bg-amber-500 hover:bg-amber-600 text-white flex-1 transition-colors"
-                  onClick={handleEnroll}
-                  disabled={enrolling}
-                >
-                  {enrolling ? "Đang xử lý..." : "Xác nhận đăng ký"}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
     </>
   );
 };

@@ -161,9 +161,11 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
         </div>
 
         <div className="border-t border-[#FBBF24]/14 pt-3">
-          <div className="flex items-end justify-between gap-3">
-            <span className="text-[9px] font-black uppercase tracking-[2px] text-gray-500">Học phí</span>
-            <span className="text-lg font-black text-white">{fmt(p.price)}</span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[9px] font-black uppercase tracking-[2px] text-gray-500">Quyền truy cập</span>
+            <span className={`text-[10px] font-black uppercase tracking-[2px] ${canViewFull ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {canViewFull ? 'Được phép xem' : 'Theo Rank'}
+            </span>
           </div>
         </div>
 

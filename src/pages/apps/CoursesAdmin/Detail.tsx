@@ -535,16 +535,6 @@ const CourseDetailAdmin: React.FC = () => {
       return;
     }
 
-    if (!course.price || course.price === "" || course.price === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Cảnh báo',
-        text: 'Vui lòng nhập giá bán',
-        confirmButtonText: 'Đóng',
-      });
-      return;
-    }
-
     setSaving(true);
     setError(null);
 
@@ -559,7 +549,7 @@ const CourseDetailAdmin: React.FC = () => {
           description: course.description.trim(),
           categoryId: String(course.category_id),
           thumbnail: course.thumbnail || course.thumbnail_url || null,
-          price: String(course.price),
+          price: course.price ? String(course.price) : undefined,
           level: course.level,
           duration: course.duration || undefined,
           lessons: course.lessons || undefined,
@@ -861,9 +851,9 @@ const CourseDetailAdmin: React.FC = () => {
           </div>
           <div className="p-6 space-y-4 text-sm">
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">
-                Giá bán (VNĐ) <span className="text-rose-500">*</span>
-              </label>
+                <label className="text-xs text-slate-500 mb-1 block">
+                  Giá bán (VNĐ)
+                </label>
               <input
                 type="text"
                 className="form-input"
@@ -871,11 +861,10 @@ const CourseDetailAdmin: React.FC = () => {
                 onChange={(e) =>
                   handleCourseChange("price", e.target.value)
                 }
-                placeholder="Ví dụ: 500000 hoặc 500.000"
-                required
+                placeholder="Để trống nếu không muốn hiển thị giá"
               />
               <p className="text-xs text-slate-400 mt-1">
-                Nhập số tiền (có thể có dấu chấm hoặc không)
+                Trường này không bắt buộc.
               </p>
             </div>
 
