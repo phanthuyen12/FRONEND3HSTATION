@@ -6,6 +6,12 @@ export interface User {
   balance?: number;
   status?: 'active' | 'locked';
   role?: string;
+  rankId?: string | number | null;
+  rank_id?: string | number | null;
+  rank_code?: string | null;
+  rank_name?: string | null;
+  rank_description?: string | null;
+  rank_status?: string | null;
   createdAt?: string;
   updatedAt?: string;
   joinedAt?: string;
@@ -16,6 +22,13 @@ export interface UserDetail extends User {
   courses?: number;
   workflows?: number;
   vps?: number;
+  rank?: {
+    id?: string | number | null;
+    code?: string | null;
+    name?: string | null;
+    description?: string | null;
+    status?: string | null;
+  } | null;
 }
 
 interface ApiResponse<T> {
@@ -105,6 +118,7 @@ class UserService {
     phone?: string;
     password: string;
     status?: string;
+    rankId?: string | number | null;
   }): Promise<User> {
     return await this.request<User>("/api/users", {
       method: "POST",
@@ -117,6 +131,7 @@ class UserService {
     email?: string;
     phone?: string;
     status?: string;
+    rankId?: string | number | null;
   }>): Promise<User> {
     return await this.request<User>(`/api/users/${id}`, {
       method: "PUT",
@@ -282,5 +297,3 @@ class UserService {
 }
 
 export default UserService;
-
-

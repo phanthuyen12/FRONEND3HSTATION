@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PageBreadcrumb } from "../../../components";
-import { userService, API_URL } from "../../../config";
+import { userService, API_URL, rankService } from "../../../config";
 import { User, UserDetail } from "../../../services/userService";
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
+import { Rank } from "../../../services/adminRankService";
 
 /* ─── Types ─── */
 type EditableUser = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'joinedAt'> & {
@@ -68,6 +69,23 @@ const statusBadge = (s: string) => s === 'completed' || s === 'active'
 
 const emptyUser = (): EditableUser => ({ name: "", email: "", phone: "", balance: 0, status: "active", role: "user", password: "" });
 
+const buildUserPayload = (user: EditableUser) => {
+  const payload: Record<string, any> = {
+    name: user.name.trim(),
+    email: user.email.trim(),
+    status: user.status,
+  };
+
+  const phone = user.phone?.trim();
+  if (phone) payload.phone = phone;
+
+  if (user.rankId !== "" && user.rankId !== undefined && user.rankId !== null) {
+    payload.rankId = user.rankId;
+  }
+
+  return payload;
+};
+
 /* ═══════════════════════════════════════════════════ */
 const UserAdminDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -84,6 +102,8 @@ const UserAdminDetail: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [resettingPwd, setResettingPwd] = useState(false);
+  const [ranks, setRanks] = useState<Rank[]>([]);
+  const [ranksLoading, setRanksLoading] = useState(false);
 
   /* ── Stats ── */
   const [stats, setStats] = useState<DetailStats | null>(null);
@@ -110,12 +130,34 @@ const UserAdminDetail: React.FC = () => {
       const datas: any = await userService.getUser(id);
       const data = datas.data || datas;
       setUserDetail(data);
-      setUser({ name: data.name || "", email: data.email || "", phone: data.phone || "", balance: data.balance || 0, status: data.status || "active", role: data.role || "user", joinedAt: data.joinedAt || data.createdAt || "" });
+      const rankId = data.rank?.id ?? data.rankId ?? data.rank_id ?? "";
+      setUser({
+        name: data.name || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        balance: data.balance || 0,
+        status: data.status || "active",
+        role: data.role || "user",
+        rankId,
+        joinedAt: data.joinedAt || data.createdAt || "",
+      });
     } catch {
       await Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Không thể tải thông tin user.', confirmButtonColor: '#ef4444' });
       navigate("/admin/users");
     } finally { setLoading(false); }
   }, [id, isNew, navigate]);
+
+  const fetchRanks = useCallback(async () => {
+    setRanksLoading(true);
+    try {
+      const response = await rankService.getRanks({ limit: 100 });
+      setRanks(response.data || []);
+    } catch (error) {
+      console.error("Không thể tải danh sách rank", error);
+    } finally {
+      setRanksLoading(false);
+    }
+  }, []);
 
   const fetchStats = useCallback(async () => {
     if (isNew || !id) return;
@@ -154,7 +196,7 @@ const UserAdminDetail: React.FC = () => {
     } catch { /* silent */ } finally { setRefsLoading(false); }
   }, [id, isNew]);
 
-  useEffect(() => { fetchUser(); fetchStats(); }, [fetchUser, fetchStats]);
+  useEffect(() => { fetchUser(); fetchStats(); fetchRanks(); }, [fetchUser, fetchStats, fetchRanks]);
 
   useEffect(() => {
     if (activeTab === 'refs') fetchRefs(1);
@@ -174,11 +216,20 @@ const UserAdminDetail: React.FC = () => {
     setSaving(true);
     try {
       if (isNew) {
-        await userService.createUser({ name: user.name.trim(), email: user.email.trim(), phone: user.phone?.trim(), password: user.password!, status: user.status });
+        await userService.createUser({
+          name: user.name.trim(),
+          email: user.email.trim(),
+          password: user.password!,
+          status: user.status,
+          ...(user.phone?.trim() ? { phone: user.phone.trim() } : {}),
+          ...(user.rankId !== "" && user.rankId !== undefined && user.rankId !== null
+            ? { rankId: user.rankId }
+            : {}),
+        });
         await Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đã tạo user.', confirmButtonColor: '#10b981' });
         navigate("/admin/users");
       } else {
-        await userService.updateUser(id!, { name: user.name.trim(), email: user.email.trim(), phone: user.phone?.trim(), status: user.status });
+        await userService.updateUser(id!, buildUserPayload(user));
         await Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đã cập nhật user.', confirmButtonColor: '#10b981' });
         fetchUser(); fetchStats();
       }
@@ -186,6 +237,9 @@ const UserAdminDetail: React.FC = () => {
       await Swal.fire({ icon: 'error', title: 'Lỗi', text: e?.message || 'Lỗi khi lưu.', confirmButtonColor: '#ef4444' });
     } finally { setSaving(false); }
   };
+
+  const currentRankId = user.rankId || userDetail?.rank?.id || "";
+  const currentRank = ranks.find((r) => String(r.id) === String(currentRankId)) || null;
 
   const handleToggleLock = async () => {
     if (!id || isNew) return;
@@ -306,6 +360,42 @@ const UserAdminDetail: React.FC = () => {
                   <option value="active">Hoạt động</option>
                   <option value="locked">Khóa</option>
                 </select>
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Rank</label>
+                <select
+                  className="form-select"
+                  value={currentRankId ? String(currentRankId) : ""}
+                  onChange={e => setUser(p => ({ ...p, rankId: e.target.value ? Number(e.target.value) : "" }))}
+                  disabled={ranksLoading}
+                >
+                  <option value="">{ranksLoading ? "Đang tải..." : "Chưa gán rank"}</option>
+                  {ranks.map((rank) => (
+                    <option key={rank.id} value={rank.id}>
+                      {rank.name} ({rank.code})
+                    </option>
+                  ))}
+                </select>
+                {!ranksLoading && (currentRank || userDetail?.rank) && (
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {(() => {
+                      const detailRank = userDetail?.rank;
+                      return (
+                        currentRank?.description ||
+                        currentRank?.name ||
+                        detailRank?.description ||
+                        detailRank?.name ||
+                        "Rank hiện tại"
+                      );
+                    })()}
+                  </p>
+                )}
+                {!ranksLoading && userDetail?.rank && (
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Đang gán: {userDetail.rank.name}
+                    {userDetail.rank.code ? ` (${userDetail.rank.code})` : ""}
+                  </p>
+                )}
               </div>
             </div>
             <button className="btn bg-primary text-white text-sm disabled:opacity-60" onClick={handleSave} disabled={saving}>

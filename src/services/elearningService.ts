@@ -29,6 +29,8 @@ export interface Course {
   updated_at?: string;
   createdAt?: string;
   updatedAt?: string;
+  can_view_full?: boolean;
+  is_locked?: boolean;
 }
 
 // API Payload interface - matches backend validation
@@ -79,12 +81,30 @@ class ElearningService {
     this.api = 'https://api.aetrading.vn';
   }
 
+  private getAuthToken(): string | null {
+    if (typeof window === 'undefined') return null;
+
+    return localStorage.getItem('auth_token')
+      || localStorage.getItem('authToken')
+      || sessionStorage.getItem('auth_token')
+      || sessionStorage.getItem('authToken');
+  }
+
   // Helper fetch wrapper
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
     try {
+      const token = this.getAuthToken();
+      const requestHeaders: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options?.headers || {}),
+      };
+
+      const { headers: _ignoredHeaders, ...restOptions } = options || {};
+
       const res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json' },
-        ...options,
+        headers: requestHeaders,
+        ...restOptions,
       });
 
       const data = await res.json();
@@ -410,15 +430,21 @@ class ElearningService {
   async getClientCourse(id: string): Promise<Course | null> {
     try {
       const url = `${this.api}/api/client/elearning/courses/${id}`;
+      const token = this.getAuthToken();
       const res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
 
       const body = await res.json();
 
       if (!res.ok) {
         console.error('❌ API error:', body);
-        throw new Error(body?.message || 'API Error');
+        const error: any = new Error(body?.message || 'API Error');
+        error.status = res.status;
+        throw error;
       }
 
       // Handle nested data structure: {success: true, data: {data: {...}}}
@@ -440,6 +466,9 @@ class ElearningService {
 
       return null;
     } catch (error) {
+      if ((error as any)?.status === 403 || /quyền|forbidden/i.test((error as any)?.message || '')) {
+        throw error;
+      }
       console.error('❌ Fetch failed:', error);
       return null;
     }

@@ -24,6 +24,7 @@ import UserAdminDetail from "../pages/apps/UserAdmin/Detail";
 import DocumentsAdminList from "../pages/apps/DocumentsAdmin/List";
 import DocumentsAdminDetail from "../pages/apps/DocumentsAdmin/Detail";
 import BankAdminList from "../pages/apps/BankAdmin/List";
+import RanksAdminList from "../pages/apps/RanksAdmin/List";
 import ConfigAdmin from "../pages/apps/ConfigAdmin";
 import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
 import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
@@ -212,6 +213,16 @@ const SimpleAdminRoutes: React.FC = () => {
         }
       />
 
+      {/* Ranks */}
+      <Route
+        path="ranks"
+        element={
+          <VerticalLayout>
+            <RanksAdminList />
+          </VerticalLayout>
+        }
+      />
+
       {/* Documents */}
       <Route
         path="documents/new"
@@ -290,5 +301,4 @@ const SimpleAdminRoutes: React.FC = () => {
 };
 
 export default SimpleAdminRoutes;
-
 

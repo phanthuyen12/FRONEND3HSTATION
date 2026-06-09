@@ -30,6 +30,7 @@ const CourseDetailAdmin = React.lazy(() => import("../pages/apps/CoursesAdmin/De
 const VideosAdmin = React.lazy(() => import("../pages/apps/CoursesAdmin/Videos"));
 const UsersAdminList = React.lazy(() => import("../pages/apps/UserAdmin/List"));
 const UserAdminDetail = React.lazy(() => import("../pages/apps/UserAdmin/Detail"));
+const RanksAdminList = React.lazy(() => import("../pages/apps/RanksAdmin/List"));
 const VpsAdminList = React.lazy(() => import("../pages/apps/VpsAdmin/List"));
 const VpsAdminOrders = React.lazy(() => import("../pages/apps/VpsAdmin/VpsOrders"));
 const WorkflowsAdminList = React.lazy(() => import("../pages/apps/WorkflowsAdmin/List"));
@@ -287,6 +288,22 @@ const usersAppRoutes: RoutesProps = {
   ],
 };
 
+const ranksAdminRoutes: RoutesProps = {
+  path: "/admin/ranks-root",
+  name: "Ranks",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  icon: "medal",
+  children: [
+    {
+      path: "/admin/ranks",
+      name: "RanksAdminList",
+      element: <RanksAdminList />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
 const vpsAdminRoutes: RoutesProps = {
   path: "/admin/vps-root",
   name: "VPS",
@@ -445,6 +462,7 @@ const appRoutes = [
   fileAppRoutes,
   coursesAppRoutes,
   usersAppRoutes,
+  ranksAdminRoutes,
   vpsAdminRoutes,
   workflowsAdminRoutes,
   topupAdminRoutes,

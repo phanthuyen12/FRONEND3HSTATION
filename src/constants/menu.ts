@@ -48,6 +48,20 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
   {
+    key: "apps-ranks",
+    label: "Rank",
+    isTitle: false,
+    icon: "mgc_medal_line",
+    children: [
+      {
+        key: "ranks-list",
+        label: "Quản lý Rank",
+        url: "/admin/ranks",
+        parentKey: "apps-ranks",
+      },
+    ],
+  },
+  {
     key: "apps-vps",
     label: "VPS",
     isTitle: false,

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import HostingLayout from '../layouts/HostingLayout';
 import { authService, elearningService } from '../../../config';
 import { Category, Course } from '../../../services/elearningService';
@@ -88,10 +89,23 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
   const categoryName = categories.find(c => String(c.id) === String(p.category_id || p.categoryId))?.name || p.category || 'Khóa học MMO';
   const lessonCount = p.lessons || 11;
   const studentCount = p.students || 250;
+  const canViewFull = Boolean(p.can_view_full);
+  const isLocked = !canViewFull;
+
+  const handleLockedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLocked) return;
+    e.preventDefault();
+    Swal.fire({
+      icon: 'warning',
+      title: 'Khóa học bị khóa',
+      text: 'Rank hiện tại chưa được cấp quyền xem khóa học này. Vui lòng liên hệ Admin.',
+      confirmButtonText: 'Đã hiểu',
+    });
+  };
 
   return (
-    <article className="group relative flex min-h-[430px] flex-col overflow-hidden rounded-[8px] border border-[#FBBF24]/20 bg-[#080d0c] shadow-[0_18px_52px_rgba(0,0,0,0.32)] transition-all duration-500 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#FBBF24]/60 before:to-transparent hover:-translate-y-1 hover:border-[#FBBF24]/45 hover:shadow-[0_24px_74px_rgba(251,191,36,0.11)]">
-      <Link to={`/landing-courses/${p.id}`} className="relative block h-40 overflow-hidden bg-[#111817]">
+    <article className={`group relative flex min-h-[430px] flex-col overflow-hidden rounded-[8px] border shadow-[0_18px_52px_rgba(0,0,0,0.32)] transition-all duration-500 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#FBBF24]/60 before:to-transparent hover:-translate-y-1 hover:shadow-[0_24px_74px_rgba(251,191,36,0.11)] ${isLocked ? 'border-white/8 bg-[#07100f]' : 'border-[#FBBF24]/20 bg-[#080d0c] hover:border-[#FBBF24]/45'}`}>
+      <Link to={`/landing-courses/${p.id}`} onClick={handleLockedClick} className="relative block h-40 overflow-hidden bg-[#111817]">
         <img
           src={p.thumbnail || p.thumbnail_url || fallbackImage}
           alt={p.title}
@@ -104,11 +118,24 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
         <div className="absolute left-3 top-3 max-w-[calc(100%-24px)] truncate rounded-[6px] border border-[#FBBF24]/60 bg-black/55 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#FBBF24] backdrop-blur-md">
           {categoryName}
         </div>
+        {isLocked && (
+          <div className="absolute right-3 top-3 rounded-[6px] border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-red-200 backdrop-blur-md">
+            <FeatherIcon icon="lock" size={10} className="mr-1 inline" />
+            Khóa theo Rank
+          </div>
+        )}
+        {isLocked && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[1px]">
+            <div className="rounded-full border border-white/10 bg-black/60 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white">
+              Chỉ xem được khi rank phù hợp
+            </div>
+          </div>
+        )}
       </Link>
 
       <div className="flex flex-grow flex-col gap-3 p-4">
         <div className="flex-grow">
-          <Link to={`/landing-courses/${p.id}`}>
+          <Link to={`/landing-courses/${p.id}`} onClick={handleLockedClick}>
             <h3 className="min-h-[40px] text-[15px] font-black leading-snug text-white transition-colors duration-300 line-clamp-2 group-hover:text-[#FBBF24]">
               {p.title}
             </h3>
@@ -143,15 +170,17 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
         <div className="grid grid-cols-[1fr_1.15fr] gap-2.5">
           <Link
             to={`/landing-courses/${p.id}`}
+            onClick={handleLockedClick}
             className="flex h-10 items-center justify-center rounded-[8px] border border-[#FBBF24]/25 bg-black/20 text-[10px] font-black text-white transition-all hover:border-[#FBBF24]/70 hover:text-[#FBBF24]"
           >
-            Xem chi tiết
+            {isLocked ? 'Bị khóa' : 'Xem chi tiết'}
           </Link>
           <Link
             to={`/landing-courses/${p.id}`}
+            onClick={handleLockedClick}
             className="flex h-10 items-center justify-center gap-2 rounded-[8px] bg-[#FBBF24] text-[10px] font-black text-black shadow-[0_10px_24px_rgba(251,191,36,0.2)] transition-all hover:bg-[#FDE047]"
           >
-            Học ngay <FeatherIcon icon="arrow-right" size={13} />
+            {isLocked ? 'Liên hệ Admin' : <>Học ngay <FeatherIcon icon="arrow-right" size={13} /></>}
           </Link>
         </div>
       </div>
@@ -166,6 +195,7 @@ const LandingCoursesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [search, setSearch] = useState('');
   const [userName, setUserName] = useState('Học viên');
+  const [userRank, setUserRank] = useState('Chưa gán rank');
   const [myCourses, setMyCourses] = useState<any[]>([]);
 
   useEffect(() => {
@@ -204,6 +234,8 @@ const LandingCoursesPage = () => {
 
       const name = (profile as any)?.name || (profile as any)?.full_name || (profile as any)?.username || (profile as any)?.email;
       if (name) setUserName(String(name).split(' ')[0]);
+      const rankName = (profile as any)?.rank?.name || (profile as any)?.rank?.code || (profile as any)?.rankName || (profile as any)?.rank_name;
+      if (rankName) setUserRank(String(rankName));
       setMyCourses(Array.isArray(enrolledCourses) ? enrolledCourses : []);
     };
 
@@ -281,6 +313,10 @@ const LandingCoursesPage = () => {
                   <p className="mt-5 max-w-2xl text-sm font-medium leading-7 text-gray-400 sm:text-base">
                     Quản lý khóa học, theo dõi tiến độ học tập và nhận chứng chỉ trong một dashboard duy nhất.
                   </p>
+                  <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/35 bg-[#FBBF24]/10 px-4 py-2 text-[11px] font-black uppercase tracking-[2px] text-[#FBBF24]">
+                    <FeatherIcon icon="award" size={14} />
+                    Rank hiện tại: {userRank}
+                  </div>
 
                   <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                     <a
@@ -402,7 +438,7 @@ const LandingCoursesPage = () => {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#FBBF24]/35 bg-black/25 text-[#FBBF24]">
                   <FeatherIcon icon="layers" size={26} />
                 </div>
-                <p className="px-4 text-base font-black text-gray-300">Bạn chưa có khóa học nào trong danh mục này</p>
+                <p className="px-4 text-base font-black text-gray-300">Bạn vui lòng đăng nhập tài khoản để xem khoá học</p>
                 <button
                   onClick={() => {
                     setSelectedCategory('Tất cả');

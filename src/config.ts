@@ -10,6 +10,7 @@ import DocumentService from './services/documentService';
 import AdminOrderService from './services/adminOrderService';
 import TopupService from './services/topupService';
 import BankService, { Bank } from './services/bankService';
+import adminRankService from './services/adminRankService';
 import configService from './services/configService';
 import toolKeyService from './services/toolKeyService';
 
@@ -27,6 +28,7 @@ export const documentService = new DocumentService(API_URL);
 export const adminOrderService = new AdminOrderService(API_URL);
 export const topupService = new TopupService(API_URL);
 export const bankService = new BankService(API_URL);
+export const rankService = adminRankService;
 export const toolKeyServiceInstance = toolKeyService;
 export { configService, toolKeyService, API_URL };
 export type { Bank };

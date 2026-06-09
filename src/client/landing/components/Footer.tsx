@@ -71,7 +71,7 @@ const Footer = () => {
           <div className="space-y-5">
             {/* Logo */}
             <a href="#" className="flex items-center">
-              <img src="/logo.png" alt="3H STATION" className="h-10 md:h-12 object-contain" />
+              <img src="/logo.png" alt="3H STATION" className="h-14 md:h-16 w-auto object-contain" />
             </a>
 
             <p className="text-sm leading-relaxed" style={{ color: textColor }}>

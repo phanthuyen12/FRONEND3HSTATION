@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
 import HostingLayout from '../layouts/HostingLayout';
 import { useTheme } from '../context/ThemeContext';
-import { authService, userService, topupService, vpsService, workflowsService, elearningService } from '../../../config';
+import { authService, userService, vpsService, workflowsService, elearningService } from '../../../config';
 import { NodeverseVpsPlan, VpsPlan, VpsBillingTerm } from '../../../services/vpsService';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -30,8 +30,6 @@ const LandingProfilePage = () => {
    const [saving, setSaving] = useState(false);
    const [user, setUser] = useState<any>(null);
    const [orders, setOrders] = useState<any[]>([]);
-   const [topups, setTopups] = useState<any[]>([]);
-   const [banks, setBanks] = useState<any[]>([]);
    const [myVps, setMyVps] = useState<any[]>([]);
    const [myWorkflows, setMyWorkflows] = useState<any[]>([]);
    const [myCourses, setMyCourses] = useState<any[]>([]);
@@ -56,12 +54,6 @@ const LandingProfilePage = () => {
    const [orderStatusFilter, setOrderStatusFilter] = useState('tat-ca');
    const [orderCurrentPage, setOrderCurrentPage] = useState(1);
    const orderPageSize = 5;
-   const [visibleTopups, setVisibleTopups] = useState(10);
-
-   // Deposit state
-   const [depositAmount, setDepositAmount] = useState(50000);
-   const [selectedBank, setSelectedBank] = useState<any>(null);
-   const [createdTopup, setCreatedTopup] = useState<any>(null);
 
    // States for forms
    const [formData, setFormData] = useState({ name: '', phone: '', email: '' });
@@ -78,11 +70,9 @@ const LandingProfilePage = () => {
    const loadAllData = async () => {
       setLoading(true);
       try {
-         const [profile, ordersData, topupData, banksData, vpsData, workflowsData, coursesData] = await Promise.all([
+         const [profile, ordersData, vpsData, workflowsData, coursesData] = await Promise.all([
             authService.getProfile().catch(() => null),
             userService.getMyOrders({ limit: 100 }).catch(() => ({ data: [] })),
-            topupService.getHistory({ limit: 100 }).catch(() => ({ data: [] })),
-            topupService.getBanks().catch(() => []),
             vpsService.getMyNodeverseVpsOrders().catch(() => []),
             workflowsService.getMyWorkflows().catch(() => ({ data: [] })),
             elearningService.getMyCourses().catch(() => [])
@@ -98,12 +88,9 @@ const LandingProfilePage = () => {
          }
 
          setOrders(ordersData?.data || []);
-         setTopups(topupData?.data || []);
-         setBanks(banksData || []);
          setMyVps(vpsData || []);
          setMyWorkflows(workflowsData?.data || []);
          setMyCourses(coursesData || []);
-         if (banksData && banksData.length > 0) setSelectedBank(banksData[0]);
       } catch (err) {
          console.error("Failed to load profile data", err);
       } finally {
@@ -120,12 +107,6 @@ const LandingProfilePage = () => {
          confirmButtonColor: '#FBBF24'
       });
    };
-
-   const totals = React.useMemo(() => {
-      const deposited = topups.filter(t => t.status === 'da-duyet').reduce((sum, t) => sum + parseFloat(String(t.amount || 0)), 0);
-      const spent = orders.filter(o => ['paid', 'completed', 'tao-thanh-cong', 'tao-vps-thanh-cong'].includes(o.status)).reduce((sum, o) => sum + parseFloat(String(o.amount || 0)), 0);
-      return { deposited, spent };
-   }, [topups, orders]);
 
    // Load VPS Plans
    useEffect(() => {
@@ -249,20 +230,6 @@ const LandingProfilePage = () => {
       }
    };
 
-   const handleCreateTopup = async () => {
-      if (!selectedBank) return;
-      setSaving(true);
-      try {
-         const res = await topupService.createTopup(depositAmount, selectedBank.id);
-         setCreatedTopup(res);
-         Swal.fire({ icon: 'success', title: 'Giao dịch đã tạo', text: 'Vui lòng thực hiện chuyển khoản theo hướng dẫn', timer: 2000, showConfirmButton: false });
-      } catch (err: any) {
-         Swal.fire('Lỗi', err.message || 'Không thể tạo yêu cầu nạp tiền', 'error');
-      } finally {
-         setSaving(false);
-      }
-   };
-
    const handleVpsAction = async (id: string, action: 'start' | 'stop' | 'restart') => {
       try {
          const res = await vpsService.changeNodeverseVpsContainerState(id, action);
@@ -331,7 +298,6 @@ const LandingProfilePage = () => {
             { id: 'info', icon: 'user', label: 'Thông tin cá nhân' },
             { id: 'password', icon: 'lock', label: 'Mật khẩu & Bảo mật' },
             { id: 'orders', icon: 'shopping-bag', label: 'Đơn hàng của tôi' },
-            { id: 'balance', icon: 'credit-card', label: 'Biến động số dư' },
          ]
       }
    ];
@@ -390,9 +356,6 @@ const LandingProfilePage = () => {
                               <span className="text-white/40 font-bold uppercase tracking-widest text-[13px]">VNĐ</span>
                            </div>
                            <div className="flex gap-4 pt-2">
-                              <button onClick={() => handleTabChange('deposit')} className="bg-[#FBBF24] text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest hover:bg-[#009a3d] transition-all shadow-lg active:scale-95 flex items-center gap-3">
-                                 <FeatherIcon icon="plus-circle" size={18} /> Nạp tiền ngay
-                              </button>
                               <button onClick={() => Swal.fire({ title: 'Rút tiền', text: 'Chức năng rút tiền về ngân hàng đang trong quá trình bảo trì nâng cấp.', icon: 'info', confirmButtonText: 'Đã hiểu' })} className="bg-[#0d1412]/10 hover:bg-[#0d1412]/20 text-white px-8 py-4 rounded-[12px] text-[12px] font-black uppercase tracking-widest transition-all border border-white/20 flex items-center gap-3 backdrop-blur-md">
                                  <FeatherIcon icon="arrow-up-right" size={18} /> Rút tiền
                               </button>
@@ -627,64 +590,6 @@ const LandingProfilePage = () => {
                   </div>
                </div>
             );
-         case 'balance':
-            return (
-               <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-[#0d1412] p-8 rounded-[16px] shadow-sm border border-white/[0.03] flex items-center justify-between">
-                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#3e6665] text-white rounded-[12px] flex items-center justify-center shadow-lg"><FeatherIcon icon="credit-card" size={20} /></div>
-                        <div>
-                           <h2 className="text-lg font-black dark:text-white uppercase tracking-tight">Biến động số dư</h2>
-                           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-0.5">Lịch sử nạp tiền & thanh toán hệ thống</p>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
-                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                           <thead>
-                              <tr className="bg-[#0d1412]/5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                 <th className="px-8 py-5">Mã Giao Dịch</th>
-                                 <th className="px-8 py-5">Số Tiền</th>
-                                 <th className="px-8 py-5">Phương Thức</th>
-                                 <th className="px-8 py-5 text-center">Trạng Thái</th>
-                                 <th className="px-8 py-5">Thời Gian</th>
-                              </tr>
-                           </thead>
-                           <tbody className="divide-y divide-gray-50 dark:divide-white/5">
-                              {topups.length === 0 ? (
-                                 <tr><td colSpan={5} className="p-20 text-center text-gray-400 font-bold uppercase tracking-widest">Chưa có lịch sử giao dịch</td></tr>
-                              ) : topups.slice(0, visibleTopups).map((t, i) => {
-                                 const status = getStatusStyle(t.status);
-                                 return (
-                                    <tr key={i} className="text-xs font-bold transition-colors hover:bg-white/5/50 dark:hover:bg-[#0d1412]/5">
-                                       <td className="px-8 py-5 text-[#297c6d] font-black uppercase">{t.code}</td>
-                                       <td className="px-8 py-5 text-sm font-black dark:text-white">+{fmt(t.amount)}</td>
-                                       <td className="px-8 py-5 text-gray-400 uppercase tracking-tight">{t.bank}</td>
-                                       <td className="px-8 py-5 text-center">
-                                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full uppercase text-[9px] font-black" style={{ background: status.bg, color: status.text }}>
-                                             <FeatherIcon icon={status.icon} size={10} /> {t.status}
-                                          </div>
-                                       </td>
-                                       <td className="px-8 py-5 text-[11px] text-gray-400 font-black">{new Date(t.createdAt).toLocaleString('vi-VN')}</td>
-                                    </tr>
-                                 );
-                              })}
-                           </tbody>
-                        </table>
-                     </div>
-
-                     {topups.length > visibleTopups && (
-                        <div className="px-8 py-6 border-t border-white/[0.03] flex justify-center">
-                           <button onClick={() => setVisibleTopups(prev => prev + 10)} className="px-10 py-3 bg-[#0d1412]/5 border border-white/10 rounded-[12px] text-[10px] font-black uppercase tracking-[2px] flex items-center gap-3 hover:bg-[#032030] hover:text-white transition-all shadow-sm">
-                              <FeatherIcon icon="refresh-cw" size={12} /> Tải thêm lịch sử ({topups.length - visibleTopups} còn lại)
-                           </button>
-                        </div>
-                     )}
-                  </div>
-               </div>
-            );
       }
    };
 
@@ -732,12 +637,10 @@ const LandingProfilePage = () => {
                            <div key={groupIdx} className="space-y-2">
                               {group.items.map((item, i) => {
                                  const accountIds = ['info', 'password'];
-                                 const transactionIds = ['deposit', 'orders', 'balance', 'activity', 'order-detail'];
                                  const serviceIds = ['vps-register', 'vps-manage', 'workflows', 'courses'];
                                  const utilityIds = ['favorites', 'support', 'referral', 'api'];
 
                                  const isCurrent = (item.id === 'info' && accountIds.includes(activeTab)) ||
-                                    (item.id === 'deposit' && transactionIds.includes(activeTab)) ||
                                     (item.id === 'vps-manage' && serviceIds.includes(activeTab)) ||
                                     (item.id === 'favorites' && utilityIds.includes(activeTab)) ||
                                     activeTab === item.id;

@@ -13,7 +13,6 @@ const BottomNav = () => {
     { key: 'courses', icon: 'book-open', label: 'Khóa học', to: '/landing-courses', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
     { key: 'learning', icon: 'play-circle', label: 'Đang học', to: '/landing-my-courses', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
     { key: 'profile', icon: 'award', label: 'Thành tích', to: '/landing-profile', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
-    { key: 'topup', icon: 'credit-card', label: 'Nạp tiền', to: '/landing-recharge', grad: 'from-[#FCD34D] to-[#F59E0B]', mColor: '#FCD34D' },
   ];
 
   return (
@@ -123,6 +122,7 @@ const Header = () => {
   };
 
   const isLoggedIn = !!user;
+  const userRankLabel = user?.rank?.name || user?.rank?.code || user?.rankName || user?.rank_name || 'Chưa gán rank';
 
   return (
     <>
@@ -172,7 +172,7 @@ const Header = () => {
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-2.5 flex items-center justify-between gap-2">
             {/* Logo */}
             <Link to="/landing-courses" className="flex items-center shrink-0">
-              <img src="/logo.png" alt="3H STATION" className="h-10 md:h-12 object-contain" />
+              <img src="/logo.png" alt="3H STATION" className="h-14 md:h-16 lg:h-[92px] w-auto object-contain" />
             </Link>
 
             {/* Desktop Nav */}
@@ -278,13 +278,6 @@ const Header = () => {
             <div className="flex items-center gap-2 shrink-0">
               {isLoggedIn ? (
                 <div className="flex items-center gap-2">
-                  <Link
-                    to="/landing-recharge"
-                    className="hidden sm:flex h-9 items-center justify-center gap-1.5 rounded-[8px] border border-[#FCD34D]/25 bg-[#FCD34D]/10 px-3 text-[10px] font-black uppercase tracking-[1px] text-[#FCD34D] transition-all hover:border-[#FCD34D]/60 hover:bg-[#FCD34D] hover:text-black"
-                  >
-                    <FeatherIcon icon="credit-card" size={13} />
-                    Nạp tiền
-                  </Link>
                   <div
                     className="relative flex cursor-pointer items-center gap-2 border-l border-white/[0.06] py-1.5 pl-3"
                     onMouseEnter={() => setActiveMenu('profile')}
@@ -295,7 +288,7 @@ const Header = () => {
                     </div>
                     <div className="hidden max-w-[118px] flex-col md:flex">
                       <span className={`truncate text-[11px] font-black uppercase leading-4 tracking-tight transition-colors ${activeMenu === 'profile' ? 'text-[#FCD34D]' : 'text-white'}`}>{user.name}</span>
-                      <span className="text-[10px] font-black leading-3 text-[#FCD34D]">Học viên</span>
+                      <span className="text-[10px] font-black leading-3 text-[#FCD34D]">Rank: {userRankLabel}</span>
                     </div>
 
                     <div
@@ -306,6 +299,7 @@ const Header = () => {
                         <div className="mx-3 mb-1 border-b border-white/[0.05] px-2 py-2.5">
                           <div className="mb-1 text-[9px] font-black uppercase tracking-[1.5px] text-gray-400">Mã khách hàng</div>
                           <div className="truncate text-[11px] font-black text-white">USER_{user.id || 'N/A'}</div>
+                          <div className="mt-2 text-[9px] font-black uppercase tracking-[1.5px] text-[#FCD34D]">Rank: {userRankLabel}</div>
                         </div>
                         <Link to="/landing-profile?tab=info" className="flex items-center gap-2.5 px-4 py-2 text-[10px] font-black uppercase tracking-tight text-gray-400 transition-colors hover:bg-white/[0.035] hover:text-[#FCD34D]">
                           <FeatherIcon icon="user" size={13} /> Hồ sơ cá nhân

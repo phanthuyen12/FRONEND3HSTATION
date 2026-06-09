@@ -23,6 +23,7 @@ const CourseDetail: React.FC = () => {
   const [sections, setSections] = useState<CourseSection[]>([]);
   const [videos, setVideos] = useState<CourseVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [accessDenied, setAccessDenied] = useState<boolean>(false);
   const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
   const [showEnrollModal, setShowEnrollModal] = useState<boolean>(false);
@@ -34,6 +35,7 @@ const CourseDetail: React.FC = () => {
     const loadCourse = async () => {
       try {
         setLoading(true);
+        setAccessDenied(false);
         const [courseData, sectionsData, videosData, enrollmentData] = await Promise.all([
           elearningService.getClientCourse(id),
           elearningService.getClientCourseSections(id),
@@ -57,6 +59,10 @@ const CourseDetail: React.FC = () => {
           setIsEnrolled(enrollmentData.isEnrolled);
         }
       } catch (error) {
+        const message = (error as any)?.message || '';
+        if ((error as any)?.status === 403 || /quyền|forbidden/i.test(message)) {
+          setAccessDenied(true);
+        }
         // eslint-disable-next-line no-console
         console.error("Không thể tải khóa học", error);
       } finally {
@@ -144,6 +150,26 @@ const CourseDetail: React.FC = () => {
   }
 
   if (!course) {
+    if (accessDenied) {
+      return (
+        <>
+          <PageBreadcrumb
+            name="Không có quyền"
+            title="Chi tiết khóa học"
+            breadCrumbItems={["Client", "Khóa học"]}
+          />
+          <div className="text-center py-10">
+            <h4 className="text-lg font-semibold mb-2">Khóa học bị khóa theo Rank</h4>
+            <p className="text-slate-500 mb-4">
+              Tài khoản hiện tại chưa được cấp quyền truy cập khóa học này.
+            </p>
+            <Link to="/landing-courses" className="btn bg-primary text-white">
+              Quay lại danh sách
+            </Link>
+          </div>
+        </>
+      );
+    }
     return (
       <>
         <PageBreadcrumb

@@ -18,6 +18,7 @@ const CourseDetailPage = () => {
     const [sections, setSections] = useState<CourseSection[]>([]);
     const [videos, setVideos] = useState<CourseVideo[]>([]);
     const [loading, setLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [enrolling, setEnrolling] = useState(false);
@@ -28,6 +29,7 @@ const CourseDetailPage = () => {
         if (!id) return;
         try {
             setLoading(true);
+            setAccessDenied(false);
             const [courseData, sectionsData, videosData, enrollmentData] = await Promise.all([
                 elearningService.getClientCourse(id),
                 elearningService.getClientCourseSections(id),
@@ -50,6 +52,10 @@ const CourseDetailPage = () => {
             }
         } catch (err) {
             console.error(err);
+            const message = (err as any)?.message || '';
+            if ((err as any)?.status === 403 || /quyền|forbidden/i.test(message)) {
+                setAccessDenied(true);
+            }
         } finally {
             setLoading(false);
         }
@@ -151,28 +157,57 @@ const CourseDetailPage = () => {
         );
     }
 
-    if (!course) return null;
+    if (!course && !accessDenied) return null;
+    const currentCourse = course as Course;
 
     return (
         <HostingLayout>
-            <div className="min-h-screen bg-[#060b0a] pt-0 pb-24 overflow-x-hidden">
-                {/* ── BREADCRUMBS ── */}
-            <div className="w-full bg-[#0d1513] border-b border-white/[0.03] mb-6">
-                <div className="max-w-7xl mx-auto px-4 py-3">
-                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400">
-                        <Link to="/" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1.5">
-                            <FeatherIcon icon="home" size={12} /> Trang chủ
-                        </Link>
-                        <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
-                        <Link to="/landing-courses" className="hover:text-[#FBBF24]">Khóa học</Link>
-                        <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
-                        <span className="text-white">{course.title}</span>
+            <style>{`
+                .animate-in { animation: fade-in 0.8s ease-out forwards; }
+                @keyframes fade-in {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
+            {accessDenied ? (
+                <div className="min-h-screen bg-[#060b0a] flex items-center justify-center px-4">
+                    <div className="w-full max-w-xl rounded-[10px] border border-red-400/20 bg-[#0d1412] p-8 text-center shadow-2xl">
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-red-400/20 bg-red-500/10 text-red-300">
+                            <FeatherIcon icon="lock" size={28} />
+                        </div>
+                        <h1 className="text-2xl font-black text-white">Khóa học đang bị khóa theo Rank</h1>
+                        <p className="mt-3 text-sm leading-7 text-gray-400">
+                            Tài khoản hiện tại chưa được cấp quyền truy cập khóa học này. Vui lòng liên hệ Admin để được gán Rank phù hợp.
+                        </p>
+                        <div className="mt-6 flex items-center justify-center gap-3">
+                            <Link to="/landing-courses" className="rounded-[10px] border border-white/10 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-all hover:border-[#FBBF24]/50 hover:text-[#FBBF24]">
+                                Quay lại danh sách
+                            </Link>
+                            <Link to="/landing-profile?tab=info" className="rounded-[10px] bg-[#FBBF24] px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-all hover:bg-[#FDE047]">
+                                Xem hồ sơ
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="min-h-screen bg-[#060b0a] pt-0 pb-24 overflow-x-hidden">
+                    {/* ── BREADCRUMBS ── */}
+                    <div className="w-full bg-[#0d1513] border-b border-white/[0.03] mb-6">
+                        <div className="max-w-7xl mx-auto px-4 py-3">
+                            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400">
+                                <Link to="/" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1.5">
+                                    <FeatherIcon icon="home" size={12} /> Trang chủ
+                                </Link>
+                                <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
+                                <Link to="/landing-courses" className="hover:text-[#FBBF24]">Khóa học</Link>
+                                <FeatherIcon icon="chevron-right" size={10} className="opacity-40" />
+                                <span className="text-white">{currentCourse.title}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div className="max-w-7xl mx-auto px-4">
-                    {isEnrolled ? (
+                    <div className="max-w-7xl mx-auto px-4">
+                        {isEnrolled ? (
                         /* =========================================================================
                            ENROLLED VIEW
                            ========================================================================= */
@@ -199,9 +234,9 @@ const CourseDetailPage = () => {
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                                     <div className="space-y-2">
                                         <span className="px-3 py-1 rounded-[10px] bg-[#FBBF24]/10 text-[#FBBF24] text-[10px] font-bold uppercase">ĐÃ SỞ HỮU</span>
-                                        <h1 className="text-3xl font-black dark:text-white tracking-tight">{course.title}</h1>
+                                        <h1 className="text-3xl font-black dark:text-white tracking-tight">{currentCourse.title}</h1>
                                     </div>
-                                    <Link to={`/courses/${course.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
+                                    <Link to={`/courses/${currentCourse.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
                                         VÀO HỌC CHUYÊN SÂU
                                     </Link>
                                 </div>
@@ -243,7 +278,7 @@ const CourseDetailPage = () => {
                                     </div>
                                 ) : (
                                     <div className="prose prose-invert max-w-none text-gray-300 text-[15px] whitespace-pre-wrap">
-                                        {course.description || course.content}
+                                        {currentCourse.description || currentCourse.content}
                                     </div>
                                 )}
                             </div>
@@ -258,7 +293,7 @@ const CourseDetailPage = () => {
                             <div className="w-full lg:flex-1 space-y-10">
                                 <div className="space-y-4">
                                     <h1 className="text-3xl md:text-4xl font-black text-white leading-[1.2] tracking-tight">
-                                        {course.title}
+                                        {currentCourse.title}
                                     </h1>
                                     <p className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed">
                                         Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.
@@ -268,11 +303,11 @@ const CourseDetailPage = () => {
                                             <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center text-amber-500">
                                                 <FeatherIcon icon="star" size={14} fill="currentColor" />
                                             </div>
-                                            <span className="text-[14px] font-black underline">{course.rating || '5.0'}</span>
+                                            <span className="text-[14px] font-black underline">{currentCourse.rating || '5.0'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 text-gray-400">
                                             <FeatherIcon icon="users" size={14} />
-                                            <span className="text-[14px] font-bold">{course.students || 128} học viên</span>
+                                            <span className="text-[14px] font-bold">{currentCourse.students || 128} học viên</span>
                                         </div>
                                     </div>
                                 </div>
@@ -292,7 +327,7 @@ const CourseDetailPage = () => {
                                              const preview = videos.find(v => v.preview);
                                              if (preview) setSelectedVideo(preview);
                                         }}>
-                                            <img src={course.thumbnail || course.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200'} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Thumb" />
+                                            <img src={currentCourse.thumbnail || currentCourse.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200'} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Thumb" />
                                             <div className="absolute inset-0 bg-black/40"></div>
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="w-20 h-20 rounded-full bg-[#FBBF24] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
@@ -343,7 +378,7 @@ const CourseDetailPage = () => {
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Giá trọn gói</p>
                                         <div className="flex flex-col">
                                             <div className="text-4xl font-black text-[#FBBF24] tracking-tighter leading-none">
-                                                {fmt(course.price)}
+                                                {fmt(currentCourse.price)}
                                             </div>
                                             <p className="text-[10px] font-medium text-gray-400 mt-2 italic opacity-60">* Thanh toán một lần, sở hữu vĩnh viễn</p>
                                         </div>
@@ -389,17 +424,10 @@ const CourseDetailPage = () => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                        )}
+                    </div>
                 </div>
-            </div>
-            
-            <style>{`
-                .animate-in { animation: fade-in 0.8s ease-out forwards; }
-                @keyframes fade-in {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `}</style>
+            )}
         </HostingLayout>
     );
 };
