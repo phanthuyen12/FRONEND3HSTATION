@@ -1,18 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
+import parse from 'html-react-parser';
 import HostingLayout from '../layouts/HostingLayout';
-import { useTheme } from '../context/ThemeContext';
 import { elearningService } from '../../../config';
 import { Course, CourseSection, CourseVideo } from '../../../services/elearningService';
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
-import Swal from 'sweetalert2';
+
+const currentCourseContent = (course: Course | null) => {
+    if (!course) return '';
+    const content = typeof course.content === 'string' ? course.content.trim() : '';
+    const description = typeof course.description === 'string' ? course.description.trim() : '';
+    const primary = content || description || '';
+    return dedupeRepeatedContent(primary);
+};
+
+const dedupeRepeatedContent = (value: string) => {
+    const normalized = value.trim();
+    if (!normalized) return '';
+
+    const collapsed = normalized.replace(/\s+/g, ' ').trim();
+    const half = Math.floor(collapsed.length / 2);
+
+    if (collapsed.length % 2 === 0) {
+        const firstHalf = collapsed.slice(0, half).trim();
+        const secondHalf = collapsed.slice(half).trim();
+        if (firstHalf && firstHalf === secondHalf) {
+            return firstHalf;
+        }
+    }
+
+    return normalized;
+};
 
 const CourseDetailPage = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
-    const { isDark } = useTheme();
 
     const [course, setCourse] = useState<Course | null>(null);
     const [sections, setSections] = useState<CourseSection[]>([]);
@@ -22,6 +45,13 @@ const CourseDetailPage = () => {
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
     const [detailTab, setDetailTab] = useState<'content' | 'about'>('content');
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
+    const playerRef = useRef<HTMLDivElement | null>(null);
+
+    const courseOverview = useMemo(() => {
+        const primary = currentCourseContent(course);
+        if (primary) return primary;
+        return '';
+    }, [course]);
 
     const fetchData = async () => {
         if (!id) return;
@@ -61,19 +91,26 @@ const CourseDetailPage = () => {
         fetchData();
     }, [id]);
 
+    const scrollToPlayer = () => {
+        playerRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    };
+
+    const handleSelectVideo = (video: CourseVideo) => {
+        setSelectedVideo(video);
+        window.requestAnimationFrame(() => {
+            scrollToPlayer();
+        });
+    };
+
     const toggleSection = (sectionId: string) => {
         setExpandedSections(prev => 
             prev.includes(sectionId) 
                 ? prev.filter(id => id !== sectionId)
                 : [...prev, sectionId]
         );
-    };
-
-    const fmt = (n: any) => {
-        if (n === 0 || n === '0' || n === 'Miễn phí') return 'Miễn phí';
-        const num = typeof n === 'string' ? parseFloat(n) : n;
-        if (isNaN(num)) return 'Liên hệ';
-        return num.toLocaleString('vi-VN') + 'đ';
     };
 
     if (loading) {
@@ -123,9 +160,9 @@ const CourseDetailPage = () => {
                     </div>
                 </div>
             ) : (
-                <div className="min-h-screen bg-[#060b0a] pt-0 pb-24 overflow-x-hidden">
+                <div className="min-h-screen bg-[#060b0a] pb-24 overflow-x-hidden">
                     {/* ── BREADCRUMBS ── */}
-                    <div className="w-full bg-[#0d1513] border-b border-white/[0.03] mb-6">
+                    <div className="w-full bg-[#0d1513] border-b border-white/[0.03] mb-6 mt-8 md:mt-10">
                         <div className="max-w-7xl mx-auto px-4 py-3">
                             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[2px] text-gray-400">
                                 <Link to="/" className="hover:text-[#FBBF24] transition-colors flex items-center gap-1.5">
@@ -145,7 +182,7 @@ const CourseDetailPage = () => {
                            ENROLLED VIEW
                            ========================================================================= */
                         <div className="space-y-8 animate-in fade-in duration-700">
-                            <div className="relative w-full bg-black rounded-[10px] overflow-hidden shadow-2xl">
+                            <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-black rounded-[10px] overflow-hidden shadow-2xl">
                                 <div className="aspect-video w-full" key={selectedVideo?.id}>
                                     {selectedVideo ? (
                                         <Plyr
@@ -195,7 +232,7 @@ const CourseDetailPage = () => {
                                                     {isExpanded && (
                                                         <div className="p-2 space-y-1">
                                                             {sectionVideos.map(video => (
-                                                                <button key={video.id} onClick={() => setSelectedVideo(video)} className={`w-full flex items-center justify-between p-3 rounded-[10px] transition-all ${selectedVideo?.id === video.id ? 'bg-[#FBBF24]/10 text-[#FBBF24]' : 'hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-gray-400'}`}>
+                                                                <button key={video.id} onClick={() => handleSelectVideo(video)} className={`w-full flex items-center justify-between p-3 rounded-[10px] transition-all ${selectedVideo?.id === video.id ? 'bg-[#FBBF24]/10 text-[#FBBF24]' : 'hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-gray-400'}`}>
                                                                     <div className="flex items-center gap-3">
                                                                         <FeatherIcon icon="play-circle" size={14} />
                                                                         <span className="text-[13px] font-medium">{video.title}</span>
@@ -210,8 +247,22 @@ const CourseDetailPage = () => {
                                         })}
                                     </div>
                                 ) : (
-                                    <div className="prose prose-invert max-w-none text-gray-300 text-[15px] whitespace-pre-wrap">
-                                        {currentCourse.description || currentCourse.content}
+                                    <div className="rounded-[10px] border border-white/[0.03] bg-[#0b1210] p-6 md:p-8">
+                                        <div className="mb-5 flex items-center gap-3 border-b border-white/[0.05] pb-4">
+                                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FBBF24]/10 text-[#FBBF24]">
+                                                <FeatherIcon icon="file-text" size={18} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-black text-white">Giới thiệu khóa học</h3>
+                                                <p className="text-[12px] text-gray-400">Tổng quan nội dung và mục tiêu bạn sẽ đạt được.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-8 [&_*]:text-inherit [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-black [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-black [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-4 [&_p]:leading-8 [&_strong]:font-bold [&_em]:italic [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-2 [&_br]:block">
+                                            {courseOverview ? parse(courseOverview) : (
+                                                <p className="text-gray-400">Chưa có nội dung khóa học.</p>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -229,7 +280,7 @@ const CourseDetailPage = () => {
                                         {currentCourse.title}
                                     </h1>
                                     <p className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed">
-                                        Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.
+                                        {currentCourse.short_description || currentCourse.description || 'Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.'}
                                     </p>
                                     <div className="flex flex-wrap gap-6 pt-2">
                                         <div className="flex items-center gap-2">
@@ -245,7 +296,7 @@ const CourseDetailPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="relative w-full bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-white/[0.03]">
+                                <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-white/[0.03]">
                                     {selectedVideo && selectedVideo.preview ? (
                                         <div className="w-full h-full" key={selectedVideo.id}>
                                             <Plyr
@@ -258,7 +309,7 @@ const CourseDetailPage = () => {
                                     ) : (
                                         <div className="relative w-full h-full group cursor-pointer" onClick={() => {
                                              const preview = videos.find(v => v.preview);
-                                             if (preview) setSelectedVideo(preview);
+                                             if (preview) handleSelectVideo(preview);
                                         }}>
                                             <img src={currentCourse.thumbnail || currentCourse.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200'} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Thumb" />
                                             <div className="absolute inset-0 bg-black/40"></div>
@@ -286,7 +337,7 @@ const CourseDetailPage = () => {
                                                     {isExpanded && (
                                                         <div className="p-3 border-t border-gray-50 space-y-1">
                                                             {sectionVideos.map(video => (
-                                                                <div key={video.id} onClick={() => video.preview && setSelectedVideo(video)} className={`flex items-center justify-between p-4 rounded-[10px] transition-all ${video.preview ? 'bg-[#FBBF24]/5 hover:bg-[#FBBF24]/10 text-[#FBBF24] cursor-pointer' : 'text-gray-400 select-none'}`}>
+                                                                <div key={video.id} onClick={() => video.preview && handleSelectVideo(video)} className={`flex items-center justify-between p-4 rounded-[10px] transition-all ${video.preview ? 'bg-[#FBBF24]/5 hover:bg-[#FBBF24]/10 text-[#FBBF24] cursor-pointer' : 'text-gray-400 select-none'}`}>
                                                                     <div className="flex items-center gap-4">
                                                                         <FeatherIcon icon={video.preview ? "play-circle" : "lock"} size={14} />
                                                                         <span className="text-[14px] font-bold">{video.title}</span>
@@ -299,6 +350,17 @@ const CourseDetailPage = () => {
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Chi tiết khóa học</h2>
+                                    <div className="rounded-[10px] border border-white/[0.03] bg-[#0d1513] p-6 md:p-8 shadow-sm">
+                                        <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-7 [&_*]:text-inherit [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6">
+                                            {courseOverview ? parse(courseOverview) : (
+                                                <p className="text-gray-400">Chưa có nội dung chi tiết khóa học.</p>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

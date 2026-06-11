@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
 import { PageBreadcrumb } from "../../../components";
 import { elearningService, adminElearningService, API_URL } from "../../../config";
 import { Category, Course, CourseSection, CourseVideo, CourseCreatePayload } from "../../../services/elearningService";
 import { CourseLesson as AdminCourseLesson } from "../../../services/adminElearningService";
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
+import 'react-quill/dist/quill.snow.css';
 
 const emptyCourse: Course = {
   title: "",
@@ -37,6 +39,41 @@ const emptyVideo: CourseVideo = {
   duration: "",
   order: 0,
   preview: false,
+};
+
+const quillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+    ['link', 'image'],
+    ['clean'],
+  ],
+};
+
+const quillFormats = [
+  'header',
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'list',
+  'bullet',
+  'align',
+  'link',
+  'image',
+];
+
+const normalizeRichText = (value?: string | null) => {
+  if (!value) return "";
+
+  const plainText = value
+    .replace(/<(.|\n)*?>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .trim();
+
+  return plainText ? value : "";
 };
 
 const CourseDetailAdmin: React.FC = () => {
@@ -504,6 +541,9 @@ const CourseDetailAdmin: React.FC = () => {
   };
 
   const handleSave = async () => {
+    const normalizedDescription = normalizeRichText(course.description);
+    const normalizedContent = normalizeRichText(course.content);
+
     // Validation theo API schema
     if (!course.title.trim()) {
       Swal.fire({
@@ -515,7 +555,7 @@ const CourseDetailAdmin: React.FC = () => {
       return;
     }
 
-    if (!course.description || !course.description.trim()) {
+    if (!normalizedDescription) {
       Swal.fire({
         icon: 'warning',
         title: 'Cảnh báo',
@@ -546,14 +586,14 @@ const CourseDetailAdmin: React.FC = () => {
         const payload: CourseCreatePayload = {
           title: course.title.trim(),
           shortDescription: course.short_description || undefined,
-          description: course.description.trim(),
+          description: normalizedDescription,
           categoryId: String(course.category_id),
           thumbnail: course.thumbnail || course.thumbnail_url || null,
           price: course.price ? String(course.price) : undefined,
           level: course.level,
           duration: course.duration || undefined,
           lessons: course.lessons || undefined,
-          content: course.content || null,
+          content: normalizedContent || null,
           status: course.status,
         };
 
@@ -607,14 +647,14 @@ const CourseDetailAdmin: React.FC = () => {
         const payload: Partial<CourseCreatePayload> = {
           title: course.title.trim(),
           shortDescription: course.short_description || undefined,
-          description: course.description?.trim() || undefined,
+          description: normalizedDescription || undefined,
           categoryId: course.category_id ? String(course.category_id) : undefined,
           thumbnail: course.thumbnail || course.thumbnail_url || null,
           price: course.price ? String(course.price) : undefined,
           level: course.level,
           duration: course.duration || undefined,
           lessons: course.lessons || undefined,
-          content: course.content || null,
+          content: normalizedContent || null,
           status: course.status,
         };
 
@@ -750,29 +790,32 @@ const CourseDetailAdmin: React.FC = () => {
               <label className="text-xs text-slate-500 mb-1 block">
                 Mô tả chi tiết <span className="text-rose-500">*</span>
               </label>
-              <textarea
-                className="form-input"
-                rows={4}
+              <div className="overflow-hidden rounded-md border border-slate-200 bg-white">
+                <ReactQuill
+                theme="snow"
+                modules={quillModules}
+                formats={quillFormats}
                 value={course.description || ""}
-                onChange={(e) =>
-                  handleCourseChange("description", e.target.value)
-                }
+                onChange={(value) => handleCourseChange("description", value)}
                 placeholder="Mô tả chi tiết về khóa học"
-                required
               />
+              </div>
             </div>
 
             <div>
               <label className="text-xs text-slate-500 mb-1 block">
                 Nội dung khóa học
               </label>
-              <textarea
-                className="form-input"
-                rows={6}
+              <div className="overflow-hidden rounded-md border border-slate-200 bg-white">
+                <ReactQuill
+                theme="snow"
+                modules={quillModules}
+                formats={quillFormats}
                 value={course.content || ""}
-                onChange={(e) => handleCourseChange("content", e.target.value)}
+                onChange={(value) => handleCourseChange("content", value)}
                 placeholder="Nội dung chi tiết của khóa học (HTML hoặc text)"
               />
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">

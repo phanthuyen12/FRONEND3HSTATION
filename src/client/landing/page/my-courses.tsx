@@ -63,7 +63,7 @@ const MyCoursesPage = () => {
 
     return (
         <HostingLayout>
-            <div className="bg-[#060b0a] min-h-screen pb-24 overflow-x-hidden">
+            <div className="bg-[#060b0a] min-h-screen pb-24 overflow-x-hidden pt-12 md:pt-14">
                 {/* Breadcrumb Navigation */}
                 <div className="max-w-7xl mx-auto px-4 py-3">
                     <nav className="flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase tracking-[2px]">

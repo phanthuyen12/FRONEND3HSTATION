@@ -5,8 +5,8 @@ import { useTheme } from '../context/ThemeContext';
 const Footer = () => {
   const { isDark } = useTheme();
 
-  const quickLinks = ['About Us', 'Support Center', 'Domain Search', 'My Account', 'Contact Us'];
-  const usefulLinks = ['Cloud Hosting', 'VPS Hosting', 'Shared Hosting', 'WordPress Hosting', 'Web Hosting'];
+  const quickLinks = ['Về AETRADING', 'Trung tâm hỗ trợ', 'Khóa học', 'Hồ sơ cá nhân', 'Liên hệ'];
+  const usefulLinks = ['Trading cơ bản', 'Phân tích kỹ thuật', 'Chiến lược giao dịch', 'Quản trị vốn', 'Mentoring thực chiến'];
   const socialIcons = [
     { icon: 'facebook', href: '#' },
     { icon: 'instagram', href: '#' },
@@ -41,10 +41,10 @@ const Footer = () => {
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-14 flex flex-col lg:flex-row items-center justify-between gap-8">
           <div>
             <h2 className="text-2xl lg:text-3xl font-black text-white leading-snug mb-2">
-              Nâng Tầm Hiện Diện Trực Tuyến
+              Nâng Tầm Tư Duy Giao Dịch
             </h2>
             <p className="text-white/80 text-sm max-w-md">
-              Đừng để hosting cũ cản bước bạn. Hàng nghìn doanh nghiệp đã tin tưởng 3HSTATION.
+              Đồng hành cùng AETRADING để xây dựng nền tảng kiến thức vững chắc và giao dịch kỷ luật hơn mỗi ngày.
             </p>
           </div>
           <a
@@ -71,11 +71,11 @@ const Footer = () => {
           <div className="space-y-5">
             {/* Logo */}
             <a href="#" className="flex items-center">
-              <img src="/logo.png" alt="3H STATION" className="h-14 md:h-16 w-auto object-contain" />
+              <img src="/logo.png" alt="AETRADING" className="h-14 md:h-16 w-auto object-contain" />
             </a>
 
             <p className="text-sm leading-relaxed" style={{ color: textColor }}>
-              Làm chủ hiện diện trực tuyến với các giải pháp hosting cao cấp. Dù bạn mới bắt đầu hay doanh nghiệp lớn.
+              AETRADING xây dựng hệ sinh thái học tập và thực chiến dành cho nhà giao dịch muốn phát triển bền vững.
             </p>
 
             {/* Social Icons */}
@@ -157,7 +157,7 @@ const Footer = () => {
               Newsletter
             </h4>
             <p className="text-sm mb-5" style={{ color: textColor }}>
-              Đăng ký để nhận ưu đãi hosting &amp; tin tức mới nhất.
+              Đăng ký để nhận cập nhật khóa học, chiến lược giao dịch và thông báo mới nhất từ AETRADING.
             </p>
             <div
               className="flex overflow-hidden rounded-[10px] border transition-all duration-200 focus-within:ring-2 focus-within:ring-[#FCD34D]/30"
@@ -190,7 +190,7 @@ const Footer = () => {
           className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
           style={{ borderTop: `1px solid ${dividerColor}`, color: textColor }}
         >
-          <p>© {new Date().getFullYear()} 3HSTATION. Tất cả quyền được bảo lưu.</p>
+          <p>© {new Date().getFullYear()} AETRADING. Tất cả quyền được bảo lưu.</p>
           <div className="flex items-center gap-6">
             {['Chính Sách Bảo Mật', 'Điều Khoản', 'Cookie'].map((t) => (
               <a
