@@ -15,7 +15,9 @@ const fmt = (n: any) => {
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
-const fallbackImage = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80';
+const fallbackImage = 'https://img.freepik.com/free-vector/gradient-crypto-logo-collection_23-2148974191.jpg';
+
+const stripHtml = (html?: string | null) => html ? html.replace(/<[^>]*>?/gm, '') : '';
 
 const StatIcon = ({ icon }: { icon: string }) => (
   <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-[#FBBF24]/45 bg-black/25 text-[#FBBF24] shadow-[0_0_34px_rgba(251,191,36,0.16)]">
@@ -140,8 +142,9 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
               {p.title}
             </h3>
           </Link>
-          <p className="mt-2 text-[11px] leading-5 text-gray-400 line-clamp-3">
-            {p.short_description || p.description || 'Đây là mô tả chi tiết cho khóa học thực chiến, cung cấp kiến thức từ cơ bản đến nâng cao.'}
+          <p className="mt-2 text-[11px] leading-5 text-gray-400 line-clamp-3"
+             title={stripHtml(p.short_description || p.description)}>
+            {stripHtml(p.short_description || p.description || 'Đây là mô tả chi tiết cho khóa học thực chiến, cung cấp kiến thức từ cơ bản đến nâng cao.')}
           </p>
         </div>
 
