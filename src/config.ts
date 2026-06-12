@@ -16,10 +16,10 @@ import toolKeyService from './services/toolKeyService';
 
 
 // Tạo instance ElearningService
-export const elearningService = new ElearningService();
+export const elearningService = new ElearningService(API_URL);
 
 // Tạo instance AdminElearningService
-export const adminElearningService = new AdminElearningService();
+export const adminElearningService = new AdminElearningService(API_URL);
 export const vpsService = new VpsService(API_URL);
 export const workflowsService = new WorkflowsService(API_URL);
 export const userService = new UserService(API_URL);

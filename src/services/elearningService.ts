@@ -77,8 +77,8 @@ export interface CourseVideo {
 class ElearningService {
   private api: string;
 
-  constructor() {
-    this.api = 'https://api.aetrading.vn';
+  constructor(apiUrl: string = 'https://api.aetrading.vn') {
+    this.api = apiUrl;
   }
 
   private getAuthToken(): string | null {
