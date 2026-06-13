@@ -111,7 +111,7 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
         <img
           src={p.thumbnail || p.thumbnail_url || fallbackImage}
           alt={p.title}
-          className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${isLocked ? 'scale-[1.03] opacity-72 saturate-[0.8] contrast-[0.92]' : 'opacity-84 group-hover:opacity-95'}`}
+          className={`h-full w-full object-contain object-center bg-[#090d0c] p-1 transition-all duration-700 group-hover:scale-[1.02] ${isLocked ? 'opacity-72 saturate-[0.8] contrast-[0.92]' : 'opacity-84 group-hover:opacity-95'}`}
         />
         <div
           className="absolute inset-0"
