@@ -123,8 +123,8 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
         />
         {isLocked && (
           <>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(251,191,36,0.16),transparent_34%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#050706] via-[#050706]/82 to-transparent" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(251,191,36,0.14),transparent_22%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#050706] via-[#050706]/78 to-transparent" />
           </>
         )}
         <div className="absolute left-3 top-3 max-w-[calc(100%-24px)] truncate rounded-[6px] border border-[#FBBF24]/60 bg-black/55 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#FBBF24] backdrop-blur-md">
@@ -139,17 +139,12 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
           </div>
         )}
         {isLocked && (
-          <div className="absolute inset-0 flex items-center justify-center px-4">
-            <div className="w-full max-w-[250px] rounded-[18px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,16,15,0.88),rgba(12,16,15,0.72))] px-4 py-3 text-center shadow-[0_20px_50px_rgba(0,0,0,0.34)] backdrop-blur-md">
-              <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full border border-[#FBBF24]/30 bg-[#FBBF24]/12 text-[#FBBF24]">
-                <FeatherIcon icon="shield" size={15} />
-              </div>
-              <div className="text-[10px] font-black uppercase tracking-[0.24em] text-white/95">
-                Chỉ xem khi đủ rank
-              </div>
-              <div className="mt-1 text-[10px] font-medium leading-4 text-gray-300/90">
-                Nội dung sẽ mở khi tài khoản đạt quyền truy cập phù hợp.
-              </div>
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 flex justify-end">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-2 text-[9px] font-bold uppercase tracking-[0.18em] text-white/90 shadow-[0_12px_26px_rgba(0,0,0,0.28)] backdrop-blur-md">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FBBF24]/14 text-[#FBBF24]">
+                <FeatherIcon icon="eye" size={10} />
+              </span>
+              Xem trước nội dung
             </div>
           </div>
         )}
