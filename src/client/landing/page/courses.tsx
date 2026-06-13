@@ -107,29 +107,49 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
 
   return (
     <article className={`group relative flex min-h-[430px] flex-col overflow-hidden rounded-[8px] border shadow-[0_18px_52px_rgba(0,0,0,0.32)] transition-all duration-500 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#FBBF24]/60 before:to-transparent hover:-translate-y-1 hover:shadow-[0_24px_74px_rgba(251,191,36,0.11)] ${isLocked ? 'border-white/8 bg-[#07100f]' : 'border-[#FBBF24]/20 bg-[#080d0c] hover:border-[#FBBF24]/45'}`}>
-      <Link to={`/landing-courses/${p.id}`} onClick={handleLockedClick} className="relative block h-40 overflow-hidden bg-[#111817]">
+      <Link to={`/landing-courses/${p.id}`} onClick={handleLockedClick} className="relative block h-44 overflow-hidden bg-[#111817]">
         <img
           src={p.thumbnail || p.thumbnail_url || fallbackImage}
           alt={p.title}
-          className="h-full w-full object-cover opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:opacity-95"
+          className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${isLocked ? 'scale-[1.03] opacity-72 saturate-[0.8] contrast-[0.92]' : 'opacity-84 group-hover:opacity-95'}`}
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.22) 42%, rgba(5,7,6,0.92) 100%)' }}
+          style={{
+            background: isLocked
+              ? 'linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.28) 38%, rgba(5,7,6,0.9) 100%)'
+              : 'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.22) 42%, rgba(5,7,6,0.92) 100%)',
+          }}
         />
+        {isLocked && (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(251,191,36,0.16),transparent_34%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#050706] via-[#050706]/82 to-transparent" />
+          </>
+        )}
         <div className="absolute left-3 top-3 max-w-[calc(100%-24px)] truncate rounded-[6px] border border-[#FBBF24]/60 bg-black/55 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#FBBF24] backdrop-blur-md">
           {categoryName}
         </div>
         {isLocked && (
-          <div className="absolute right-3 top-3 rounded-[6px] border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-red-200 backdrop-blur-md">
-            <FeatherIcon icon="lock" size={10} className="mr-1 inline" />
-            Khóa theo Rank
+          <div className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-black/45 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.22em] text-amber-100 shadow-[0_8px_22px_rgba(0,0,0,0.28)] backdrop-blur-md">
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-300/16 text-[#FBBF24]">
+              <FeatherIcon icon="lock" size={9} />
+            </span>
+            Khóa theo rank
           </div>
         )}
         {isLocked && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[1px]">
-            <div className="rounded-full border border-white/10 bg-black/60 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white">
-              Chỉ xem được khi rank phù hợp
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="w-full max-w-[250px] rounded-[18px] border border-white/10 bg-[linear-gradient(180deg,rgba(12,16,15,0.88),rgba(12,16,15,0.72))] px-4 py-3 text-center shadow-[0_20px_50px_rgba(0,0,0,0.34)] backdrop-blur-md">
+              <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full border border-[#FBBF24]/30 bg-[#FBBF24]/12 text-[#FBBF24]">
+                <FeatherIcon icon="shield" size={15} />
+              </div>
+              <div className="text-[10px] font-black uppercase tracking-[0.24em] text-white/95">
+                Chỉ xem khi đủ rank
+              </div>
+              <div className="mt-1 text-[10px] font-medium leading-4 text-gray-300/90">
+                Nội dung sẽ mở khi tài khoản đạt quyền truy cập phù hợp.
+              </div>
             </div>
           </div>
         )}
