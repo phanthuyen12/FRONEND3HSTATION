@@ -52,13 +52,13 @@ const getCloudflareStreamEmbedUrl = (url: string): string => {
 const CloudflarePlayer: React.FC<{ url: string; title?: string }> = ({ url, title }) => {
     const embedUrl = getCloudflareStreamEmbedUrl(url);
     return (
-        <div className="relative w-full h-full bg-black">
+        <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', background: '#000' }}>
             <iframe
                 src={embedUrl}
                 title={title || 'Video'}
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                 allowFullScreen
-                style={{ border: 'none', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
+                style={{ border: 'none', width: '100%', height: '100%', display: 'block' }}
             />
         </div>
     );
