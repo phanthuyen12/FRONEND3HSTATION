@@ -35,6 +35,9 @@ import MyCoursesLandingPage from "./landing/page/my-courses";
 import LandingWorkflowManagementPage from "./landing/page/workflow-management";
 import LandingTopupDetailPage from './landing/page/topup-detail';
 import LandingSupportPage from './landing/page/support';
+import LandingPrivacyPolicyPage from './landing/page/privacy-policy';
+import LandingTermsPage from './landing/page/terms';
+import LandingContactPage from './landing/page/contact';
 import HostingLayout from './landing/layouts/HostingLayout';
 import RechargePage from "./landing/page/recharge";
 import Courses from "./pages/Courses";
@@ -186,6 +189,9 @@ const ClientRoutes: React.FC = () => {
         <Route path="/landing-recharge-crypto" element={<RechargePage />} />
         <Route path="/landing-topup/:code" element={<LandingTopupDetailPage />} />
         <Route path="/support" element={<LandingSupportPage />} />
+        <Route path="/privacy-policy" element={<LandingPrivacyPolicyPage />} />
+        <Route path="/terms" element={<LandingTermsPage />} />
+        <Route path="/contact" element={<LandingContactPage />} />
         <Route
           path="/landing-login"
           element={

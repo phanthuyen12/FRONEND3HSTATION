@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -192,17 +193,21 @@ const Footer = () => {
         >
           <p>© {new Date().getFullYear()} AETRADING. Tất cả quyền được bảo lưu.</p>
           <div className="flex items-center gap-6">
-            {['Chính Sách Bảo Mật', 'Điều Khoản', 'Cookie'].map((t) => (
-              <a
-                key={t}
-                href="#"
+            {[
+              { label: 'Chính Sách Bảo Mật', href: '/privacy-policy' },
+              { label: 'Điều Khoản', href: '/terms' },
+              { label: 'Liên Hệ', href: '/contact' },
+            ].map((t) => (
+              <Link
+                key={t.label}
+                to={t.href}
                 className="transition-colors duration-200"
                 style={{ color: textColor }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = linkHover)}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = textColor)}
               >
-                {t}
-              </a>
+                {t.label}
+              </Link>
             ))}
           </div>
           {/* Payment icons */}

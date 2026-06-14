@@ -86,6 +86,43 @@ const dedupeRepeatedContent = (value: string) => {
     return normalized;
 };
 
+/**
+ * Chuyển đổi duration về dạng đọc được.
+ * Backend có thể trả về: số giây (number/string), hoặc chuỗi "mm:ss" / "hh:mm:ss".
+ */
+const formatDuration = (raw?: string | number | null): string => {
+    if (raw === undefined || raw === null || raw === '') return '';
+
+    // Nếu là số (giây)
+    const asNum = typeof raw === 'number' ? raw : Number(raw);
+    if (!isNaN(asNum) && asNum > 0) {
+        const h = Math.floor(asNum / 3600);
+        const m = Math.floor((asNum % 3600) / 60);
+        const s = Math.floor(asNum % 60);
+        if (h > 0) return `${h} giờ ${m > 0 ? m + ' phút' : ''}`;
+        if (m > 0) return `${m} phút ${s > 0 ? s + ' giây' : ''}`;
+        return `${s} giây`;
+    }
+
+    // Nếu là chuỗi "hh:mm:ss" hoặc "mm:ss"
+    const str = String(raw).trim();
+    const parts = str.split(':').map(Number);
+    if (parts.length === 3 && parts.every(p => !isNaN(p))) {
+        const [h, m, s] = parts;
+        if (h > 0) return `${h} giờ ${m > 0 ? m + ' phút' : ''}`;
+        if (m > 0) return `${m} phút ${s > 0 ? s + ' giây' : ''}`;
+        return `${s} giây`;
+    }
+    if (parts.length === 2 && parts.every(p => !isNaN(p))) {
+        const [m, s] = parts;
+        if (m > 0) return `${m} phút ${s > 0 ? s + ' giây' : ''}`;
+        return `${s} giây`;
+    }
+
+    // Trả về nguyên bản nếu không parse được
+    return str;
+};
+
 const CourseDetailPage = () => {
     const { id } = useParams();
 
@@ -129,6 +166,9 @@ const CourseDetailPage = () => {
             if (videosData && videosData.length > 0) {
                 const firstVideo = videosData.find(v => v.preview) || videosData[0];
                 setSelectedVideo(firstVideo);
+                // Auto-load player cho video đầu tiên
+                setIsPlayerVisible(true);
+                setIsPlayerReady(false);
             }
         } catch (err) {
             console.error(err);
@@ -145,16 +185,13 @@ const CourseDetailPage = () => {
         fetchData();
     }, [id]);
 
-    useEffect(() => {
-        setIsPlayerVisible(false);
-        setIsPlayerReady(false);
-    }, [selectedVideo?.id]);
+
 
     useEffect(() => {
         if (!isPlayerVisible) return;
         const timer = window.setTimeout(() => {
             setIsPlayerReady(true);
-        }, 900);
+        }, 300);
 
         return () => {
             window.clearTimeout(timer);
@@ -255,7 +292,7 @@ const CourseDetailPage = () => {
                            ========================================================================= */
                         <div className="space-y-8 animate-in fade-in duration-700">
                             <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-black rounded-[10px] overflow-hidden shadow-2xl">
-                                <div className="aspect-video w-full" key={selectedVideo?.id}>
+                                <div className="aspect-video w-full">
                                     {selectedVideo ? (
                                         <div className="relative h-full w-full bg-black">
                                             {isPlayerVisible ? (
@@ -361,7 +398,7 @@ const CourseDetailPage = () => {
                                                                         <FeatherIcon icon="play-circle" size={14} />
                                                                         <span className="text-[13px] font-medium">{video.title}</span>
                                                                     </div>
-                                                                    <span className="text-[11px] opacity-40">{video.duration || '5:00'}</span>
+                                                                    <span className="text-[11px] opacity-40">{formatDuration(video.duration) || '--'}</span>
                                                                 </button>
                                                             ))}
                                                         </div>
@@ -422,7 +459,7 @@ const CourseDetailPage = () => {
 
                                 <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-white/[0.03]">
                                     {selectedVideo && selectedVideo.preview ? (
-                                        <div className="relative h-full w-full" key={selectedVideo.id}>
+                                        <div className="relative h-full w-full">
                                             {isPlayerVisible ? (
                                                 <>
                                                     <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black/35 transition-opacity duration-300 ${isPlayerReady ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
