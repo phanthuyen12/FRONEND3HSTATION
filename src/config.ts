@@ -13,7 +13,7 @@ import BankService, { Bank } from './services/bankService';
 import adminRankService from './services/adminRankService';
 import configService from './services/configService';
 import toolKeyService from './services/toolKeyService';
-
+import AdminContactService from './services/adminContactService';
 
 // Tạo instance ElearningService
 export const elearningService = new ElearningService(API_URL);
@@ -30,6 +30,7 @@ export const topupService = new TopupService(API_URL);
 export const bankService = new BankService(API_URL);
 export const rankService = adminRankService;
 export const toolKeyServiceInstance = toolKeyService;
+export const adminContactService = new AdminContactService(API_URL);
 export { configService, toolKeyService, API_URL };
 export type { Bank };
 

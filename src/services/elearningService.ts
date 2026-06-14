@@ -81,6 +81,10 @@ class ElearningService {
     this.api = apiUrl;
   }
 
+  getProtectedVideoStreamUrl(courseId: string | number, videoId: string | number): string {
+    return `${this.api}/api/elearning/courses/${courseId}/videos/${videoId}/stream`;
+  }
+
   private getAuthToken(): string | null {
     if (typeof window === 'undefined') return null;
 

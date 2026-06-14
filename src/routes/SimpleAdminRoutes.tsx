@@ -28,6 +28,7 @@ import RanksAdminList from "../pages/apps/RanksAdmin/List";
 import ConfigAdmin from "../pages/apps/ConfigAdmin";
 import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
 import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
+import SupportAdminList from "../pages/apps/SupportAdmin/List";
 
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
@@ -283,6 +284,16 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <ConfigAdmin />
+          </VerticalLayout>
+        }
+      />
+
+      {/* Support / Contacts */}
+      <Route
+        path="support"
+        element={
+          <VerticalLayout>
+            <SupportAdminList />
           </VerticalLayout>
         }
       />

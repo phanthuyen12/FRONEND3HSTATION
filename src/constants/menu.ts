@@ -176,6 +176,13 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
   {
+    key: "apps-support",
+    label: "Hỗ trợ & Liên hệ",
+    isTitle: false,
+    icon: "mgc_headphone_line",
+    url: "/admin/support",
+  },
+  {
     key: "apps-tools",
     label: "Phần mềm & Key",
     isTitle: false,

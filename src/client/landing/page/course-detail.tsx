@@ -8,6 +8,58 @@ import { Course, CourseSection, CourseVideo } from '../../../services/elearningS
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
 
+const fallbackPoster = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200';
+
+const getYoutubeVideoId = (url?: string | null) => {
+    if (!url) return null;
+    const value = url.trim();
+    const matchers = [
+        /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtu\.be\/)([^&?/]+)/i,
+        /youtube\.com\/shorts\/([^&?/]+)/i,
+    ];
+
+    for (const matcher of matchers) {
+        const match = value.match(matcher);
+        if (match?.[1]) return match[1];
+    }
+
+    return null;
+};
+
+const isYoutubeUrl = (url?: string | null) => Boolean(getYoutubeVideoId(url));
+const isHlsStreamUrl = (url?: string | null) => Boolean(url && /\.m3u8($|\?)/i.test(url));
+
+const getVideoPoster = (video: CourseVideo | null, course: Course | null) => {
+    const youtubeId = getYoutubeVideoId(video?.url);
+    if (youtubeId) return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+    return course?.thumbnail || course?.thumbnail_url || fallbackPoster;
+};
+
+const buildPlyrSource = (video: CourseVideo, courseId?: string | number) => {
+    if (isHlsStreamUrl(video.url) && courseId && video.id) {
+        return {
+            type: "video" as const,
+            sources: [{
+                src: elearningService.getProtectedVideoStreamUrl(courseId, video.id),
+                provider: "html5" as const,
+            }],
+        };
+    }
+
+    const youtubeId = getYoutubeVideoId(video.url);
+    if (youtubeId) {
+        return {
+            type: "video" as const,
+            sources: [{ src: youtubeId, provider: "youtube" as const }],
+        };
+    }
+
+    return {
+        type: "video" as const,
+        sources: [{ src: video.url, provider: "html5" as const }],
+    };
+};
+
 const currentCourseContent = (course: Course | null) => {
     if (!course) return '';
     const content = typeof course.content === 'string' ? course.content.trim() : '';
@@ -45,6 +97,8 @@ const CourseDetailPage = () => {
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
     const [detailTab, setDetailTab] = useState<'content' | 'about'>('content');
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
+    const [isPlayerVisible, setIsPlayerVisible] = useState(false);
+    const [isPlayerReady, setIsPlayerReady] = useState(false);
     const playerRef = useRef<HTMLDivElement | null>(null);
 
     const courseOverview = useMemo(() => {
@@ -91,6 +145,22 @@ const CourseDetailPage = () => {
         fetchData();
     }, [id]);
 
+    useEffect(() => {
+        setIsPlayerVisible(false);
+        setIsPlayerReady(false);
+    }, [selectedVideo?.id]);
+
+    useEffect(() => {
+        if (!isPlayerVisible) return;
+        const timer = window.setTimeout(() => {
+            setIsPlayerReady(true);
+        }, 900);
+
+        return () => {
+            window.clearTimeout(timer);
+        };
+    }, [isPlayerVisible, selectedVideo?.id]);
+
     const scrollToPlayer = () => {
         playerRef.current?.scrollIntoView({
             behavior: 'smooth',
@@ -100,6 +170,8 @@ const CourseDetailPage = () => {
 
     const handleSelectVideo = (video: CourseVideo) => {
         setSelectedVideo(video);
+        setIsPlayerVisible(true);
+        setIsPlayerReady(false);
         window.requestAnimationFrame(() => {
             scrollToPlayer();
         });
@@ -185,12 +257,64 @@ const CourseDetailPage = () => {
                             <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-black rounded-[10px] overflow-hidden shadow-2xl">
                                 <div className="aspect-video w-full" key={selectedVideo?.id}>
                                     {selectedVideo ? (
-                                        <Plyr
-                                            source={{
-                                                type: "video",
-                                                sources: [{ src: selectedVideo.url, provider: selectedVideo.url.includes('youtube') || selectedVideo.url.includes('youtu.be') ? 'youtube' : 'html5' }],
-                                            }}
-                                        />
+                                        <div className="relative h-full w-full bg-black">
+                                            {isPlayerVisible ? (
+                                                <>
+                                                    <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black/35 transition-opacity duration-300 ${isPlayerReady ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
+                                                        <div className="flex flex-col items-center gap-3 rounded-[16px] border border-white/10 bg-black/45 px-6 py-5 text-white/90 backdrop-blur-md">
+                                                            <FeatherIcon icon="loader" size={20} className="animate-spin text-[#FBBF24]" />
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/80">Đang tải video</span>
+                                                        </div>
+                                                    </div>
+                                                    <Plyr
+                                                        source={buildPlyrSource(selectedVideo, currentCourse.id)}
+                                                        options={{
+                                                            autoplay: true,
+                                                            ratio: '16:9',
+                                                            youtube: {
+                                                                noCookie: true,
+                                                                rel: 0,
+                                                                modestbranding: 1,
+                                                            },
+                                                        }}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsPlayerVisible(true);
+                                                        setIsPlayerReady(false);
+                                                    }}
+                                                    className="group relative block h-full w-full cursor-pointer overflow-hidden"
+                                                >
+                                                    <img
+                                                        src={getVideoPoster(selectedVideo, currentCourse)}
+                                                        alt={selectedVideo.title}
+                                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/15" />
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#FBBF24] text-black shadow-[0_24px_50px_rgba(251,191,36,0.28)] transition-transform duration-300 group-hover:scale-110">
+                                                            <FeatherIcon icon="play" fill="currentColor" size={28} className="ml-1" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4">
+                                                        <div className="min-w-0">
+                                                            <div className="text-[10px] font-black uppercase tracking-[0.24em] text-[#FBBF24]">
+                                                                Bài học hiện tại
+                                                            </div>
+                                                            <div className="mt-2 line-clamp-2 text-left text-lg font-black text-white">
+                                                                {selectedVideo.title}
+                                                            </div>
+                                                        </div>
+                                                        <div className="shrink-0 rounded-full border border-white/15 bg-black/45 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/90 backdrop-blur-md">
+                                                            Phát video
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            )}
+                                        </div>
                                     ) : (
                                         <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-white/50 bg-slate-900">
                                             <FeatherIcon icon="play-circle" size={48} className="animate-pulse" />
@@ -298,13 +422,50 @@ const CourseDetailPage = () => {
 
                                 <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-[#0d1110] rounded-[10px] overflow-hidden shadow-2xl aspect-video border border-white/[0.03]">
                                     {selectedVideo && selectedVideo.preview ? (
-                                        <div className="w-full h-full" key={selectedVideo.id}>
-                                            <Plyr
-                                                source={{
-                                                    type: "video",
-                                                    sources: [{ src: selectedVideo.url, provider: "youtube" }],
-                                                }}
-                                            />
+                                        <div className="relative h-full w-full" key={selectedVideo.id}>
+                                            {isPlayerVisible ? (
+                                                <>
+                                                    <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black/35 transition-opacity duration-300 ${isPlayerReady ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
+                                                        <div className="flex flex-col items-center gap-3 rounded-[16px] border border-white/10 bg-black/45 px-6 py-5 text-white/90 backdrop-blur-md">
+                                                            <FeatherIcon icon="loader" size={20} className="animate-spin text-[#FBBF24]" />
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/80">Đang tải video</span>
+                                                        </div>
+                                                    </div>
+                                                    <Plyr
+                                                        source={buildPlyrSource(selectedVideo, currentCourse.id)}
+                                                        options={{
+                                                            autoplay: true,
+                                                            ratio: '16:9',
+                                                            youtube: {
+                                                                noCookie: true,
+                                                                rel: 0,
+                                                                modestbranding: 1,
+                                                            },
+                                                        }}
+                                                    />
+                                                </>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsPlayerVisible(true);
+                                                        setIsPlayerReady(false);
+                                                    }}
+                                                    className="group relative block h-full w-full cursor-pointer overflow-hidden"
+                                                >
+                                                    <img
+                                                        src={getVideoPoster(selectedVideo, currentCourse)}
+                                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                        alt={selectedVideo.title}
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40" />
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#FBBF24] shadow-2xl transition-transform group-hover:scale-110">
+                                                            <FeatherIcon icon="play" fill="black" size={28} className="ml-1 text-black" />
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            )}
                                         </div>
                                     ) : (
                                         <div className="relative w-full h-full group cursor-pointer" onClick={() => {
