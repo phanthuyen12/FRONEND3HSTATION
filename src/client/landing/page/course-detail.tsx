@@ -28,6 +28,41 @@ const getYoutubeVideoId = (url?: string | null) => {
 
 const isYoutubeUrl = (url?: string | null) => Boolean(getYoutubeVideoId(url));
 const isHlsStreamUrl = (url?: string | null) => Boolean(url && /\.m3u8($|\?)/i.test(url));
+const isCloudflareStreamUrl = (url?: string | null) =>
+    Boolean(url && /cloudflarestream\.com/i.test(url));
+
+/**
+ * Trích xuất video UID từ Cloudflare Stream URL.
+ * Ví dụ:
+ *   https://customer-xxx.cloudflarestream.com/<UID>/manifest/video.m3u8
+ *   https://customer-xxx.cloudflarestream.com/<UID>/watch
+ *   https://customer-xxx.cloudflarestream.com/<UID>
+ */
+const getCloudflareStreamEmbedUrl = (url: string): string => {
+    // Lấy pathname sau domain
+    const match = url.match(/cloudflarestream\.com\/([a-f0-9]+)/i);
+    if (match?.[1]) {
+        return `https://iframe.cloudflarestream.com/${match[1]}?autoplay=1&defaultTextTrack=vi&letterboxColor=transparent`;
+    }
+    // Fallback: dùng luôn URL gốc làm src iframe
+    return url;
+};
+
+/** Component embed Cloudflare Stream bằng iframe chính thức */
+const CloudflarePlayer: React.FC<{ url: string; title?: string }> = ({ url, title }) => {
+    const embedUrl = getCloudflareStreamEmbedUrl(url);
+    return (
+        <div className="relative w-full h-full bg-black">
+            <iframe
+                src={embedUrl}
+                title={title || 'Video'}
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                allowFullScreen
+                style={{ border: 'none', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
+            />
+        </div>
+    );
+};
 
 const getVideoPoster = (video: CourseVideo | null, course: Course | null) => {
     const youtubeId = getYoutubeVideoId(video?.url);
@@ -303,18 +338,22 @@ const CourseDetailPage = () => {
                                                             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/80">Đang tải video</span>
                                                         </div>
                                                     </div>
-                                                    <Plyr
-                                                        source={buildPlyrSource(selectedVideo, currentCourse.id)}
-                                                        options={{
-                                                            autoplay: true,
-                                                            ratio: '16:9',
-                                                            youtube: {
-                                                                noCookie: true,
-                                                                rel: 0,
-                                                                modestbranding: 1,
-                                                            },
-                                                        }}
-                                                    />
+                                                    {isCloudflareStreamUrl(selectedVideo.url) ? (
+                                                        <CloudflarePlayer url={selectedVideo.url} title={selectedVideo.title} />
+                                                    ) : (
+                                                        <Plyr
+                                                            source={buildPlyrSource(selectedVideo, currentCourse.id)}
+                                                            options={{
+                                                                autoplay: true,
+                                                                ratio: '16:9',
+                                                                youtube: {
+                                                                    noCookie: true,
+                                                                    rel: 0,
+                                                                    modestbranding: 1,
+                                                                },
+                                                            }}
+                                                        />
+                                                    )}
                                                 </>
                                             ) : (
                                                 <button
@@ -468,18 +507,22 @@ const CourseDetailPage = () => {
                                                             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/80">Đang tải video</span>
                                                         </div>
                                                     </div>
-                                                    <Plyr
-                                                        source={buildPlyrSource(selectedVideo, currentCourse.id)}
-                                                        options={{
-                                                            autoplay: true,
-                                                            ratio: '16:9',
-                                                            youtube: {
-                                                                noCookie: true,
-                                                                rel: 0,
-                                                                modestbranding: 1,
-                                                            },
-                                                        }}
-                                                    />
+                                                    {isCloudflareStreamUrl(selectedVideo.url) ? (
+                                                        <CloudflarePlayer url={selectedVideo.url} title={selectedVideo.title} />
+                                                    ) : (
+                                                        <Plyr
+                                                            source={buildPlyrSource(selectedVideo, currentCourse.id)}
+                                                            options={{
+                                                                autoplay: true,
+                                                                ratio: '16:9',
+                                                                youtube: {
+                                                                    noCookie: true,
+                                                                    rel: 0,
+                                                                    modestbranding: 1,
+                                                                },
+                                                            }}
+                                                        />
+                                                    )}
                                                 </>
                                             ) : (
                                                 <button
