@@ -8,6 +8,15 @@ import { Course, CourseSection, CourseVideo } from '../../../services/elearningS
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
 
+const LESSON_PREVIEW_LIMIT = 6;
+
+type CurriculumSectionEntry = {
+    id: string;
+    title: string;
+    duration?: string | null;
+    videos: CourseVideo[];
+};
+
 const currentCourseContent = (course: Course | null) => {
     if (!course) return '';
     const content = typeof course.content === 'string' ? course.content.trim() : '';
@@ -34,6 +43,198 @@ const dedupeRepeatedContent = (value: string) => {
     return normalized;
 };
 
+const getVideoProvider = (url?: string | null) => {
+    const safeUrl = typeof url === 'string' ? url : '';
+    return safeUrl.includes('youtube') || safeUrl.includes('youtu.be') ? 'youtube' : 'html5';
+};
+
+const getYoutubeVideoId = (url?: string | null) => {
+    if (!url) return null;
+
+    const match = url.match(
+        /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([^?&/]+)/
+    );
+
+    return match?.[1] || null;
+};
+
+const getVideoThumbnail = (video: CourseVideo, courseThumbnail?: string | null) => {
+    const youtubeId = getYoutubeVideoId(video.url);
+    if (youtubeId) {
+        return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+    }
+
+    return courseThumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200';
+};
+
+const CourseCurriculum = ({
+    sections,
+    selectedVideo,
+    isEnrolled,
+    courseThumbnail,
+    expandedSections,
+    onToggleSection,
+    onSelectVideo,
+    previewLessonsCount,
+}: {
+    sections: CurriculumSectionEntry[];
+    selectedVideo: CourseVideo | null;
+    isEnrolled: boolean;
+    courseThumbnail?: string | null;
+    expandedSections: string[];
+    onToggleSection: (sectionId: string) => void;
+    onSelectVideo: (video: CourseVideo) => void;
+    previewLessonsCount: number;
+}) => {
+    const totalLessons = sections.reduce((total, section) => total + section.videos.length, 0);
+    const proLessonsCount = Math.max(0, totalLessons - previewLessonsCount);
+
+    if (!sections.length) {
+        return (
+            <div className="rounded-[10px] border border-white/[0.03] bg-[#0d1513] p-6 text-gray-400">
+                Chưa có danh sách bài học cho khóa này.
+            </div>
+        );
+    }
+
+    return (
+        <section className="space-y-8">
+            <div className="space-y-3">
+                <span className="text-[10px] font-black uppercase tracking-[3px] text-[#FBBF24]">
+                    Nội dung khóa học
+                </span>
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <h2 className="text-2xl font-black text-white tracking-tight md:text-3xl">
+                            Nội Dung Khóa Học
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-400">
+                            {totalLessons} bài học · {sections.length} phần · {previewLessonsCount} bài miễn phí · {proLessonsCount} bài PRO
+                        </p>
+                    </div>
+                    <p className="max-w-xl text-sm leading-7 text-gray-500">
+                        Chọn bài bên dưới để phát ngay trong khung video phía trên.
+                    </p>
+                </div>
+            </div>
+
+            <div className="space-y-8">
+                {sections.map((section, sectionIndex) => {
+                    const isExpanded = expandedSections.includes(section.id);
+                    const visibleVideos = isExpanded
+                        ? section.videos
+                        : section.videos.slice(0, LESSON_PREVIEW_LIMIT);
+                    const hasMoreVideos = section.videos.length > LESSON_PREVIEW_LIMIT;
+
+                    return (
+                        <div key={section.id} className="space-y-4">
+                            <div className="flex flex-col gap-2 border-l-2 border-[#FBBF24] pl-4">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <h3 className="text-lg font-black text-white md:text-xl">
+                                        {section.title || `Module ${sectionIndex + 1}`}
+                                    </h3>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                        {section.videos.length} bài
+                                    </span>
+                                </div>
+                                {section.duration ? (
+                                    <p className="text-sm text-gray-500">Tổng thời lượng: {section.duration}</p>
+                                ) : null}
+                            </div>
+
+                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                {visibleVideos.map((video, videoIndex) => {
+                                    const canPlayVideo = isEnrolled || Boolean(video.preview);
+                                    const isActive = selectedVideo?.id === video.id;
+                                    const thumbnail = getVideoThumbnail(video, courseThumbnail);
+
+                                    return (
+                                        <button
+                                            key={video.id ?? `${section.id}-${videoIndex}`}
+                                            type="button"
+                                            disabled={!canPlayVideo}
+                                            onClick={() => canPlayVideo && onSelectVideo(video)}
+                                            className={`overflow-hidden rounded-[10px] border text-left transition-all ${
+                                                isActive
+                                                    ? 'border-[#FBBF24]/80 bg-[#111a17] shadow-[0_0_0_1px_rgba(251,191,36,0.2)]'
+                                                    : 'border-white/[0.06] bg-[#0d1513] hover:border-white/15 hover:bg-[#111917]'
+                                            } ${canPlayVideo ? 'cursor-pointer' : 'cursor-not-allowed opacity-75'}`}
+                                        >
+                                            <div className="relative aspect-video overflow-hidden bg-[#09100f]">
+                                                <img
+                                                    src={thumbnail}
+                                                    alt={video.title}
+                                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/5" />
+                                                <div className="absolute left-3 top-3 flex items-center gap-2">
+                                                    <span className="rounded bg-black/65 px-2 py-1 text-[10px] font-black text-white">
+                                                        #{video.order || videoIndex + 1}
+                                                    </span>
+                                                    {!isEnrolled && video.preview ? (
+                                                        <span className="rounded bg-emerald-500/85 px-2 py-1 text-[10px] font-black text-white">
+                                                            Miễn phí
+                                                        </span>
+                                                    ) : null}
+                                                    {!canPlayVideo ? (
+                                                        <span className="rounded bg-amber-500/85 px-2 py-1 text-[10px] font-black text-black">
+                                                            PRO
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                                <div className="absolute bottom-3 left-3 flex items-center gap-2 text-white">
+                                                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isActive ? 'bg-[#FBBF24] text-black' : 'bg-white/15 text-white backdrop-blur'}`}>
+                                                        <FeatherIcon icon={canPlayVideo ? 'play' : 'lock'} size={16} />
+                                                    </div>
+                                                    {isActive ? (
+                                                        <span className="rounded-full bg-[#FBBF24] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-black">
+                                                            Đang xem
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                                <span className="absolute bottom-3 right-3 rounded bg-black/75 px-2 py-1 text-[11px] font-bold text-white">
+                                                    {video.duration || 'Video'}
+                                                </span>
+                                            </div>
+
+                                            <div className="space-y-3 p-4">
+                                                <p className={`line-clamp-2 text-sm font-bold leading-6 ${isActive ? 'text-white' : 'text-gray-100'}`}>
+                                                    {video.title}
+                                                </p>
+                                                <div className="flex items-center justify-between text-xs">
+                                                    <span className={canPlayVideo ? 'text-gray-400' : 'text-amber-400'}>
+                                                        {canPlayVideo ? 'Nhấn để phát bài học' : 'Mua khóa học để mở bài này'}
+                                                    </span>
+                                                    <span className={isActive ? 'text-[#FBBF24]' : 'text-gray-500'}>
+                                                        {canPlayVideo ? 'Phát' : 'Khóa'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {hasMoreVideos ? (
+                                <div className="flex justify-center pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => onToggleSection(section.id)}
+                                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-5 py-2.5 text-xs font-black uppercase tracking-[2px] text-white transition-all hover:border-[#FBBF24]/40 hover:text-[#FBBF24]"
+                                    >
+                                        {isExpanded ? 'Thu gọn' : `Xem thêm ${section.videos.length - LESSON_PREVIEW_LIMIT} bài`}
+                                        <FeatherIcon icon={isExpanded ? 'chevron-up' : 'chevron-down'} size={14} />
+                                    </button>
+                                </div>
+                            ) : null}
+                        </div>
+                    );
+                })}
+            </div>
+        </section>
+    );
+};
+
 const CourseDetailPage = () => {
     const { id } = useParams();
 
@@ -43,7 +244,6 @@ const CourseDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [accessDenied, setAccessDenied] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
-    const [detailTab, setDetailTab] = useState<'content' | 'about'>('content');
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
     const playerRef = useRef<HTMLDivElement | null>(null);
 
@@ -52,6 +252,46 @@ const CourseDetailPage = () => {
         if (primary) return primary;
         return '';
     }, [course]);
+
+    const previewLessonsCount = useMemo(
+        () => videos.filter((video) => Boolean(video.preview)).length,
+        [videos]
+    );
+
+    const curriculumSections = useMemo<CurriculumSectionEntry[]>(() => {
+        const sortedVideos = [...videos].sort((left, right) => Number(left.order || 0) - Number(right.order || 0));
+        const matchedSectionIds = new Set<string>();
+
+        const entries = sections
+            .map((section) => {
+                const sectionId = String(section.id);
+                const sectionVideos = sortedVideos.filter((video) => String(video.sectionId) === sectionId);
+
+                if (sectionVideos.length) {
+                    matchedSectionIds.add(sectionId);
+                }
+
+                return {
+                    id: sectionId,
+                    title: section.title,
+                    duration: section.duration,
+                    videos: sectionVideos,
+                };
+            })
+            .filter((section) => section.videos.length > 0);
+
+        const ungroupedVideos = sortedVideos.filter((video) => !matchedSectionIds.has(String(video.sectionId)));
+        if (ungroupedVideos.length) {
+            entries.push({
+                id: 'ungrouped',
+                title: 'Bài học khác',
+                duration: null,
+                videos: ungroupedVideos,
+            });
+        }
+
+        return entries;
+    }, [sections, videos]);
 
     const fetchData = async () => {
         if (!id) return;
@@ -67,10 +307,7 @@ const CourseDetailPage = () => {
             setCourse(courseData);
             setSections(sectionsData || []);
             setVideos(videosData || []);
-
-            if (sectionsData && sectionsData.length > 0) {
-                setExpandedSections(sectionsData.map(s => String(s.id)));
-            }
+            setExpandedSections([]);
 
             if (videosData && videosData.length > 0) {
                 const firstVideo = videosData.find(v => v.preview) || videosData[0];
@@ -188,7 +425,7 @@ const CourseDetailPage = () => {
                                         <Plyr
                                             source={{
                                                 type: "video",
-                                                sources: [{ src: selectedVideo.url, provider: selectedVideo.url.includes('youtube') || selectedVideo.url.includes('youtu.be') ? 'youtube' : 'html5' }],
+                                                sources: [{ src: selectedVideo.url, provider: getVideoProvider(selectedVideo.url) }],
                                             }}
                                         />
                                     ) : (
@@ -205,66 +442,45 @@ const CourseDetailPage = () => {
                                     <div className="space-y-2">
                                         <span className="px-3 py-1 rounded-[10px] bg-[#FBBF24]/10 text-[#FBBF24] text-[10px] font-bold uppercase">ĐÃ CẤP QUYỀN</span>
                                         <h1 className="text-3xl font-black dark:text-white tracking-tight">{currentCourse.title}</h1>
+                                        {selectedVideo ? (
+                                            <p className="text-sm text-gray-400">
+                                                Đang phát: <span className="font-semibold text-white">{selectedVideo.title}</span>
+                                            </p>
+                                        ) : null}
                                     </div>
-                                    {/* <Link to={`/courses/${currentCourse.id}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F59E0B] text-black rounded-[10px] font-black text-[12px] uppercase tracking-widest transition-all">
-                                        VÀO HỌC CHUYÊN SÂU
-                                    </Link> */}
-                                </div>
-
-                                <div className="flex items-center gap-4 mt-8 border-t border-white/[0.03] pt-8">
-                                    <button onClick={() => setDetailTab('content')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'content' ? 'bg-[#FBBF24] text-black' : 'text-gray-400 hover:text-white dark:hover:text-white'}`}>Bài học</button>
-                                    <button onClick={() => setDetailTab('about')} className={`px-6 py-3 rounded-[10px] text-[11px] font-bold uppercase transition-all ${detailTab === 'about' ? 'bg-[#FBBF24] text-black' : 'text-gray-400 hover:text-white dark:hover:text-white'}`}>Giới thiệu</button>
+                                    <div className="rounded-[10px] border border-emerald-400/10 bg-emerald-500/5 px-5 py-4 text-sm text-emerald-200">
+                                        Tất cả bài học đã được mở cho tài khoản của bạn.
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="bg-[#0d1513] rounded-[10px] border border-white/[0.03] shadow-sm p-8">
-                                {detailTab === 'content' ? (
-                                    <div className="space-y-4">
-                                        {sections.map(section => {
-                                            const sectionVideos = videos.filter(v => v.sectionId === section.id);
-                                            const isExpanded = expandedSections.includes(String(section.id));
-                                            return (
-                                                <div key={section.id} className="border border-white/[0.03] rounded-[10px] overflow-hidden">
-                                                    <div onClick={() => toggleSection(String(section.id))} className="p-4 bg-[#0d1412]/[0.02] flex items-center justify-between cursor-pointer">
-                                                        <span className="text-[13px] font-bold dark:text-white">{section.title}</span>
-                                                        <FeatherIcon icon="chevron-down" size={14} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                                                    </div>
-                                                    {isExpanded && (
-                                                        <div className="p-2 space-y-1">
-                                                            {sectionVideos.map(video => (
-                                                                <button key={video.id} onClick={() => handleSelectVideo(video)} className={`w-full flex items-center justify-between p-3 rounded-[10px] transition-all ${selectedVideo?.id === video.id ? 'bg-[#FBBF24]/10 text-[#FBBF24]' : 'hover:bg-white/5 dark:hover:bg-[#0d1412]/5 text-gray-400'}`}>
-                                                                    <div className="flex items-center gap-3">
-                                                                        <FeatherIcon icon="play-circle" size={14} />
-                                                                        <span className="text-[13px] font-medium">{video.title}</span>
-                                                                    </div>
-                                                                    <span className="text-[11px] opacity-40">{video.duration || '5:00'}</span>
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ) : (
-                                    <div className="rounded-[10px] border border-white/[0.03] bg-[#0b1210] p-6 md:p-8">
-                                        <div className="mb-5 flex items-center gap-3 border-b border-white/[0.05] pb-4">
-                                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FBBF24]/10 text-[#FBBF24]">
-                                                <FeatherIcon icon="file-text" size={18} />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-lg font-black text-white">Giới thiệu khóa học</h3>
-                                                <p className="text-[12px] text-gray-400">Tổng quan nội dung và mục tiêu bạn sẽ đạt được.</p>
-                                            </div>
-                                        </div>
+                            <CourseCurriculum
+                                sections={curriculumSections}
+                                selectedVideo={selectedVideo}
+                                isEnrolled={isEnrolled}
+                                courseThumbnail={currentCourse.thumbnail || currentCourse.thumbnail_url}
+                                expandedSections={expandedSections}
+                                onToggleSection={toggleSection}
+                                onSelectVideo={handleSelectVideo}
+                                previewLessonsCount={previewLessonsCount}
+                            />
 
-                                        <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-8 [&_*]:text-inherit [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-black [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-black [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-4 [&_p]:leading-8 [&_strong]:font-bold [&_em]:italic [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-2 [&_br]:block">
-                                            {courseOverview ? parse(courseOverview) : (
-                                                <p className="text-gray-400">Chưa có nội dung khóa học.</p>
-                                            )}
-                                        </div>
+                            <div className="rounded-[10px] border border-white/[0.03] bg-[#0b1210] p-6 md:p-8">
+                                <div className="mb-5 flex items-center gap-3 border-b border-white/[0.05] pb-4">
+                                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FBBF24]/10 text-[#FBBF24]">
+                                        <FeatherIcon icon="file-text" size={18} />
                                     </div>
-                                )}
+                                    <div>
+                                        <h3 className="text-lg font-black text-white">Giới thiệu khóa học</h3>
+                                        <p className="text-[12px] text-gray-400">Tổng quan nội dung và mục tiêu bạn sẽ đạt được.</p>
+                                    </div>
+                                </div>
+
+                                <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-8 [&_*]:text-inherit [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-black [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-black [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-4 [&_p]:leading-8 [&_strong]:font-bold [&_em]:italic [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-2 [&_br]:block">
+                                    {courseOverview ? parse(courseOverview) : (
+                                        <p className="text-gray-400">Chưa có nội dung khóa học.</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -302,7 +518,7 @@ const CourseDetailPage = () => {
                                             <Plyr
                                                 source={{
                                                     type: "video",
-                                                    sources: [{ src: selectedVideo.url, provider: "youtube" }],
+                                                    sources: [{ src: selectedVideo.url, provider: getVideoProvider(selectedVideo.url) }],
                                                 }}
                                             />
                                         </div>
@@ -323,34 +539,16 @@ const CourseDetailPage = () => {
                                 </div>
 
                                 <div className="space-y-6 pt-6">
-                                    <h2 className="text-2xl font-black text-white tracking-tight">Nội dung đào tạo</h2>
-                                    <div className="space-y-4">
-                                        {sections.map(section => {
-                                            const sectionVideos = videos.filter(v => v.sectionId === section.id);
-                                            const isExpanded = expandedSections.includes(String(section.id));
-                                            return (
-                                                <div key={section.id} className="bg-[#0d1412]/[0.02] border border-white/[0.03] rounded-[10px] overflow-hidden">
-                                                    <div onClick={() => toggleSection(String(section.id))} className="p-5 flex items-center justify-between cursor-pointer hover:bg-white/5">
-                                                        <span className="text-[14px] font-black text-white">{section.title}</span>
-                                                        <FeatherIcon icon="chevron-down" size={16} className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                                                    </div>
-                                                    {isExpanded && (
-                                                        <div className="p-3 border-t border-gray-50 space-y-1">
-                                                            {sectionVideos.map(video => (
-                                                                <div key={video.id} onClick={() => video.preview && handleSelectVideo(video)} className={`flex items-center justify-between p-4 rounded-[10px] transition-all ${video.preview ? 'bg-[#FBBF24]/5 hover:bg-[#FBBF24]/10 text-[#FBBF24] cursor-pointer' : 'text-gray-400 select-none'}`}>
-                                                                    <div className="flex items-center gap-4">
-                                                                        <FeatherIcon icon={video.preview ? "play-circle" : "lock"} size={14} />
-                                                                        <span className="text-[14px] font-bold">{video.title}</span>
-                                                                    </div>
-                                                                    {video.preview && <span className="text-[9px] font-black uppercase text-[#FBBF24] bg-[#FBBF24]/10 px-3 py-1 rounded-full">Xem thử</span>}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                                    <CourseCurriculum
+                                        sections={curriculumSections}
+                                        selectedVideo={selectedVideo}
+                                        isEnrolled={isEnrolled}
+                                        courseThumbnail={currentCourse.thumbnail || currentCourse.thumbnail_url}
+                                        expandedSections={expandedSections}
+                                        onToggleSection={toggleSection}
+                                        onSelectVideo={handleSelectVideo}
+                                        previewLessonsCount={previewLessonsCount}
+                                    />
                                 </div>
 
                                 <div className="space-y-6">
