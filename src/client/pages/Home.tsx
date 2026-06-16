@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { elearningService, authService } from "../../config";
-import { Category, Course } from "../../services/elearningService";
+import { Course, CourseVideo } from "../../services/elearningService";
 import { 
   BookOpen, 
   Search, 
@@ -42,8 +42,17 @@ const WEEK_DAYS = [
   { day: "Sat", date: "02", active: false },
 ];
 
+interface HomeBannerItem extends CourseVideo {
+  courseId: string | number;
+  courseTitle: string;
+  courseLevel?: Course["level"];
+  coursePrice?: Course["price"];
+  courseThumbnail?: string | null;
+}
+
 const Home: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [bannerVideos, setBannerVideos] = useState<HomeBannerItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<any>(null);
 
@@ -55,7 +64,30 @@ const Home: React.FC = () => {
         setUserProfile(localUser);
 
         const data = await elearningService.getClientCourses({ limit: 12 });
-        setCourses(data.data || []);
+        const courseItems = data.data || [];
+        setCourses(courseItems);
+
+        const bannerGroups = await Promise.all(
+          courseItems.map(async (course) => {
+            if (!course.id) return [];
+
+            const videos = await elearningService.getClientCourseVideos(course.id);
+
+            return videos
+              .filter((video) => Boolean(video.img_banner || video.imgBanner))
+              .map((video) => ({
+                ...video,
+                img_banner: video.img_banner || video.imgBanner || null,
+                courseId: course.id as string | number,
+                courseTitle: course.title,
+                courseLevel: course.level,
+                coursePrice: course.price,
+                courseThumbnail: course.thumbnail || course.thumbnail_url || null,
+              }));
+          })
+        );
+
+        setBannerVideos(bannerGroups.flat());
 
         if (authService.isAuthenticated()) {
           const profile = await authService.getProfile();
@@ -70,9 +102,27 @@ const Home: React.FC = () => {
     loadData();
   }, []);
 
-  const continueLearning = courses.slice(0, 3);
-  const recommended = courses.slice(3, 6);
-  const recentEnrolled = courses.slice(6, 8);
+  const homeItems = useMemo<HomeBannerItem[]>(
+    () =>
+      bannerVideos.length > 0
+        ? bannerVideos
+        : courses.map((course) => ({
+            course_id: Number(course.id) || 0,
+            courseId: course.id || "",
+            courseTitle: course.title,
+            title: course.title,
+            url: "",
+            img_banner: course.thumbnail || course.thumbnail_url || null,
+            courseThumbnail: course.thumbnail || course.thumbnail_url || null,
+            courseLevel: course.level,
+            coursePrice: course.price,
+          })),
+    [bannerVideos, courses]
+  );
+
+  const continueLearning = homeItems.slice(0, 3);
+  const recommended = homeItems.slice(3, 6);
+  const recentEnrolled = homeItems.slice(6, 8);
 
   return (
     <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
@@ -190,16 +240,16 @@ const Home: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {continueLearning.map((course) => (
-                <div key={course.id} className="bg-white p-5 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
+              {continueLearning.map((item, index) => (
+                <div key={item.id || `${item.courseId}-continue-${index}`} className="bg-white p-5 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex gap-4">
                       <div className="w-14 h-14 bg-blue-50 rounded-[1.25rem] flex items-center justify-center text-2xl shadow-inner group-hover:scale-110 transition-transform">
-                        {course.thumbnail ? <img src={course.thumbnail} className="w-full h-full object-cover rounded-[1.25rem]" /> : "🎨"}
+                        {item.img_banner ? <img src={item.img_banner} className="w-full h-full object-cover rounded-[1.25rem]" alt={item.title} /> : "🎨"}
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-slate-900 mb-1 group-hover:text-teal-600 transition-colors">{course.title}</h4>
-                        <p className="text-xs text-slate-400 font-medium">Product Designer</p>
+                        <h4 className="font-bold text-sm text-slate-900 mb-1 group-hover:text-teal-600 transition-colors">{item.title}</h4>
+                        <p className="text-xs text-slate-400 font-medium">{item.courseTitle}</p>
                       </div>
                     </div>
                     <button className="text-slate-300 hover:text-slate-600"><MoreVertical size={18} /></button>
@@ -220,9 +270,9 @@ const Home: React.FC = () => {
                   </div>
                   
                   <div className="mt-5">
-                    <button className="w-full flex items-center justify-center gap-2 py-2 text-xs font-bold text-teal-600 bg-teal-50 hover:bg-teal-100 rounded-2xl transition-all border border-teal-100 shadow-sm active:scale-95">
+                    <Link to={`/courses/${item.courseId}`} className="w-full flex items-center justify-center gap-2 py-2 text-xs font-bold text-teal-600 bg-teal-50 hover:bg-teal-100 rounded-2xl transition-all border border-teal-100 shadow-sm active:scale-95">
                       Resume course <ChevronRight size={14} className="mt-0.5" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -249,27 +299,27 @@ const Home: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {recommended.map((course) => (
-                  <div key={course.id} className="bg-white p-3 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all h-full flex flex-col group">
+               {recommended.map((item, index) => (
+                  <div key={item.id || `${item.courseId}-recommended-${index}`} className="bg-white p-3 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all h-full flex flex-col group">
                      <div className="relative aspect-video rounded-3xl overflow-hidden mb-4 bg-slate-100">
                         <div className="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">New</div>
-                        <img src={course.thumbnail || undefined} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                        <img src={item.img_banner || item.courseThumbnail || undefined} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={item.title} />
+                        <Link to={`/courses/${item.courseId}`} className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                            <span className="text-white text-xs font-bold ring-1 ring-white/30 rounded-full px-3 py-1 backdrop-blur-sm">View Details</span>
-                        </div>
+                        </Link>
                      </div>
                      <div className="px-3 pb-3 flex-1 flex flex-col">
-                        <h4 className="font-bold text-sm text-slate-900 mb-2 line-clamp-2 leading-snug group-hover:text-teal-600 transition-colors">{course.title}</h4>
+                        <h4 className="font-bold text-sm text-slate-900 mb-1 line-clamp-2 leading-snug group-hover:text-teal-600 transition-colors">{item.title}</h4>
                         <div className="flex items-center justify-between text-xs mb-5">
-                           <p className="text-slate-400 font-medium">Ethan Carter</p>
+                           <p className="text-slate-400 font-medium line-clamp-1">{item.courseTitle}</p>
                            <div className="flex items-center gap-1 bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-100/50">
                               <Star size={10} fill="currentColor" />
                               <span className="font-bold text-[10px]">4.8 <span className="text-slate-300 font-medium">(1023)</span></span>
                            </div>
                         </div>
                         <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
-                           <span className="text-teal-600 font-extrabold text-lg">₹1,859.00</span>
-                           <button className="bg-slate-100 hover:bg-teal-600 hover:text-white text-slate-600 font-bold text-xs px-5 py-2 rounded-2xl transition-all shadow-sm active:scale-95">Add to cart</button>
+                           <span className="text-teal-600 font-extrabold text-lg">{item.coursePrice || "0"}đ</span>
+                           <Link to={`/courses/${item.courseId}`} className="bg-slate-100 hover:bg-teal-600 hover:text-white text-slate-600 font-bold text-xs px-5 py-2 rounded-2xl transition-all shadow-sm active:scale-95">Chi tiết</Link>
                         </div>
                      </div>
                   </div>
@@ -290,16 +340,16 @@ const Home: React.FC = () => {
              </div>
 
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {recentEnrolled.map((course) => (
-                   <div key={course.id} className="bg-white p-6 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col md:flex-row gap-6">
+                {recentEnrolled.map((item, index) => (
+                   <div key={item.id || `${item.courseId}-recent-${index}`} className="bg-white p-6 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col md:flex-row gap-6">
                       <div className="w-full md:w-48 aspect-square bg-slate-100 rounded-[2.25rem] overflow-hidden shrink-0 shadow-lg shadow-slate-100">
-                         <img src={course.thumbnail || undefined} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                         <img src={item.img_banner || item.courseThumbnail || undefined} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={item.title} />
                       </div>
                       <div className="flex-1 flex flex-col justify-between py-2">
                          <div>
-                           <h4 className="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-teal-600 transition-colors">Figma for Busy People: Mastering Auto Layout</h4>
+                           <h4 className="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-teal-600 transition-colors">{item.title}</h4>
                            <div className="flex items-center justify-between text-xs text-slate-400 font-medium mb-6">
-                              <span>Ethan Carter</span>
+                              <span>{item.courseTitle}</span>
                               <div className="flex items-center gap-1 text-amber-500">
                                  <Star size={12} fill="currentColor" />
                                  <span className="font-bold text-slate-700">4.8 <span className="text-slate-400 font-medium">(1023)</span></span>
@@ -326,9 +376,9 @@ const Home: React.FC = () => {
                          </div>
 
                          <div className="pt-4 flex items-center justify-end">
-                            <button className="text-xs font-bold text-teal-600 hover:underline flex items-center gap-1 group/btn">
+                            <Link to={`/courses/${item.courseId}`} className="text-xs font-bold text-teal-600 hover:underline flex items-center gap-1 group/btn">
                                Resume course <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                            </button>
+                            </Link>
                          </div>
                       </div>
                    </div>

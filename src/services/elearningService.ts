@@ -10,6 +10,7 @@ export interface Course {
   id?: number | string;
   title: string;
   short_description?: string | null;
+  shortDescription?: string | null;
   description?: string | null;
   category_id?: number | string;
   categoryId?: string;
@@ -67,6 +68,8 @@ export interface CourseVideo {
   sectionId?: number;
   title: string;
   url: string;
+  img_banner?: string | null;
+  imgBanner?: string | null;
   duration?: string | null;
   order?: number;
   preview?: boolean | number;
@@ -307,6 +310,10 @@ class ElearningService {
       apiPayload.section_id = payload.sectionId;
       delete apiPayload.sectionId;
     }
+    if (payload.imgBanner !== undefined && apiPayload.img_banner === undefined) {
+      apiPayload.img_banner = payload.imgBanner;
+      delete apiPayload.imgBanner;
+    }
     const response = await this.request<{ success: boolean; data: CourseVideo }>(url, {
       method: 'POST',
       body: JSON.stringify(apiPayload),
@@ -316,6 +323,9 @@ class ElearningService {
     if (video && (video as any).section_id !== undefined) {
       (video as any).sectionId = (video as any).section_id;
       delete (video as any).section_id;
+    }
+    if (video && (video as any).img_banner !== undefined) {
+      (video as any).imgBanner = (video as any).img_banner;
     }
     return video || null;
   }
@@ -329,6 +339,10 @@ class ElearningService {
       apiPayload.section_id = payload.sectionId;
       delete apiPayload.sectionId;
     }
+    if (payload.imgBanner !== undefined && apiPayload.img_banner === undefined) {
+      apiPayload.img_banner = payload.imgBanner;
+      delete apiPayload.imgBanner;
+    }
     const response = await this.request<{ success: boolean; data: CourseVideo }>(url, {
       method: 'PUT',
       body: JSON.stringify(apiPayload),
@@ -338,6 +352,9 @@ class ElearningService {
     if (video && (video as any).section_id !== undefined) {
       (video as any).sectionId = (video as any).section_id;
       delete (video as any).section_id;
+    }
+    if (video && (video as any).img_banner !== undefined) {
+      (video as any).imgBanner = (video as any).img_banner;
     }
     return video || null;
   }
@@ -523,6 +540,9 @@ class ElearningService {
           const normalized: any = { ...item };
           if (item.section_id !== undefined) {
             normalized.sectionId = item.section_id;
+          }
+          if (item.img_banner !== undefined) {
+            normalized.imgBanner = item.img_banner;
           }
           if (item.preview !== undefined) {
             normalized.preview = item.preview === true || item.preview === 1;

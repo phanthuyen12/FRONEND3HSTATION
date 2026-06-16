@@ -67,6 +67,7 @@ const CourseDetail: React.FC = () => {
 
   const currentVideo = selectedVideo || videos[0];
   const canViewFull = course?.can_view_full !== false;
+  const currentBanner = currentVideo?.imgBanner || currentVideo?.img_banner || course?.thumbnail || course?.thumbnail_url;
 
   if (loading) {
     return (
@@ -143,6 +144,15 @@ const CourseDetail: React.FC = () => {
               </h4>
             </div>
             <div className="p-6">
+              {currentBanner && (
+                <div className="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                  <img
+                    src={currentBanner}
+                    alt={currentVideo?.title || course.title}
+                    className="h-64 w-full object-cover"
+                  />
+                </div>
+              )}
               {currentVideo ? (
                 <div className="rounded-xl overflow-hidden">
                   <Plyr
@@ -210,6 +220,13 @@ const CourseDetail: React.FC = () => {
                                 }}
                               >
                                 <div className="flex items-center gap-2">
+                                  {(video.imgBanner || video.img_banner) && (
+                                    <img
+                                      src={video.imgBanner || video.img_banner || ""}
+                                      alt={video.title}
+                                      className="h-10 w-16 rounded object-cover"
+                                    />
+                                  )}
                                   <span
                                     className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${active
                                         ? "bg-amber-500 text-white"

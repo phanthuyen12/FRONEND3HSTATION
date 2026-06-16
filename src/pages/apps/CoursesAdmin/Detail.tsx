@@ -36,6 +36,7 @@ const emptyVideo: CourseVideo = {
   sectionId: undefined,
   title: "",
   url: "",
+  img_banner: "",
   duration: "",
   order: 0,
   preview: false,
@@ -75,6 +76,18 @@ const normalizeRichText = (value?: string | null) => {
 
   return plainText ? value : "";
 };
+
+const normalizeVideoForState = (video: any): CourseVideo => ({
+  id: video.id,
+  course_id: video.course_id,
+  sectionId: video.sectionId,
+  title: video.title,
+  url: video.url,
+  img_banner: video.img_banner || video.imgBanner || "",
+  duration: typeof video.duration === 'number' ? String(video.duration) : (video.duration || null),
+  order: video.order || 0,
+  preview: video.preview ? 1 : 0,
+});
 
 const CourseDetailAdmin: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -142,18 +155,7 @@ const CourseDetailAdmin: React.FC = () => {
             }
           }
           if (videosData && videosData.length > 0) {
-            // Convert AdminElearningService CourseVideo to elearningService CourseVideo
-            const convertedVideos: CourseVideo[] = videosData.map((v) => ({
-              id: v.id,
-              course_id: v.course_id,
-              sectionId: v.sectionId,
-              title: v.title,
-              url: v.url,
-              duration: typeof v.duration === 'number' ? String(v.duration) : (v.duration || null),
-              order: v.order || 0,
-              preview: v.preview ? 1 : 0,
-            }));
-            setVideos(convertedVideos);
+            setVideos(videosData.map(normalizeVideoForState));
           }
           if (lessonsData && lessonsData.length > 0) {
             setLessons(lessonsData);
@@ -174,17 +176,7 @@ const CourseDetailAdmin: React.FC = () => {
       adminElearningService.getVideosByCourse(Number(course.id), selectedSectionId)
         .then((videosData) => {
           if (videosData && videosData.length > 0) {
-            const convertedVideos: CourseVideo[] = videosData.map((v) => ({
-              id: v.id,
-              course_id: v.course_id,
-              sectionId: v.sectionId,
-              title: v.title,
-              url: v.url,
-              duration: typeof v.duration === 'number' ? String(v.duration) : (v.duration || null),
-              order: v.order || 0,
-              preview: v.preview ? 1 : 0,
-            }));
-            setVideos(convertedVideos);
+            setVideos(videosData.map(normalizeVideoForState));
           } else {
             setVideos([]);
           }
@@ -199,17 +191,7 @@ const CourseDetailAdmin: React.FC = () => {
       adminElearningService.getVideosByCourse(Number(course.id))
         .then((videosData) => {
           if (videosData && videosData.length > 0) {
-            const convertedVideos: CourseVideo[] = videosData.map((v) => ({
-              id: v.id,
-              course_id: v.course_id,
-              sectionId: v.sectionId,
-              title: v.title,
-              url: v.url,
-              duration: typeof v.duration === 'number' ? String(v.duration) : (v.duration || null),
-              order: v.order || 0,
-              preview: v.preview ? 1 : 0,
-            }));
-            setVideos(convertedVideos);
+            setVideos(videosData.map(normalizeVideoForState));
           } else {
             setVideos([]);
           }
@@ -434,6 +416,7 @@ const CourseDetailAdmin: React.FC = () => {
         {
           title: newVideo.title,
           url: newVideo.url,
+          img_banner: newVideo.img_banner || newVideo.imgBanner || null,
           duration: typeof newVideo.duration === 'string' ? parseInt(newVideo.duration.replace(/[^0-9]/g, '')) || 0 : (typeof newVideo.duration === 'number' ? newVideo.duration : 0),
           order: newVideo.order || videos.length + 1,
           preview: !!newVideo.preview,
@@ -445,17 +428,7 @@ const CourseDetailAdmin: React.FC = () => {
         // Reload videos for current section
         const videosData = await adminElearningService.getVideosByCourse(Number(course.id), selectedSectionId || undefined);
         if (videosData && videosData.length > 0) {
-          const convertedVideos: CourseVideo[] = videosData.map((v) => ({
-            id: v.id,
-            course_id: v.course_id,
-            sectionId: v.sectionId,
-            title: v.title,
-            url: v.url,
-            duration: typeof v.duration === 'number' ? String(v.duration) : (v.duration || null),
-            order: v.order || 0,
-            preview: v.preview ? 1 : 0,
-          }));
-          setVideos(convertedVideos);
+          setVideos(videosData.map(normalizeVideoForState));
         } else {
           setVideos([]);
         }
@@ -505,17 +478,7 @@ const CourseDetailAdmin: React.FC = () => {
         if (course.id) {
           const videosData = await adminElearningService.getVideosByCourse(Number(course.id), selectedSectionId || undefined);
           if (videosData && videosData.length > 0) {
-            const convertedVideos: CourseVideo[] = videosData.map((v) => ({
-              id: v.id,
-              course_id: v.course_id,
-              sectionId: v.sectionId,
-              title: v.title,
-              url: v.url,
-              duration: typeof v.duration === 'number' ? String(v.duration) : (v.duration || null),
-              order: v.order || 0,
-              preview: v.preview ? 1 : 0,
-            }));
-            setVideos(convertedVideos);
+            setVideos(videosData.map(normalizeVideoForState));
           } else {
             setVideos([]);
           }
@@ -1199,6 +1162,26 @@ const CourseDetailAdmin: React.FC = () => {
                         />
                       </div>
                     </div>
+                    <div>
+                      <label className="text-xs text-slate-500 mb-1 block">
+                        Banner video (`img_banner`)
+                      </label>
+                      <input
+                        className="form-input text-sm"
+                        value={newVideo.img_banner || ""}
+                        onChange={(e) => handleNewVideoChange("img_banner", e.target.value)}
+                        placeholder="https://example.com/banner-video.jpg"
+                      />
+                      {newVideo.img_banner && (
+                        <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                          <img
+                            src={newVideo.img_banner}
+                            alt={newVideo.title || "Banner video"}
+                            className="h-32 w-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
                     <div className="grid md:grid-cols-3 gap-3">
                       <div>
                         <label className="text-xs text-slate-500 mb-1 block">
@@ -1389,6 +1372,15 @@ const CourseDetailAdmin: React.FC = () => {
                                   <i className="mgc_link_line mr-1" />
                                   {video.url}
                                 </a>
+                              )}
+                              {video.img_banner && (
+                                <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                                  <img
+                                    src={video.img_banner}
+                                    alt={video.title}
+                                    className="h-28 w-full object-cover"
+                                  />
+                                </div>
                               )}
                             </div>
                             <div className="ml-2">

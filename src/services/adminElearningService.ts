@@ -65,6 +65,8 @@ export interface CourseVideo {
   sectionId?: number;
   title: string;
   url: string;
+  img_banner?: string | null;
+  imgBanner?: string | null;
   duration?: number | string | null;
   order?: number;
   preview?: boolean | number;
@@ -89,6 +91,7 @@ export interface CourseCreatePayload {
 export interface VideoCreatePayload {
   title: string;
   url: string;
+  img_banner?: string | null;
   duration: number;
   order: number;
   preview: boolean;
@@ -98,6 +101,7 @@ export interface VideoCreatePayload {
 export interface VideoUpdatePayload {
   title?: string;
   url?: string;
+  img_banner?: string | null;
   duration?: number;
   order?: number;
   preview?: boolean;
@@ -503,6 +507,9 @@ class AdminElearningService {
             video.sectionId = video.section_id;
             delete video.section_id;
           }
+          if (video.img_banner !== undefined) {
+            video.imgBanner = video.img_banner;
+          }
           return video as CourseVideo;
         });
       }
@@ -524,6 +531,7 @@ class AdminElearningService {
       const apiPayload: any = {
         title: payload.title,
         url: payload.url,
+        img_banner: payload.img_banner ?? null,
         duration: payload.duration,
         order: payload.order,
         preview: payload.preview,
@@ -543,6 +551,9 @@ class AdminElearningService {
         if (video.section_id !== undefined) {
           video.sectionId = video.section_id;
           delete video.section_id;
+        }
+        if (video.img_banner !== undefined) {
+          video.imgBanner = video.img_banner;
         }
         return video as CourseVideo;
       }
@@ -578,6 +589,9 @@ class AdminElearningService {
         if (video.section_id !== undefined) {
           video.sectionId = video.section_id;
           delete video.section_id;
+        }
+        if (video.img_banner !== undefined) {
+          video.imgBanner = video.img_banner;
         }
         return video as CourseVideo;
       }
@@ -938,4 +952,3 @@ class AdminElearningService {
 }
 
 export default AdminElearningService;
-

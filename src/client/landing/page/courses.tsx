@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
+import parse from 'html-react-parser';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import HostingLayout from '../layouts/HostingLayout';
@@ -16,6 +17,15 @@ const fmt = (n: any) => {
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
 const fallbackImage = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80';
+
+const getCardDescription = (course: Course) => {
+  return (
+    course.shortDescription ||
+    course.short_description ||
+    course.description ||
+    'Đây là mô tả chi tiết cho khóa học thực chiến, cung cấp kiến thức từ cơ bản đến nâng cao.'
+  );
+};
 
 const StatIcon = ({ icon }: { icon: string }) => (
   <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-[#FBBF24]/45 bg-black/25 text-[#FBBF24] shadow-[0_0_34px_rgba(251,191,36,0.16)]">
@@ -91,6 +101,7 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
   const studentCount = p.students || 250;
   const canViewFull = Boolean(p.can_view_full);
   const isLocked = !canViewFull;
+  const cardDescription = getCardDescription(p);
 
   const handleLockedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isLocked) return;
@@ -124,13 +135,6 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
             Khóa theo Rank
           </div>
         )}
-        {isLocked && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[1px]">
-            <div className="rounded-full border border-white/10 bg-black/60 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white">
-              Chỉ xem được khi rank phù hợp
-            </div>
-          </div>
-        )}
       </Link>
 
       <div className="flex flex-grow flex-col gap-3 p-4">
@@ -140,9 +144,9 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
               {p.title}
             </h3>
           </Link>
-          <p className="mt-2 text-[11px] leading-5 text-gray-400 line-clamp-3">
-            {p.short_description || p.description || 'Đây là mô tả chi tiết cho khóa học thực chiến, cung cấp kiến thức từ cơ bản đến nâng cao.'}
-          </p>
+          <div className="mt-2 line-clamp-3 text-[11px] leading-5 text-gray-400 [&_p]:m-0 [&_p]:inline [&_strong]:font-semibold [&_em]:italic [&_br]:hidden">
+            {parse(cardDescription)}
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2 text-[10px] font-medium text-gray-400">
