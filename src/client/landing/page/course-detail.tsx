@@ -59,6 +59,11 @@ const getYoutubeVideoId = (url?: string | null) => {
 };
 
 const getVideoThumbnail = (video: CourseVideo, courseThumbnail?: string | null) => {
+    const customBanner = video.imgBanner || video.img_banner;
+    if (customBanner) {
+        return customBanner;
+    }
+
     const youtubeId = getYoutubeVideoId(video.url);
     if (youtubeId) {
         return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
@@ -366,6 +371,9 @@ const CourseDetailPage = () => {
     if (!course && !accessDenied) return null;
     const currentCourse = course as Course;
     const isEnrolled = currentCourse?.can_view_full !== false;
+    const selectedVideoBanner = selectedVideo
+        ? getVideoThumbnail(selectedVideo, currentCourse.thumbnail || currentCourse.thumbnail_url)
+        : (currentCourse.thumbnail || currentCourse.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200');
 
     return (
         <HostingLayout>
@@ -527,7 +535,7 @@ const CourseDetailPage = () => {
                                              const preview = videos.find(v => v.preview);
                                              if (preview) handleSelectVideo(preview);
                                         }}>
-                                            <img src={currentCourse.thumbnail || currentCourse.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200'} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Thumb" />
+                                            <img src={selectedVideoBanner} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={selectedVideo?.title || currentCourse.title} />
                                             <div className="absolute inset-0 bg-black/40"></div>
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="w-20 h-20 rounded-full bg-[#FBBF24] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
