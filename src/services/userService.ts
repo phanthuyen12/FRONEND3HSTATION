@@ -31,6 +31,30 @@ export interface UserDetail extends User {
   } | null;
 }
 
+export interface ReferralUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  balance?: number;
+  status?: string;
+  createdAt?: string;
+}
+
+export interface MyReferralResponse {
+  refCode?: string | null;
+  refCount?: number;
+  refCommission?: number;
+  registerPath?: string | null;
+  referrals: ReferralUser[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 interface ApiResponse<T> {
   success?: boolean;
   data: T;
@@ -72,6 +96,13 @@ class UserService {
       console.error("❌ Fetch failed:", error);
       throw error;
     }
+  }
+
+  private getAuthToken(): string | null {
+    return localStorage.getItem('auth_token')
+      || localStorage.getItem('authToken')
+      || sessionStorage.getItem('auth_token')
+      || sessionStorage.getItem('authToken');
   }
 
   // ADMIN - Users
@@ -174,12 +205,7 @@ class UserService {
     limit?: number;
   }): Promise<{ data: any[]; pagination?: { page: number; limit: number; total: number; totalPages: number } }> {
     try {
-      // Get token from localStorage - try both possible keys
-      // authService uses 'auth_token' key
-      const token = localStorage.getItem('auth_token') 
-        || localStorage.getItem('authToken')
-        || sessionStorage.getItem('auth_token')
-        || sessionStorage.getItem('authToken');
+      const token = this.getAuthToken();
       
       if (!token) {
         console.warn('No token found for getMyOrders');
@@ -236,10 +262,7 @@ class UserService {
   // CLIENT - Get order by ID
   async getOrderById(id: string): Promise<any> {
     try {
-      const token = localStorage.getItem('auth_token') 
-        || localStorage.getItem('authToken')
-        || sessionStorage.getItem('auth_token')
-        || sessionStorage.getItem('authToken');
+      const token = this.getAuthToken();
       
       if (!token) {
         throw new Error('Authorization token not found. Please login again.');
@@ -277,7 +300,7 @@ class UserService {
   // CLIENT - Get current user info
   async getUserInfo(): Promise<User | null> {
     try {
-      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const token = this.getAuthToken();
       const url = `${this.api}/api/client/users/me`;
       const response = await fetch(url, {
         headers: {
@@ -292,6 +315,80 @@ class UserService {
       return null;
     } catch (error) {
       return null;
+    }
+  }
+
+  async getMyReferrals(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<MyReferralResponse> {
+    try {
+      const token = this.getAuthToken();
+      if (!token) {
+        return {
+          refCode: null,
+          refCount: 0,
+          refCommission: 0,
+          registerPath: null,
+          referrals: [],
+        };
+      }
+
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append('page', params.page.toString());
+      if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+      const queryString = queryParams.toString();
+      const url = `${this.api}/api/client/users/me/referrals${queryString ? `?${queryString}` : ''}`;
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          return {
+            refCode: null,
+            refCount: 0,
+            refCommission: 0,
+            registerPath: null,
+            referrals: [],
+          };
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const payload = data?.data?.data || data?.data;
+      if (data.success && payload) {
+        return {
+          refCode: payload.refCode || null,
+          refCount: Number(payload.refCount || 0),
+          refCommission: Number(payload.refCommission || 0),
+          registerPath: payload.registerPath || null,
+          referrals: Array.isArray(payload.referrals) ? payload.referrals : [],
+          pagination: payload.pagination,
+        };
+      }
+
+      return {
+        refCode: null,
+        refCount: 0,
+        refCommission: 0,
+        registerPath: null,
+        referrals: [],
+      };
+    } catch (error: any) {
+      console.error('Get my referrals error:', error);
+      return {
+        refCode: null,
+        refCount: 0,
+        refCommission: 0,
+        registerPath: null,
+        referrals: [],
+      };
     }
   }
 }

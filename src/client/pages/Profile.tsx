@@ -24,6 +24,7 @@ const Profile: React.FC = () => {
     refCommission?: number;
     apiToken?: string | null;
   }>({});
+  const [referrals, setReferrals] = useState<any[]>([]);
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -61,6 +62,7 @@ const Profile: React.FC = () => {
         // Nếu có API getProfile, gọi để lấy thông tin mới nhất
         try {
           const profileData = await authService.getProfile();
+          const referralData = await userService.getMyReferrals({ limit: 50 }).catch(() => null);
           if (profileData) {
             setUser(profileData);
             setFormData({
@@ -69,11 +71,12 @@ const Profile: React.FC = () => {
               phone: profileData.phone || "",
             });
             setRefInfo({
-              refCode: (profileData as any).refCode || (profileData as any).ref_code,
-              refCount: (profileData as any).refCount || (profileData as any).ref_count,
-              refCommission: (profileData as any).refCommission || (profileData as any).ref_commission,
+              refCode: referralData?.refCode || (profileData as any).refCode || (profileData as any).ref_code,
+              refCount: referralData?.refCount ?? (profileData as any).refCount ?? (profileData as any).ref_count,
+              refCommission: referralData?.refCommission ?? (profileData as any).refCommission ?? (profileData as any).ref_commission,
               apiToken: (profileData as any).apiToken || (profileData as any).api_token,
             });
+            setReferrals(referralData?.referrals || []);
             // Cập nhật localStorage
             localStorage.setItem('auth_user', JSON.stringify(profileData));
           }
@@ -435,13 +438,13 @@ const Profile: React.FC = () => {
                       type="text"
                       className="form-input flex-1 text-sm font-mono"
                       readOnly
-                      value={`${window.location.origin}/register?ref=${encodeURIComponent(refInfo.refCode)}`}
+                      value={`${window.location.origin}/landing-register?ref=${encodeURIComponent(refInfo.refCode)}`}
                     />
                     <button
                       type="button"
                       className="btn bg-primary text-white whitespace-nowrap"
                       onClick={async () => {
-                        const refLink = `${window.location.origin}/register?ref=${encodeURIComponent(refInfo.refCode || '')}`;
+                        const refLink = `${window.location.origin}/landing-register?ref=${encodeURIComponent(refInfo.refCode || '')}`;
                         try {
                           await navigator.clipboard.writeText(refLink);
                           await Swal.fire({
@@ -488,6 +491,46 @@ const Profile: React.FC = () => {
                   </p>
                 </div>
               )}
+
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h5 className="font-semibold text-slate-900 dark:text-slate-100">
+                    Người dùng đăng ký từ link ref
+                  </h5>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    {referrals.length} tài khoản
+                  </span>
+                </div>
+
+                {referrals.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-slate-300 dark:border-slate-700 p-4 text-sm text-slate-500 dark:text-slate-400 text-center">
+                    Chưa có người dùng nào đăng ký từ link giới thiệu của bạn.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                          <th className="py-2 pr-3">Tên</th>
+                          <th className="py-2 pr-3">Email</th>
+                          <th className="py-2 pr-3">SĐT</th>
+                          <th className="py-2 pr-3">Ngày đăng ký</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {referrals.map((item) => (
+                          <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800">
+                            <td className="py-3 pr-3 font-medium text-slate-900 dark:text-slate-100">{item.name || 'Người dùng mới'}</td>
+                            <td className="py-3 pr-3">{item.email}</td>
+                            <td className="py-3 pr-3">{item.phone || 'Chưa cập nhật'}</td>
+                            <td className="py-3 pr-3">{item.createdAt ? new Date(item.createdAt).toLocaleString('vi-VN') : '--'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="card">

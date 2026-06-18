@@ -4,7 +4,7 @@ import parse from 'html-react-parser';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import HostingLayout from '../layouts/HostingLayout';
-import { authService, elearningService } from '../../../config';
+import { authService, elearningService, userService } from '../../../config';
 import { Category, Course } from '../../../services/elearningService';
 
 const fmt = (n: any) => {
@@ -203,6 +203,15 @@ const LandingCoursesPage = () => {
   const [userName, setUserName] = useState('Học viên');
   const [userRank, setUserRank] = useState('Chưa gán rank');
   const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [referralData, setReferralData] = useState<{
+    refCode?: string | null;
+    refCount?: number;
+    refCommission?: number;
+  }>({
+    refCode: null,
+    refCount: 0,
+    refCommission: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -233,9 +242,10 @@ const LandingCoursesPage = () => {
         return;
       }
 
-      const [profile, enrolledCourses] = await Promise.all([
+      const [profile, enrolledCourses, referrals] = await Promise.all([
         authService.getProfile().catch(() => null),
         elearningService.getMyCourses().catch(() => []),
+        userService.getMyReferrals({ limit: 5 }).catch(() => null),
       ]);
 
       const name = (profile as any)?.name || (profile as any)?.full_name || (profile as any)?.username || (profile as any)?.email;
@@ -243,10 +253,40 @@ const LandingCoursesPage = () => {
       const rankName = (profile as any)?.rank?.name || (profile as any)?.rank?.code || (profile as any)?.rankName || (profile as any)?.rank_name;
       if (rankName) setUserRank(String(rankName));
       setMyCourses(Array.isArray(enrolledCourses) ? enrolledCourses : []);
+      setReferralData({
+        refCode: referrals?.refCode || null,
+        refCount: Number(referrals?.refCount || 0),
+        refCommission: Number(referrals?.refCommission || 0),
+      });
     };
 
     fetchUserData();
   }, []);
+
+  const referralLink = referralData.refCode
+    ? `${window.location.origin}/landing-register?ref=${encodeURIComponent(referralData.refCode)}`
+    : '';
+
+  const handleCopyReferralLink = async () => {
+    if (!referralLink) {
+      Swal.fire('Chưa có link ref', 'Bạn vui lòng đăng nhập để hệ thống tạo link giới thiệu.', 'info');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'success',
+        title: 'Đã sao chép link ref',
+        showConfirmButton: false,
+        timer: 1800,
+      });
+    } catch (error) {
+      Swal.fire('Lỗi', 'Không thể sao chép link lúc này.', 'error');
+    }
+  };
 
   const userStats = useMemo(() => {
     const learningCourses = myCourses.filter(item => getCourseProgress(item) < 100);
@@ -369,6 +409,47 @@ const LandingCoursesPage = () => {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5 rounded-[8px] border border-[#FBBF24]/22 bg-[#08100f] p-5 shadow-[0_18px_58px_rgba(0,0,0,0.28)] lg:p-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/35 bg-[#FBBF24]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-[#FBBF24]">
+                    <FeatherIcon icon="share-2" size={12} />
+                    Khu vực referral
+                  </div>
+                  <h3 className="mt-3 text-2xl font-black tracking-tight text-white">Link ref và số ref của bạn</h3>
+                  <p className="mt-2 text-sm font-medium text-gray-400">
+                    Mời bạn bè đăng ký qua link riêng để theo dõi số lượng ref ngay trong tài khoản.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-[160px_1fr] lg:min-w-[520px]">
+                  <div className="rounded-[8px] border border-[#FBBF24]/18 bg-black/25 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Số ref</p>
+                    <div className="mt-3 text-4xl font-black leading-none text-[#FBBF24]">{pad2(Number(referralData.refCount || 0))}</div>
+                    <p className="mt-2 text-[11px] font-medium text-gray-400">
+                      {referralData.refCode ? `Mã: ${referralData.refCode}` : 'Đăng nhập để tạo mã ref'}
+                    </p>
+                  </div>
+
+                  <div className="rounded-[8px] border border-[#FBBF24]/18 bg-black/25 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Link đăng ký ref</p>
+                      <button
+                        onClick={handleCopyReferralLink}
+                        className="inline-flex h-9 items-center justify-center gap-2 rounded-[8px] bg-[#FBBF24] px-4 text-[10px] font-black uppercase tracking-[2px] text-black transition-all hover:bg-[#FDE047]"
+                      >
+                        <FeatherIcon icon="copy" size={12} />
+                        Copy
+                      </button>
+                    </div>
+                    <div className="mt-3 rounded-[8px] border border-white/10 bg-[#050706] px-4 py-3 font-mono text-[11px] leading-6 text-gray-300">
+                      {referralLink || 'https://your-domain/landing-register?ref=...'}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
