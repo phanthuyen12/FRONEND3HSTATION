@@ -1,36 +1,11 @@
 import React, { useState } from 'react';
 import FeatherIcon from 'feather-icons-react';
+import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
+import { faqItems } from '../data/supportContent';
 
 const FAQSection = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
-
-  const faqs = [
-    {
-      q: "Cloud VPS tại 3HSTATION có gì đặc biệt cho việc chạy n8n?",
-      a: "VPS của chúng tôi được tối ưu hóa đặc biệt cho Docker và n8n Automation. Với ổ cứng NVMe U.2 thế hệ mới, các workflows phức tạp của bạn sẽ vận hành mượt mà với độ trễ cực thấp."
-    },
-    {
-      q: "Tôi có được hỗ trợ cài đặt các công cụ MMO và Automation không?",
-      a: "Có, 3HSTATION cung cấp hệ thống Script tự động cài đặt sẵn n8n, Docker, và các môi trường lập trình. Bạn chỉ cần 1 click là có thể bắt đầu xây dựng workflows ngay."
-    },
-    {
-      q: "Hệ sinh thái 3HSTATION bao gồm những dịch vụ gì?",
-      a: "Chúng tôi cung cấp giải pháp toàn diện: Cloud VPS hiệu năng cao, Kho Workflows n8n mẫu, Tool Marketing chuyên nghiệp và các Khóa học đào tạo tư duy Automation thực chiến."
-    },
-    {
-      q: "Hệ thống có hỗ trợ nạp tiền tự động không?",
-      a: "Hoàn toàn tự động. Bạn có thể nạp tiền 24/7 qua Ngân hàng (VietQR) hoặc Crypto. Số dư sẽ được cập nhật ngay lập tức giúp bạn không bị gián đoạn dịch vụ."
-    },
-    {
-      q: "Tôi có thể nâng cấp cấu hình VPS khi workflows phình to không?",
-      a: "Chắc chắn rồi. Bạn có thể nâng cấp RAM, CPU hoặc dung lượng ổ cứng bất cứ lúc nào ngay trên bảng điều khiển mà không cần phải cài đặt lại hệ điều hành."
-    },
-    {
-      q: "Đội ngũ kỹ thuật có hỗ trợ sửa lỗi luồng n8n không?",
-      a: "Chúng tôi có đội ngũ chuyên gia về Automation sẵn sàng tư vấn và hỗ trợ xử lý các lỗi kỹ thuật liên quan đến hạ tầng và môi trường vận hành workflows cho khách hàng."
-    }
-  ];
 
   return (
     <section className="py-20 md:py-32 bg-[#040706] relative overflow-hidden">
@@ -73,12 +48,12 @@ const FAQSection = () => {
                   <p className="text-sm text-gray-400 leading-relaxed">
                     Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng giúp đỡ bạn mọi lúc, mọi nơi để đảm bảo website vận hành mượt mà nhất.
                   </p>
-                  <button className="flex items-center gap-3 text-[#FDE047] text-sm font-black group mt-2 hover:gap-4 transition-all duration-300">
+                  <Link to="/landing-contact" className="flex items-center gap-3 text-[#FDE047] text-sm font-black group mt-2 hover:gap-4 transition-all duration-300">
                     Liên hệ ngay
                     <div className="w-7 h-7 rounded-full bg-[#FDE047]/10 border border-[#FDE047]/30 flex items-center justify-center group-hover:bg-[#FDE047] group-hover:text-force-white group-hover:border-[#FDE047] transition-all duration-500">
                       <FeatherIcon icon="arrow-right" size={14} />
                     </div>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </ScrollReveal>
@@ -86,7 +61,7 @@ const FAQSection = () => {
 
           {/* Right Side - Accordion FAQ */}
           <div className="lg:w-2/3 space-y-3">
-            {faqs.map((faq, idx) => (
+            {faqItems.map((faq, idx) => (
               <ScrollReveal key={idx} direction="right" delay={idx * 0.1}>
                 <div 
                   className={`group transition-all duration-500 border rounded-[24px] overflow-hidden cursor-pointer ${
@@ -98,7 +73,7 @@ const FAQSection = () => {
                 >
                   <div className="w-full px-8 py-6 flex items-start justify-between gap-6">
                     <span className={`text-base md:text-lg font-bold transition-colors duration-300 leading-snug ${activeIndex === idx ? 'text-[#FDE047]' : 'text-gray-200 group-hover:text-white'}`}>
-                      {faq.q}
+                      {faq.question}
                     </span>
                     <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${activeIndex === idx ? 'bg-[#FDE047] text-force-white rotate-180 shadow-[0_0_20px_#FDE047]' : 'bg-[#0d1412]/5 text-gray-400 border border-white/10 group-hover:border-white/30'}`}>
                       <FeatherIcon icon="chevron-down" size={16} strokeWidth={3} />
@@ -111,7 +86,7 @@ const FAQSection = () => {
                     }`}
                   >
                     <p className="px-8 pb-8 text-gray-400 leading-relaxed text-sm md:text-base font-medium border-t border-white/[0.03] pt-4">
-                      {faq.a}
+                      {faq.answer}
                     </p>
                   </div>
                 </div>
@@ -126,4 +101,3 @@ const FAQSection = () => {
 };
 
 export default FAQSection;
-

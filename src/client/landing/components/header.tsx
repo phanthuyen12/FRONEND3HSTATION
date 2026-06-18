@@ -131,11 +131,11 @@ const Header = () => {
         <div className="bg-gradient-to-r from-[#032030] to-[#FCD34D] dark:from-[#080d0c] dark:to-[#0a1411] border-b border-white/[0.03] py-1.5 md:py-2">
           <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between text-[10px] md:text-[11px] font-bold text-white/80">
             <div className="flex items-center gap-2 md:gap-4">
-              <a href="#" className="hover:text-white transition-colors">Chính sách</a>
+              <Link to="/landing-policy" className="hover:text-white transition-colors">Chính sách</Link>
               <span className="opacity-20">|</span>
-              <a href="#" className="hover:text-white transition-colors">FAQ</a>
+              <Link to="/landing-faq" className="hover:text-white transition-colors">FAQ</Link>
               <span className="opacity-20">|</span>
-              <a href="#" className="hover:text-white transition-colors">Liên Hệ</a>
+              <Link to="/landing-contact" className="hover:text-white transition-colors">Liên Hệ</Link>
             </div>
             <div className="flex items-center gap-3 md:gap-5">
               <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
@@ -269,7 +269,7 @@ const Header = () => {
                 </>
               )}
 
-              <Link to="/support" className="px-4 py-2 text-[12px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FCD34D] hover:bg-white/5 dark:hover:bg-[#0d1412]/5 rounded-xl transition-all">
+              <Link to="/landing-faq" className="px-4 py-2 text-[12px] font-black uppercase tracking-widest text-gray-400 hover:text-[#FCD34D] hover:bg-white/5 dark:hover:bg-[#0d1412]/5 rounded-xl transition-all">
                 Hỗ Trợ
               </Link>
             </nav>

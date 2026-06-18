@@ -1,12 +1,25 @@
 import React from 'react';
 import FeatherIcon from 'feather-icons-react';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
 const Footer = () => {
   const { isDark } = useTheme();
 
-  const quickLinks = ['Về AETRADING', 'Trung tâm hỗ trợ', 'Khóa học', 'Hồ sơ cá nhân', 'Liên hệ'];
-  const usefulLinks = ['Trading cơ bản', 'Phân tích kỹ thuật', 'Chiến lược giao dịch', 'Quản trị vốn', 'Mentoring thực chiến'];
+  const quickLinks = [
+    { label: 'Khóa học', to: '/landing-courses' },
+    { label: 'Trung tâm hỗ trợ', to: '/landing-faq' },
+    { label: 'Chính sách', to: '/landing-policy' },
+    { label: 'Hồ sơ cá nhân', to: '/landing-profile' },
+    { label: 'Liên hệ', to: '/landing-contact' },
+  ];
+  const usefulLinks = [
+    { label: 'Workflow automation', to: '/landing-workflows' },
+    { label: 'Cloud VPS', to: '/landing-vps' },
+    { label: 'Hosting', to: '/landing-hosting' },
+    { label: 'Kho tool', to: '/landing-tools' },
+    { label: 'Nạp tiền', to: '/landing-recharge' },
+  ];
   const socialIcons = [
     { icon: 'facebook', href: '#' },
     { icon: 'instagram', href: '#' },
@@ -47,8 +60,8 @@ const Footer = () => {
               Đồng hành cùng AETRADING để xây dựng nền tảng kiến thức vững chắc và giao dịch kỷ luật hơn mỗi ngày.
             </p>
           </div>
-          <a
-            href="#"
+          <Link
+            to="/landing-courses"
             className="flex-shrink-0 flex items-center gap-2 text-sm font-bold px-7 py-3.5 rounded-[10px] transition-all duration-200 hover:-translate-y-px hover:shadow-lg"
             style={{ background: '#ffffff', color: '#FCD34D' }}
           >
@@ -56,7 +69,7 @@ const Footer = () => {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2 12L12 2M12 2H5M12 2V9" stroke="#FCD34D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </a>
+          </Link>
         </div>
         {/* Decorative circles */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-[#0d1412]/5 hidden lg:block" />
@@ -70,9 +83,9 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-5">
             {/* Logo */}
-            <a href="#" className="flex items-center">
+            <Link to="/landing-courses" className="flex items-center">
               <img src="/logo.png" alt="AETRADING" className="h-14 md:h-16 w-auto object-contain" />
-            </a>
+            </Link>
 
             <p className="text-sm leading-relaxed" style={{ color: textColor }}>
               AETRADING xây dựng hệ sinh thái học tập và thực chiến dành cho nhà giao dịch muốn phát triển bền vững.
@@ -114,16 +127,16 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3.5">
               {quickLinks.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
+                <li key={link.label}>
+                  <Link
+                    to={link.to}
                     className="text-sm transition-colors duration-200"
                     style={{ color: textColor }}
                     onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = linkHover)}
                     onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = textColor)}
                   >
-                    {link}
-                  </a>
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -136,16 +149,16 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3.5">
               {usefulLinks.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
+                <li key={link.label}>
+                  <Link
+                    to={link.to}
                     className="text-sm transition-colors duration-200"
                     style={{ color: textColor }}
                     onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = linkHover)}
                     onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = textColor)}
                   >
-                    {link}
-                  </a>
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -192,17 +205,21 @@ const Footer = () => {
         >
           <p>© {new Date().getFullYear()} AETRADING. Tất cả quyền được bảo lưu.</p>
           <div className="flex items-center gap-6">
-            {['Chính Sách Bảo Mật', 'Điều Khoản', 'Cookie'].map((t) => (
-              <a
-                key={t}
-                href="#"
+            {[
+              { label: 'Chính Sách Bảo Mật', to: '/landing-policy#bao-mat' },
+              { label: 'Điều Khoản', to: '/landing-policy#su-dung' },
+              { label: 'Thanh Toán', to: '/landing-policy#thanh-toan' },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
                 className="transition-colors duration-200"
                 style={{ color: textColor }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = linkHover)}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = textColor)}
               >
-                {t}
-              </a>
+                {item.label}
+              </Link>
             ))}
           </div>
           {/* Payment icons */}

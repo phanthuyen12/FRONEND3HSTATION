@@ -43,6 +43,7 @@ const TopupAdminDetail = React.lazy(() => import("../pages/apps/TopupAdmin/Detai
 const DocumentsAdminList = React.lazy(() => import("../pages/apps/DocumentsAdmin/List"));
 const DocumentsAdminDetail = React.lazy(() => import("../pages/apps/DocumentsAdmin/Detail"));
 const BankAdminList = React.lazy(() => import("../pages/apps/BankAdmin/List"));
+const SupportAdminList = React.lazy(() => import("../pages/apps/SupportAdmin/List"));
 const OrdersReport = React.lazy(() => import("../pages/apps/OrdersAdmin/Report"));
 
 // extra pages 
@@ -444,6 +445,22 @@ const bankAdminRoutes: RoutesProps = {
   ],
 };
 
+const supportAdminRoutes: RoutesProps = {
+  path: "/admin/support-root",
+  name: "SupportAdmin",
+  route: PrivateRoute,
+  roles: ["Admin"],
+  icon: "message",
+  children: [
+    {
+      path: "/admin/support-requests",
+      name: "SupportAdminList",
+      element: <SupportAdminList />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
 const ordersReportRoutes: RoutesProps = {
   path: "/admin/orders-report",
   name: "OrdersReport",
@@ -468,6 +485,7 @@ const appRoutes = [
   topupAdminRoutes,
   documentsAdminRoutes,
   bankAdminRoutes,
+  supportAdminRoutes,
   ordersReportRoutes,
 ];
 

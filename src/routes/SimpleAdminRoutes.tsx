@@ -28,6 +28,7 @@ import RanksAdminList from "../pages/apps/RanksAdmin/List";
 import ConfigAdmin from "../pages/apps/ConfigAdmin";
 import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
 import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
+import SupportAdminList from "../pages/apps/SupportAdmin/List";
 
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
@@ -287,6 +288,16 @@ const SimpleAdminRoutes: React.FC = () => {
         }
       />
 
+      {/* Support requests */}
+      <Route
+        path="support-requests"
+        element={
+          <VerticalLayout>
+            <SupportAdminList />
+          </VerticalLayout>
+        }
+      />
+
       {/* Fallback: mọi route khác trong /admin -> Dashboard */}
       <Route
         path="*"
@@ -301,4 +312,3 @@ const SimpleAdminRoutes: React.FC = () => {
 };
 
 export default SimpleAdminRoutes;
-

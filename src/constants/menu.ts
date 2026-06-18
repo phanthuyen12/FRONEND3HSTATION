@@ -203,6 +203,20 @@ const MENU_ITEMS: MenuItemTypes[] = [
     url: "/admin/configs",
   },
   {
+    key: "apps-support",
+    label: "Hỗ trợ",
+    isTitle: false,
+    icon: "mgc_message_3_line",
+    children: [
+      {
+        key: "support-requests",
+        label: "Form liên hệ",
+        url: "/admin/support-requests",
+        parentKey: "apps-support",
+      },
+    ],
+  },
+  {
     key: 'elements',
     label: 'Elements',
     isTitle: true,

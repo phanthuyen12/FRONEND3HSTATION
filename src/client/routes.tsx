@@ -36,6 +36,9 @@ import LandingWorkflowManagementPage from "./landing/page/workflow-management";
 import LandingTopupDetailPage from './landing/page/topup-detail';
 import HostingLayout from './landing/layouts/HostingLayout';
 import RechargePage from "./landing/page/recharge";
+import LandingFAQPage from "./landing/page/faq";
+import Contact from "./pages/contact";
+import PrivacyPolicy from "./pages/privacy-policy";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
@@ -62,6 +65,7 @@ import MyVps from "./pages/MyVps";
 import MyVpsDetail from "./pages/MyVpsDetail";
 import SoftwareKeys from "./pages/SoftwareKeys";
 import MySoftwareKeys from "./pages/MySoftwareKeys";
+import Support from "./pages/support";
 const Dashboard = React.lazy(() => import("../pages/dashboard/"));
 import Orders from "./pages/Orders";
 const ClientRoutes: React.FC = () => {
@@ -164,6 +168,30 @@ const ClientRoutes: React.FC = () => {
         <Route
           path="/landing-hosting"
           element={<LandingHostingPage />}
+        />
+        <Route
+          path="/landing-contact"
+          element={<Contact />}
+        />
+        <Route
+          path="/landing-faq"
+          element={<LandingFAQPage />}
+        />
+        <Route
+          path="/landing-fqa"
+          element={<LandingFAQPage />}
+        />
+        <Route
+          path="/support"
+          element={<Support />}
+        />
+        <Route
+          path="/privacy-policy"
+          element={<PrivacyPolicy />}
+        />
+        <Route
+          path="/landing-policy"
+          element={<PrivacyPolicy />}
         />
         <Route
           path="/landing-deposit"
@@ -490,5 +518,3 @@ const ClientRoutes: React.FC = () => {
 };
 
 export default ClientRoutes;
-
-
