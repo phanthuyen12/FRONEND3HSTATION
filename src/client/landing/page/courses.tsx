@@ -445,7 +445,7 @@ const LandingCoursesPage = () => {
                       </button>
                     </div>
                     <div className="mt-3 rounded-[8px] border border-white/10 bg-[#050706] px-4 py-3 font-mono text-[11px] leading-6 text-gray-300">
-                      {referralLink || 'https://your-domain/landing-register?ref=...'}
+                      {referralLink || 'https://api.aetrading.vn/landing-register?ref=...'}
                     </div>
                   </div>
                 </div>
