@@ -18,6 +18,19 @@ const pad2 = (n: number) => String(n).padStart(2, '0');
 
 const fallbackImage = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80';
 
+const getLandingOrigin = () => {
+  if (typeof window === 'undefined') {
+    return 'https://academy.aetrading.vn';
+  }
+
+  const origin = window.location.origin;
+  if (origin.includes('api.aetrading.vn')) {
+    return origin.replace('api.aetrading.vn', 'academy.aetrading.vn');
+  }
+
+  return origin;
+};
+
 const getCardDescription = (course: Course) => {
   return (
     course.shortDescription ||
@@ -203,6 +216,7 @@ const LandingCoursesPage = () => {
   const [userName, setUserName] = useState('Học viên');
   const [userRank, setUserRank] = useState('Chưa gán rank');
   const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [referralData, setReferralData] = useState<{
     refCode?: string | null;
     refCount?: number;
@@ -237,8 +251,16 @@ const LandingCoursesPage = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!authService.isAuthenticated()) {
+      const authenticated = authService.isAuthenticated();
+      setIsLoggedIn(authenticated);
+
+      if (!authenticated) {
         setMyCourses([]);
+        setReferralData({
+          refCode: null,
+          refCount: 0,
+          refCommission: 0,
+        });
         return;
       }
 
@@ -264,7 +286,7 @@ const LandingCoursesPage = () => {
   }, []);
 
   const referralLink = referralData.refCode
-    ? `${window.location.origin}/landing-register?ref=${encodeURIComponent(referralData.refCode)}`
+    ? `${getLandingOrigin()}/landing-register?ref=${encodeURIComponent(referralData.refCode)}`
     : '';
 
   const handleCopyReferralLink = async () => {
@@ -411,6 +433,7 @@ const LandingCoursesPage = () => {
               ))}
             </div>
 
+            {isLoggedIn && (
             <div className="mt-5 rounded-[8px] border border-[#FBBF24]/22 bg-[#08100f] p-5 shadow-[0_18px_58px_rgba(0,0,0,0.28)] lg:p-6">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div className="min-w-0">
@@ -429,7 +452,7 @@ const LandingCoursesPage = () => {
                     <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Số ref</p>
                     <div className="mt-3 text-4xl font-black leading-none text-[#FBBF24]">{pad2(Number(referralData.refCount || 0))}</div>
                     <p className="mt-2 text-[11px] font-medium text-gray-400">
-                      {referralData.refCode ? `Mã: ${referralData.refCode}` : 'Đăng nhập để tạo mã ref'}
+                      {referralData.refCode ? `Mã: ${referralData.refCode}` : 'Đang tạo mã ref cho tài khoản mới'}
                     </p>
                   </div>
 
@@ -438,19 +461,21 @@ const LandingCoursesPage = () => {
                       <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Link đăng ký ref</p>
                       <button
                         onClick={handleCopyReferralLink}
-                        className="inline-flex h-9 items-center justify-center gap-2 rounded-[8px] bg-[#FBBF24] px-4 text-[10px] font-black uppercase tracking-[2px] text-black transition-all hover:bg-[#FDE047]"
+                        disabled={!referralLink}
+                        className="inline-flex h-9 items-center justify-center gap-2 rounded-[8px] bg-[#FBBF24] px-4 text-[10px] font-black uppercase tracking-[2px] text-black transition-all hover:bg-[#FDE047] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <FeatherIcon icon="copy" size={12} />
                         Copy
                       </button>
                     </div>
                     <div className="mt-3 rounded-[8px] border border-white/10 bg-[#050706] px-4 py-3 font-mono text-[11px] leading-6 text-gray-300">
-                      {referralLink || 'https://api.aetrading.vn/landing-register?ref=...'}
+                      {referralLink || `${getLandingOrigin()}/landing-register?ref=...`}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            )}
           </div>
         </section>
 
