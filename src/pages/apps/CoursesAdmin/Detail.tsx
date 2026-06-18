@@ -109,6 +109,10 @@ const CourseDetailAdmin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [videoSearchTerm, setVideoSearchTerm] = useState<string>("");
   const [loadingVideos, setLoadingVideos] = useState(false);
+  // Edit video state
+  const [editingVideoId, setEditingVideoId] = useState<number | null>(null);
+  const [editingVideo, setEditingVideo] = useState<CourseVideo>(emptyVideo);
+  const [savingEditVideo, setSavingEditVideo] = useState(false);
 
   // Load categories
   useEffect(() => {
@@ -454,6 +458,48 @@ const CourseDetailAdmin: React.FC = () => {
       });
     } finally {
       setSavingVideo(false);
+    }
+  };
+
+  const handleEditVideo = (video: CourseVideo) => {
+    setEditingVideoId(video.id ?? null);
+    setEditingVideo({ ...video });
+  };
+
+  const handleEditVideoChange = (field: keyof CourseVideo, value: any) => {
+    setEditingVideo((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveEditVideo = async () => {
+    if (!editingVideo.title.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Cảnh báo', text: 'Vui lòng nhập tên video', confirmButtonText: 'Đóng' });
+      return;
+    }
+    if (!editingVideo.url.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Cảnh báo', text: 'Vui lòng nhập URL video', confirmButtonText: 'Đóng' });
+      return;
+    }
+    setSavingEditVideo(true);
+    try {
+      await adminElearningService.updateVideo(editingVideoId!, {
+        title: editingVideo.title,
+        url: editingVideo.url,
+        img_banner: editingVideo.img_banner || null,
+        duration: typeof editingVideo.duration === 'string'
+          ? parseInt(editingVideo.duration.replace(/[^0-9]/g, '')) || 0
+          : (editingVideo.duration as unknown as number) || 0,
+        order: editingVideo.order || 0,
+        preview: !!editingVideo.preview,
+      });
+      // Reload videos
+      const videosData = await adminElearningService.getVideosByCourse(Number(course.id), selectedSectionId || undefined);
+      setVideos(videosData ? videosData.map(normalizeVideoForState) : []);
+      setEditingVideoId(null);
+      Swal.fire({ icon: 'success', title: 'Thành công!', text: 'Video đã được cập nhật', timer: 2000, confirmButtonText: 'Đóng' });
+    } catch (err: any) {
+      Swal.fire({ icon: 'error', title: 'Lỗi!', text: err?.message || 'Không cập nhật được video', confirmButtonText: 'Đóng' });
+    } finally {
+      setSavingEditVideo(false);
     }
   };
 
@@ -1341,59 +1387,169 @@ const CourseDetailAdmin: React.FC = () => {
                           key={video.id || index}
                           className="border border-slate-200 rounded-lg p-3 bg-white"
                         >
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex-1">
-                              <h6 className="text-sm font-medium text-slate-700 mb-1">
-                                {video.title}
-                              </h6>
-                              <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
-                                {video.duration && (
-                                  <span>
-                                    <i className="mgc_time_line mr-1" />
-                                    {video.duration}
-                                  </span>
+                          {/* View mode */}
+                          {editingVideoId !== video.id ? (
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1">
+                                <h6 className="text-sm font-medium text-slate-700 mb-1">
+                                  {video.title}
+                                </h6>
+                                <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
+                                  {video.duration && (
+                                    <span>
+                                      <i className="mgc_time_line mr-1" />
+                                      {video.duration}s
+                                    </span>
+                                  )}
+                                  {video.order !== undefined && (
+                                    <span>Thứ tự: {video.order}</span>
+                                  )}
+                                  {video.preview ? (
+                                    <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded">
+                                      Xem trước
+                                    </span>
+                                  ) : null}
+                                </div>
+                                {video.url && (
+                                  <a
+                                    href={video.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-blue-600 hover:underline block truncate max-w-xs"
+                                  >
+                                    <i className="mgc_link_line mr-1" />
+                                    {video.url}
+                                  </a>
                                 )}
-                                {video.order !== undefined && (
-                                  <span>Thứ tự: {video.order}</span>
-                                )}
-                                {video.preview && (
-                                  <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded">
-                                    Xem trước
-                                  </span>
+                                {video.img_banner && (
+                                  <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                                    <img
+                                      src={video.img_banner}
+                                      alt={video.title}
+                                      className="h-28 w-full object-cover"
+                                    />
+                                  </div>
                                 )}
                               </div>
-                              {video.url && (
-                                <a
-                                  href={video.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-blue-600 hover:underline"
+                              <div className="ml-2 flex flex-col gap-1">
+                                <button
+                                  type="button"
+                                  className="btn btn-xs bg-blue-50 text-blue-600 text-xs"
+                                  onClick={() => handleEditVideo(video)}
                                 >
-                                  <i className="mgc_link_line mr-1" />
-                                  {video.url}
-                                </a>
-                              )}
-                              {video.img_banner && (
-                                <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                                  <img
-                                    src={video.img_banner}
-                                    alt={video.title}
-                                    className="h-28 w-full object-cover"
-                                  />
+                                  <i className="mgc_edit_line mr-1" />
+                                  Sửa
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-xs bg-rose-50 text-rose-600 text-xs"
+                                  onClick={() => video.id && handleDeleteVideo(video.id)}
+                                >
+                                  <i className="mgc_delete_line mr-1" />
+                                  Xóa
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            /* Edit mode inline */
+                            <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 bg-blue-50/40">
+                              <h6 className="text-xs font-semibold text-blue-700 mb-3">
+                                <i className="mgc_edit_line mr-1" />
+                                Chỉnh sửa video
+                              </h6>
+                              <div className="space-y-2">
+                                <div className="grid md:grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-xs text-slate-500 mb-1 block">Tên video <span className="text-rose-500">*</span></label>
+                                    <input
+                                      className="form-input text-sm"
+                                      value={editingVideo.title}
+                                      onChange={(e) => handleEditVideoChange('title', e.target.value)}
+                                      placeholder="Tên video"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-xs text-slate-500 mb-1 block">URL video <span className="text-rose-500">*</span></label>
+                                    <input
+                                      className="form-input text-sm"
+                                      value={editingVideo.url}
+                                      onChange={(e) => handleEditVideoChange('url', e.target.value)}
+                                      placeholder="https://..."
+                                    />
+                                  </div>
                                 </div>
-                              )}
+                                <div>
+                                  <label className="text-xs text-slate-500 mb-1 block">Banner (img_banner)</label>
+                                  <input
+                                    className="form-input text-sm"
+                                    value={editingVideo.img_banner || ''}
+                                    onChange={(e) => handleEditVideoChange('img_banner', e.target.value)}
+                                    placeholder="https://example.com/banner.jpg"
+                                  />
+                                  {editingVideo.img_banner && (
+                                    <div className="mt-2 overflow-hidden rounded-lg border border-slate-200">
+                                      <img src={editingVideo.img_banner} alt="banner" className="h-24 w-full object-cover" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="grid md:grid-cols-3 gap-2">
+                                  <div>
+                                    <label className="text-xs text-slate-500 mb-1 block">Thời lượng (giây)</label>
+                                    <input
+                                      type="number"
+                                      className="form-input text-sm"
+                                      value={typeof editingVideo.duration === 'string' ? parseInt(editingVideo.duration.replace(/[^0-9]/g, '')) || '' : (editingVideo.duration || '')}
+                                      onChange={(e) => handleEditVideoChange('duration', e.target.value ? Number(e.target.value) : 0)}
+                                      min={0}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-xs text-slate-500 mb-1 block">Thứ tự</label>
+                                    <input
+                                      type="number"
+                                      className="form-input text-sm"
+                                      value={editingVideo.order || 0}
+                                      onChange={(e) => handleEditVideoChange('order', Number(e.target.value))}
+                                      min={0}
+                                    />
+                                  </div>
+                                  <div className="flex items-end">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                      <input
+                                        type="checkbox"
+                                        checked={!!editingVideo.preview}
+                                        onChange={(e) => handleEditVideoChange('preview', e.target.checked ? 1 : 0)}
+                                        className="form-checkbox"
+                                      />
+                                      <span className="text-xs text-slate-500">Xem trước</span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 pt-1">
+                                  <button
+                                    type="button"
+                                    className="btn btn-xs bg-primary text-white text-xs"
+                                    onClick={handleSaveEditVideo}
+                                    disabled={savingEditVideo}
+                                  >
+                                    {savingEditVideo ? (
+                                      <><i className="mgc_loading_3_line animate-spin mr-1" />Đang lưu...</>
+                                    ) : (
+                                      <><i className="mgc_save_line mr-1" />Lưu</>  
+                                    )}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-xs bg-slate-100 text-slate-600 text-xs"
+                                    onClick={() => setEditingVideoId(null)}
+                                    disabled={savingEditVideo}
+                                  >
+                                    <i className="mgc_close_line mr-1" />Hủy
+                                  </button>
+                                </div>
+                              </div>
                             </div>
-                            <div className="ml-2">
-                              <button
-                                type="button"
-                                className="btn btn-xs bg-rose-50 text-rose-600 text-xs"
-                                onClick={() => video.id && handleDeleteVideo(video.id)}
-                              >
-                                <i className="mgc_delete_line mr-1" />
-                                Xóa
-                              </button>
-                            </div>
-                          </div>
+                          )}
                               </div>
                             ))}
                           </div>
