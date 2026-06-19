@@ -88,7 +88,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h4 className="text-sm font-bold mb-5 uppercase tracking-wider" style={{ color: headingColor }}>
-              Quick Links
+              Truy Cập Nhanh
             </h4>
             <ul className="space-y-3.5">
               {quickLinks.map((link) => (
@@ -108,7 +108,7 @@ const Footer = () => {
           </div>
 
           {/* Useful Links */}
-          <div>
+          {/* <div>
             <h4 className="text-sm font-bold mb-5 uppercase tracking-wider" style={{ color: headingColor }}>
               Dịch Vụ
             </h4>
@@ -127,10 +127,10 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Newsletter */}
-          <div>
+          {/* <div>
             <h4 className="text-sm font-bold mb-2 uppercase tracking-wider" style={{ color: headingColor }}>
               Newsletter
             </h4>
@@ -160,7 +160,7 @@ const Footer = () => {
                 </svg>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Bottom Bar */}
@@ -188,11 +188,11 @@ const Footer = () => {
             ))}
           </div>
           {/* Payment icons */}
-          <div className="flex items-center gap-3 opacity-60">
+          {/* <div className="flex items-center gap-3 opacity-60">
             <span className="text-xs font-semibold" style={{ color: textColor }}>Google Pay</span>
             <span className="text-xs font-semibold" style={{ color: textColor }}>Visa</span>
             <span className="text-xs font-semibold" style={{ color: textColor }}>Mastercard</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>
