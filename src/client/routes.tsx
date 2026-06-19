@@ -66,6 +66,7 @@ import MyVpsDetail from "./pages/MyVpsDetail";
 import SoftwareKeys from "./pages/SoftwareKeys";
 import MySoftwareKeys from "./pages/MySoftwareKeys";
 import Support from "./pages/support";
+import AeTradingFaq from "./pages/AeTradingFaq";
 const Dashboard = React.lazy(() => import("../pages/dashboard/"));
 import Orders from "./pages/Orders";
 const ClientRoutes: React.FC = () => {
@@ -175,11 +176,11 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/landing-faq"
-          element={<LandingFAQPage />}
+          element={<AeTradingFaq />}
         />
         <Route
           path="/landing-fqa"
-          element={<LandingFAQPage />}
+          element={<AeTradingFaq />}
         />
         <Route
           path="/support"

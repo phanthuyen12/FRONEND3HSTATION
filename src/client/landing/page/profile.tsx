@@ -33,13 +33,6 @@ const LandingProfilePage = () => {
    const [myVps, setMyVps] = useState<any[]>([]);
    const [myWorkflows, setMyWorkflows] = useState<any[]>([]);
    const [myCourses, setMyCourses] = useState<any[]>([]);
-   const [referralData, setReferralData] = useState<any>({
-      refCode: null,
-      refCount: 0,
-      refCommission: 0,
-      registerPath: null,
-      referrals: [],
-   });
 
    // VPS States
    const [nvPlans, setNvPlans] = useState<NodeverseVpsPlan[]>([]);
@@ -77,13 +70,12 @@ const LandingProfilePage = () => {
    const loadAllData = async () => {
       setLoading(true);
       try {
-         const [profile, ordersData, vpsData, workflowsData, coursesData, referralRes] = await Promise.all([
+         const [profile, ordersData, vpsData, workflowsData, coursesData] = await Promise.all([
             authService.getProfile().catch(() => null),
             userService.getMyOrders({ limit: 100 }).catch(() => ({ data: [] })),
             vpsService.getMyNodeverseVpsOrders().catch(() => []),
             workflowsService.getMyWorkflows().catch(() => ({ data: [] })),
             elearningService.getMyCourses().catch(() => []),
-            userService.getMyReferrals({ limit: 50 }).catch(() => ({ refCode: null, refCount: 0, refCommission: 0, registerPath: null, referrals: [] }))
          ]);
 
          if (profile) {
@@ -99,7 +91,6 @@ const LandingProfilePage = () => {
          setMyVps(vpsData || []);
          setMyWorkflows(workflowsData?.data || []);
          setMyCourses(coursesData || []);
-         setReferralData(referralRes || { refCode: null, refCount: 0, refCommission: 0, registerPath: null, referrals: [] });
       } catch (err) {
          console.error("Failed to load profile data", err);
       } finally {
@@ -307,25 +298,9 @@ const LandingProfilePage = () => {
             { id: 'info', icon: 'user', label: 'Thông tin cá nhân' },
             { id: 'password', icon: 'lock', label: 'Mật khẩu & Bảo mật' },
             { id: 'orders', icon: 'shopping-bag', label: 'Đơn hàng của tôi' },
-            { id: 'referral', icon: 'share-2', label: 'Link giới thiệu' },
          ]
       }
    ];
-
-   const referralLink = referralData?.refCode
-      ? `${window.location.origin}/landing-register?ref=${encodeURIComponent(referralData.refCode)}`
-      : '';
-
-   const handleCopyReferralLink = async () => {
-      if (!referralLink) return;
-
-      try {
-         await navigator.clipboard.writeText(referralLink);
-         Swal.fire({ toast: true, position: 'bottom-end', icon: 'success', title: 'Đã sao chép link giới thiệu', showConfirmButton: false, timer: 1800 });
-      } catch (error) {
-         Swal.fire('Lỗi', 'Không thể sao chép link lúc này', 'error');
-      }
-   };
 
    const InfoItem = ({ label, value, icon, copy, status, action }: any) => (
       <div className="flex items-center justify-between p-6 hover:bg-white/5/50 dark:hover:bg-[#0d1412]/[0.02] transition-colors group">
@@ -615,111 +590,14 @@ const LandingProfilePage = () => {
                   </div>
                </div>
             );
-         case 'referral':
+         default:
             return (
-               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="rounded-[18px] border border-[#FBBF24]/15 bg-gradient-to-br from-[#1a1200] via-[#111111] to-[#032030] p-8 text-white shadow-xl">
-                     <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                        <div className="space-y-3">
-                           <div className="inline-flex items-center gap-2 rounded-full border border-[#FBBF24]/25 bg-[#FBBF24]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-[#FCD34D]">
-                              <FeatherIcon icon="gift" size={12} />
-                              Link đăng ký mã giới thiệu
-                           </div>
-                           <h2 className="text-3xl font-black uppercase tracking-tight">Mời bạn bè, theo dõi ref của bạn tại một chỗ</h2>
-                           <p className="max-w-2xl text-sm text-gray-300">
-                              Mỗi tài khoản có một link đăng ký riêng. Khi người dùng đăng ký qua link này, bạn có thể xem số lượng ref, danh sách tài khoản đã vào và tổng hoa hồng đã nhận.
-                           </p>
-                        </div>
-                        <button
-                           onClick={handleCopyReferralLink}
-                           disabled={!referralLink}
-                           className="inline-flex h-12 items-center justify-center gap-3 rounded-xl bg-[#FBBF24] px-6 text-[11px] font-black uppercase tracking-[2px] text-black transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                           <FeatherIcon icon="copy" size={15} />
-                           Sao chép link ref
-                        </button>
-                     </div>
+               <div className="text-center p-20 animate-in fade-in">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FBBF24]/10 mb-6">
+                     <FeatherIcon icon="info" size={30} className="text-[#FBBF24]" />
                   </div>
-
-                  <div className="grid gap-4 md:grid-cols-3">
-                     <div className="rounded-[16px] border border-white/[0.05] bg-[#0d1412] p-6">
-                        <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400">Mã giới thiệu</p>
-                        <h3 className="mt-3 break-all text-xl font-black text-white">{referralData?.refCode || 'Đang tạo...'}</h3>
-                     </div>
-                     <div className="rounded-[16px] border border-white/[0.05] bg-[#0d1412] p-6">
-                        <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400">Số người đăng ký</p>
-                        <h3 className="mt-3 text-3xl font-black text-[#FBBF24]">{referralData?.refCount || 0}</h3>
-                     </div>
-                     <div className="rounded-[16px] border border-white/[0.05] bg-[#0d1412] p-6">
-                        <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400">Hoa hồng đã nhận</p>
-                        <h3 className="mt-3 text-3xl font-black text-[#34d399]">{fmt(referralData?.refCommission || 0)}</h3>
-                     </div>
-                  </div>
-
-                  <div className="rounded-[16px] border border-white/[0.05] bg-[#0d1412] p-6">
-                     <div className="mb-3 flex items-center justify-between gap-4">
-                        <div>
-                           <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400">Link đăng ký của bạn</p>
-                           <h3 className="mt-1 text-sm font-black uppercase tracking-tight text-white">Dùng link này để mời user mới đăng ký</h3>
-                        </div>
-                        <button
-                           onClick={handleCopyReferralLink}
-                           disabled={!referralLink}
-                           className="hidden rounded-xl border border-[#FBBF24]/20 px-4 py-2 text-[10px] font-black uppercase tracking-[2px] text-[#FBBF24] transition-all hover:bg-[#FBBF24]/10 md:inline-flex"
-                        >
-                           Copy link
-                        </button>
-                     </div>
-                     <div className="rounded-[14px] border border-white/10 bg-black/20 p-4">
-                        <p className="break-all font-mono text-sm text-gray-200">{referralLink || 'Đang tạo link đăng ký...'}</p>
-                     </div>
-                  </div>
-
-                  <div className="rounded-[16px] border border-white/[0.05] bg-[#0d1412] overflow-hidden">
-                     <div className="flex items-center justify-between border-b border-white/[0.05] px-6 py-4">
-                        <div>
-                           <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400">Danh sách ref</p>
-                           <h3 className="mt-1 text-sm font-black uppercase tracking-tight text-white">Các tài khoản đã đăng ký từ link của bạn</h3>
-                        </div>
-                        <div className="rounded-full bg-[#FBBF24]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-[#FBBF24]">
-                           {referralData?.referrals?.length || 0} tài khoản
-                        </div>
-                     </div>
-                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[720px] text-left">
-                           <thead>
-                              <tr className="border-b border-white/[0.05] bg-black/10 text-[9px] font-black uppercase tracking-[2px] text-gray-400">
-                                 <th className="px-6 py-3">Người đăng ký</th>
-                                 <th className="px-6 py-3">Email</th>
-                                 <th className="px-6 py-3">Số điện thoại</th>
-                                 <th className="px-6 py-3">Trạng thái</th>
-                                 <th className="px-6 py-3">Ngày tham gia</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {!referralData?.referrals?.length ? (
-                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-[11px] font-black uppercase tracking-[2px] text-gray-500">
-                                       Chưa có ai đăng ký từ link giới thiệu của bạn
-                                    </td>
-                                 </tr>
-                              ) : referralData.referrals.map((refUser: any) => (
-                                 <tr key={refUser.id} className="border-b border-white/[0.05] text-sm text-gray-200">
-                                    <td className="px-6 py-4 font-bold text-white">{refUser.name || 'Người dùng mới'}</td>
-                                    <td className="px-6 py-4">{refUser.email}</td>
-                                    <td className="px-6 py-4">{refUser.phone || 'Chưa cập nhật'}</td>
-                                    <td className="px-6 py-4">
-                                       <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[2px] ${refUser.status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-gray-500/10 text-gray-300'}`}>
-                                          {refUser.status || 'active'}
-                                       </span>
-                                    </td>
-                                    <td className="px-6 py-4">{refUser.createdAt ? new Date(refUser.createdAt).toLocaleString('vi-VN') : '--'}</td>
-                                 </tr>
-                              ))}
-                           </tbody>
-                        </table>
-                     </div>
-                  </div>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">Trang không tồn tại</h3>
+                  <p className="text-sm text-gray-400">Tính năng này hiện không khả dụng.</p>
                </div>
             );
       }
@@ -770,7 +648,7 @@ const LandingProfilePage = () => {
                               {group.items.map((item, i) => {
                                  const accountIds = ['info', 'password'];
                                  const serviceIds = ['vps-register', 'vps-manage', 'workflows', 'courses'];
-                                 const utilityIds = ['favorites', 'support', 'referral', 'api'];
+                                 const utilityIds = ['favorites', 'support', 'api'];
 
                                  const isCurrent = (item.id === 'info' && accountIds.includes(activeTab)) ||
                                     (item.id === 'vps-manage' && serviceIds.includes(activeTab)) ||

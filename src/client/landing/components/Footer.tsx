@@ -1,5 +1,4 @@
 import React from 'react';
-import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
@@ -20,13 +19,6 @@ const Footer = () => {
     { label: 'Kho tool', to: '/landing-tools' },
     { label: 'Nạp tiền', to: '/landing-recharge' },
   ];
-  const socialIcons = [
-    { icon: 'facebook', href: '#' },
-    { icon: 'instagram', href: '#' },
-    { icon: 'linkedin', href: '#' },
-    { icon: 'twitter', href: '#' },
-  ];
-
   const headingColor = isDark ? '#ffffff' : '#0B0B0B';
   const textColor    = isDark ? '#9CA3AF' : '#4B5563';
   const linkHover    = '#FCD34D';
@@ -91,33 +83,6 @@ const Footer = () => {
               AETRADING xây dựng hệ sinh thái học tập và thực chiến dành cho nhà giao dịch muốn phát triển bền vững.
             </p>
 
-            {/* Social Icons */}
-            <div className="flex items-center gap-3">
-              {socialIcons.map(({ icon, href }) => (
-                <a
-                  key={icon}
-                  href={href}
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
-                  style={{
-                    background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                    color: textColor,
-                    border: `1px solid ${dividerColor}`,
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = '#FCD34D';
-                    (e.currentTarget as HTMLAnchorElement).style.color = '#000';
-                    (e.currentTarget as HTMLAnchorElement).style.border = '1px solid #FCD34D';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-                    (e.currentTarget as HTMLAnchorElement).style.color = textColor;
-                    (e.currentTarget as HTMLAnchorElement).style.border = `1px solid ${dividerColor}`;
-                  }}
-                >
-                  <FeatherIcon icon={icon} size={15} />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Quick Links */}
