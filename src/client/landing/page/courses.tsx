@@ -432,7 +432,7 @@ const LandingCoursesPage = () => {
                 </div>
               ))}
             </div>
-
+{/* 
             {isLoggedIn && (
             <div className="mt-5 rounded-[8px] border border-[#FBBF24]/22 bg-[#08100f] p-5 shadow-[0_18px_58px_rgba(0,0,0,0.28)] lg:p-6">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -475,7 +475,7 @@ const LandingCoursesPage = () => {
                 </div>
               </div>
             </div>
-            )}
+            )} */}
           </div>
         </section>
 
