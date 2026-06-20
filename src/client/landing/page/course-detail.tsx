@@ -531,16 +531,14 @@ const CourseDetailPage = () => {
                                             />
                                         </div>
                                     ) : (
-                                        <div className="relative w-full h-full group cursor-pointer" onClick={() => {
-                                             const preview = videos.find(v => v.preview);
-                                             if (preview) handleSelectVideo(preview);
-                                        }}>
-                                            <img src={selectedVideoBanner} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={selectedVideo?.title || currentCourse.title} />
-                                            <div className="absolute inset-0 bg-black/40"></div>
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-20 h-20 rounded-full bg-[#FBBF24] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                                                    <FeatherIcon icon="play" fill="black" size={28} className="ml-1 text-black" />
+                                        <div className="relative w-full h-full group">
+                                            <img src={selectedVideoBanner} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700" alt={selectedVideo?.title || currentCourse.title} />
+                                            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                                                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center shadow-2xl border border-white/20">
+                                                    <FeatherIcon icon="lock" size={24} className="text-white/80" />
                                                 </div>
+                                                <p className="font-bold tracking-widest text-[11px] uppercase bg-black/40 px-4 py-2 rounded-full border border-white/10 text-white/80">Khóa học cần được cấp quyền</p>
                                             </div>
                                         </div>
                                     )}
