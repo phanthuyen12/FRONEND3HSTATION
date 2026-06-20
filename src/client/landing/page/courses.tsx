@@ -18,6 +18,17 @@ const pad2 = (n: number) => String(n).padStart(2, '0');
 
 const fallbackImage = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80';
 
+const decodeHtml = (html: string) => {
+  if (!html) return '';
+  try {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  } catch (e) {
+    return html;
+  }
+};
+
 const getLandingOrigin = () => {
   if (typeof window === 'undefined') {
     return 'https://academy.aetrading.vn';
@@ -151,7 +162,7 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
             </h3>
           </Link>
           <div className="mt-2 line-clamp-3 text-[11px] leading-5 text-gray-400 [&_p]:m-0 [&_p]:inline [&_strong]:font-semibold [&_em]:italic [&_br]:hidden">
-            {parse(cardDescription)}
+            {parse(decodeHtml(cardDescription))}
           </div>
         </div>
 

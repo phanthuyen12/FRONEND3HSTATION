@@ -23,6 +23,7 @@ const Footer = () => {
     { label: 'Chính Sách Bảo Mật', to: '/landing-policy#bao-mat' },
     { label: 'Điều Khoản', to: '/landing-policy#su-dung' },
     { label: 'Thanh Toán', to: '/landing-policy#thanh-toan' },
+    { label: 'Miễn Trừ Trách Nhiệm', to: '/landing-disclaimer' },
   ];
 
   return (

@@ -36,9 +36,10 @@ import LandingWorkflowManagementPage from "./landing/page/workflow-management";
 import LandingTopupDetailPage from './landing/page/topup-detail';
 import HostingLayout from './landing/layouts/HostingLayout';
 import RechargePage from "./landing/page/recharge";
-import LandingFAQPage from "./landing/page/faq";
 import Contact from "./pages/contact";
 import PrivacyPolicy from "./pages/privacy-policy";
+import LandingPolicyPage from "./landing/page/policy";
+import LandingDisclaimerPage from "./landing/page/disclaimer";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyCourses from "./pages/MyCourses";
@@ -192,7 +193,11 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/landing-policy"
-          element={<PrivacyPolicy />}
+          element={<LandingPolicyPage />}
+        />
+        <Route
+          path="/landing-disclaimer"
+          element={<LandingDisclaimerPage />}
         />
         <Route
           path="/landing-deposit"

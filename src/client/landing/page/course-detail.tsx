@@ -17,6 +17,17 @@ type CurriculumSectionEntry = {
     videos: CourseVideo[];
 };
 
+const decodeHtml = (html: string) => {
+    if (!html) return '';
+    try {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    } catch (e) {
+        return html;
+    }
+};
+
 const currentCourseContent = (course: Course | null) => {
     if (!course) return '';
     const content = typeof course.content === 'string' ? course.content.trim() : '';
@@ -485,7 +496,7 @@ const CourseDetailPage = () => {
                                 </div>
 
                                 <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-8 [&_*]:text-inherit [&_h1]:mb-4 [&_h1]:text-2xl [&_h1]:font-black [&_h2]:mb-4 [&_h2]:text-xl [&_h2]:font-black [&_h3]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_p]:mb-4 [&_p]:leading-8 [&_strong]:font-bold [&_em]:italic [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-2 [&_br]:block">
-                                    {courseOverview ? parse(courseOverview) : (
+                                    {courseOverview ? parse(decodeHtml(courseOverview)) : (
                                         <p className="text-gray-400">Chưa có nội dung khóa học.</p>
                                     )}
                                 </div>
@@ -504,7 +515,7 @@ const CourseDetailPage = () => {
                                         {currentCourse.title}
                                     </h1>
                                     <div className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed [&_*]:text-inherit [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-2">
-                                        {parse(currentCourse.short_description || currentCourse.description || 'Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.')}
+                                        {parse(decodeHtml(currentCourse.short_description || currentCourse.description || 'Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.'))}
                                     </div>
                                     <div className="flex flex-wrap gap-6 pt-2">
                                         <div className="flex items-center gap-2">
@@ -561,7 +572,7 @@ const CourseDetailPage = () => {
                                     <h2 className="text-2xl font-black text-white tracking-tight">Chi tiết khóa học</h2>
                                     <div className="rounded-[10px] border border-white/[0.03] bg-[#0d1513] p-6 md:p-8 shadow-sm">
                                         <div className="prose prose-invert max-w-none text-gray-300 text-[15px] leading-7 [&_*]:text-inherit [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6">
-                                            {courseOverview ? parse(courseOverview) : (
+                                            {courseOverview ? parse(decodeHtml(courseOverview)) : (
                                                 <p className="text-gray-400">Chưa có nội dung chi tiết khóa học.</p>
                                             )}
                                         </div>

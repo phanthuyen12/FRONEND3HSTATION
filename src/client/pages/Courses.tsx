@@ -5,6 +5,17 @@ import { PageBreadcrumb } from "../../components";
 import { elearningService } from "../../config";
 import { Category, Course } from "../../services/elearningService";
 
+const decodeHtml = (html: string) => {
+  if (!html) return '';
+  try {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  } catch (e) {
+    return html;
+  }
+};
+
 const Courses: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -142,7 +153,7 @@ const Courses: React.FC = () => {
                   {course.title}
                 </h4>
                 <div className="text-sm text-slate-500 line-clamp-3 [&_*]:inline [&_p]:m-0">
-                  {parse(course.short_description || course.description || "")}
+                  {parse(decodeHtml(course.short_description || course.description || ""))}
                 </div>
                 <div className="flex items-center justify-between text-xs text-slate-500 mt-1">
                   <span>{course.duration || "N/A"}</span>
