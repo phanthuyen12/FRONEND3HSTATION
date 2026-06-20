@@ -117,14 +117,7 @@ const CourseCard = ({ p, categories }: { p: Course; categories: Category[] }) =>
   const cardDescription = getCardDescription(p);
 
   const handleLockedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isLocked) return;
-    e.preventDefault();
-    Swal.fire({
-      icon: 'warning',
-      title: 'Khóa học bị khóa',
-      text: 'Rank hiện tại chưa được cấp quyền xem khóa học này. Vui lòng liên hệ Admin.',
-      confirmButtonText: 'Đã hiểu',
-    });
+    // Không block click nữa, cho phép vào trang chi tiết để xem thông tin khóa học
   };
 
   return (
