@@ -503,9 +503,9 @@ const CourseDetailPage = () => {
                                     <h1 className="text-3xl md:text-4xl font-black text-white leading-[1.2] tracking-tight">
                                         {currentCourse.title}
                                     </h1>
-                                    <p className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed">
-                                        {currentCourse.short_description || currentCourse.description || 'Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.'}
-                                    </p>
+                                    <div className="text-gray-400 font-medium text-[15px] max-w-2xl leading-relaxed [&_*]:text-inherit [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-2">
+                                        {parse(currentCourse.short_description || currentCourse.description || 'Khóa học thực chiến giúp bạn nắm vững mọi quy trình từ cơ bản đến nâng cao. Tối ưu hiệu quả và tiết kiệm tài nguyên tối đa.')}
+                                    </div>
                                     <div className="flex flex-wrap gap-6 pt-2">
                                         <div className="flex items-center gap-2">
                                             <div className="w-8 h-8 rounded-full bg-amber-400/10 flex items-center justify-center text-amber-500">

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import parse from "html-react-parser";
 import { PageBreadcrumb } from "../../components";
 import { elearningService } from "../../config";
 import { Category, Course } from "../../services/elearningService";
@@ -140,9 +141,9 @@ const Courses: React.FC = () => {
                 <h4 className="text-base font-semibold line-clamp-2">
                   {course.title}
                 </h4>
-                <p className="text-sm text-slate-500 line-clamp-3">
-                  {course.short_description || course.description || ""}
-                </p>
+                <div className="text-sm text-slate-500 line-clamp-3 [&_*]:inline [&_p]:m-0">
+                  {parse(course.short_description || course.description || "")}
+                </div>
                 <div className="flex items-center justify-between text-xs text-slate-500 mt-1">
                   <span>{course.duration || "N/A"}</span>
                   <span>{course.lessons || 0} bài học</span>
