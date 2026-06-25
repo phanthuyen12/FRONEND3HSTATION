@@ -29,7 +29,11 @@ import ConfigAdmin from "../pages/apps/ConfigAdmin";
 import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
 import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
 import SupportAdminList from "../pages/apps/SupportAdmin/List";
-
+import SupportRefLinksAdmin from "../pages/apps/SupportAdmin/RefLinks";
+import FacebookAdmin from '../pages/apps/AdminTools/FacebookAdmin';
+import FacebookPages from '../pages/apps/AdminTools/FacebookAdmin/Pages';
+import FacebookPosts from '../pages/apps/AdminTools/FacebookAdmin/Posts';
+import FacebookCallback from '../pages/apps/AdminTools/FacebookAdmin/Callback';
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
  * - /admin/dashboard                  -> Dashboard
@@ -297,7 +301,19 @@ const SimpleAdminRoutes: React.FC = () => {
           </VerticalLayout>
         }
       />
-
+      <Route
+        path="support-ref-links"
+        element={
+          <VerticalLayout>
+            <SupportRefLinksAdmin />
+          </VerticalLayout>
+        }
+      />
+        {/* Facebook Admin */}
+        <Route path="facebook" element={<VerticalLayout><FacebookAdmin /></VerticalLayout>} />
+        <Route path="facebook/callback" element={<VerticalLayout><FacebookCallback /></VerticalLayout>} />
+        <Route path="facebook/pages" element={<VerticalLayout><FacebookPages /></VerticalLayout>} />
+        <Route path="facebook/posts" element={<VerticalLayout><FacebookPosts /></VerticalLayout>} />
       {/* Fallback: mọi route khác trong /admin -> Dashboard */}
       <Route
         path="*"
@@ -310,5 +326,6 @@ const SimpleAdminRoutes: React.FC = () => {
     </Routes>
   );
 };
+
 
 export default SimpleAdminRoutes;

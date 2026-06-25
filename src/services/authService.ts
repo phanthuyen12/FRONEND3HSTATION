@@ -37,6 +37,8 @@ class AuthService {
   private refreshTokenKey = 'refresh_token';
   private userKey = 'auth_user';
   private sessionSocket: WebSocket | null = null;
+  private sessionReconnectTimer: number | null = null;
+  private shouldKeepSessionWatcherAlive = false;
 
   constructor(apiUrl: string = "") {
     this.api = apiUrl;
@@ -110,6 +112,7 @@ class AuthService {
 
   // Xóa token và user khỏi localStorage
   private clearAuth() {
+    this.shouldKeepSessionWatcherAlive = false;
     this.stopSessionWatcher();
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
@@ -126,11 +129,43 @@ class AuthService {
     this.clearAuth();
   }
 
+  private resolveStoredToken(): string | null {
+    const directToken =
+      localStorage.getItem(this.tokenKey) ||
+      localStorage.getItem("authToken") ||
+      sessionStorage.getItem(this.tokenKey) ||
+      sessionStorage.getItem("authToken");
+
+    if (directToken) return directToken;
+
+    try {
+      const konrixRaw =
+        sessionStorage.getItem("konrix_user") ||
+        localStorage.getItem("konrix_user");
+
+      if (!konrixRaw) return null;
+
+      const parsed = JSON.parse(konrixRaw);
+      return parsed?.token || parsed?.data?.token || parsed?.user?.token || null;
+    } catch {
+      return null;
+    }
+  }
+
+  private clearReconnectTimer() {
+    if (this.sessionReconnectTimer != null) {
+      window.clearTimeout(this.sessionReconnectTimer);
+      this.sessionReconnectTimer = null;
+    }
+  }
+
   startSessionWatcher(onReplaced?: () => void) {
-    const token = this.getToken();
+    const token = this.resolveStoredToken();
     if (!token || typeof window === 'undefined' || !('WebSocket' in window)) return;
 
     this.stopSessionWatcher();
+    this.shouldKeepSessionWatcherAlive = true;
+    this.clearReconnectTimer();
 
     const wsBase = (this.api || window.location.origin)
       .replace(/^http/i, 'ws')
@@ -142,7 +177,9 @@ class AuthService {
     socket.onmessage = (event) => {
       try {
         const payload = JSON.parse(event.data);
+        window.dispatchEvent(new CustomEvent("app:socket-message", { detail: payload }));
         if (payload?.type === 'SESSION_REPLACED') {
+          this.shouldKeepSessionWatcherAlive = false;
           this.clearAuth();
           onReplaced?.();
           window.dispatchEvent(new CustomEvent('auth:session-replaced'));
@@ -156,10 +193,19 @@ class AuthService {
       if (this.sessionSocket === socket) {
         this.sessionSocket = null;
       }
+
+      if (!this.shouldKeepSessionWatcherAlive) return;
+
+      this.clearReconnectTimer();
+      this.sessionReconnectTimer = window.setTimeout(() => {
+        this.startSessionWatcher(onReplaced);
+      }, 1500);
     };
   }
 
   stopSessionWatcher() {
+    this.shouldKeepSessionWatcherAlive = false;
+    this.clearReconnectTimer();
     if (!this.sessionSocket) return;
     const socket = this.sessionSocket;
     this.sessionSocket = null;
@@ -173,7 +219,7 @@ class AuthService {
 
   // Lấy token từ localStorage
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return this.resolveStoredToken();
   }
 
   // Lấy refresh token từ localStorage

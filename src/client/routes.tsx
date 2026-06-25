@@ -68,6 +68,7 @@ import SoftwareKeys from "./pages/SoftwareKeys";
 import MySoftwareKeys from "./pages/MySoftwareKeys";
 import Support from "./pages/support";
 import AeTradingFaq from "./pages/AeTradingFaq";
+import AeTradingLandingQcao from "./pages/AeTradingLandingQcao";
 const Dashboard = React.lazy(() => import("../pages/dashboard/"));
 import Orders from "./pages/Orders";
 const ClientRoutes: React.FC = () => {
@@ -182,6 +183,10 @@ const ClientRoutes: React.FC = () => {
         <Route
           path="/landing-fqa"
           element={<AeTradingFaq />}
+        />
+        <Route
+          path="/landing-ae-trading-qcao"
+          element={<AeTradingLandingQcao />}
         />
         <Route
           path="/support"

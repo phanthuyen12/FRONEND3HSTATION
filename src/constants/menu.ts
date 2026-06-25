@@ -120,6 +120,32 @@ const MENU_ITEMS: MenuItemTypes[] = [
     ],
   },
   {
+    key: "apps-facebook",
+    label: "Quản lý Facebook",
+    isTitle: false,
+    icon: "mgc_facebook_line",
+    children: [
+      {
+        key: "facebook-posts",
+        label: "Bài viết & Phân tích",
+        url: "/admin/facebook/posts?tab=posts",
+        parentKey: "apps-facebook",
+      },
+      {
+        key: "facebook-crm",
+        label: "Trò chuyện & CRM AI",
+        url: "/admin/facebook/posts?tab=crm_chat",
+        parentKey: "apps-facebook",
+      },
+      {
+        key: "facebook-settings",
+        label: "Quản lý Nhãn & Sale",
+        url: "/admin/facebook/posts?tab=tags_agents",
+        parentKey: "apps-facebook",
+      },
+    ],
+  },
+  {
     key: "apps-topups",
     label: "Nạp tiền",
     isTitle: false,
@@ -193,6 +219,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         url: "/admin/tools/keys",
         parentKey: "apps-tools",
       },
+      {
+        key: "tools-facebook",
+        label: "Facebook",
+        url: "/admin/facebook/posts",
+        parentKey: "apps-tools",
+      }
     ],
   },
   {
@@ -212,6 +244,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         key: "support-requests",
         label: "Form liên hệ",
         url: "/admin/support-requests",
+        parentKey: "apps-support",
+      },
+      {
+        key: "support-ref-links",
+        label: "Link ref quảng cáo",
+        url: "/admin/support-ref-links",
         parentKey: "apps-support",
       },
     ],

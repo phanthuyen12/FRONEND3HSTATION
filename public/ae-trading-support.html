@@ -1,383 +1,861 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trung tâm hỗ trợ — AE Trading</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0a0a0b;
-    --bg-2:#121214;
-    --bg-3:#1a1a1d;
-    --line:#26262b;
-    --line-2:#34343a;
-    --gold:#f5b820;
-    --gold-soft:#d9a01a;
-    --gold-glow:rgba(245,184,32,.14);
-    --txt:#f4f4f5;
-    --txt-2:#a1a1aa;
-    --txt-3:#6b6b73;
-    --info:#5b9dff;
-    --ok:#3ecf8e;
-    --r:14px;
-    --r-sm:10px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--bg);
-    color:var(--txt);
-    font-family:'Be Vietnam Pro',system-ui,sans-serif;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  ::selection{background:var(--gold);color:#0a0a0b}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
-  h1,h2,h3,.brand{font-family:'Be Vietnam Pro',sans-serif}
-
-  /* ── top bar ── */
-  .topbar{
-    border-bottom:1px solid var(--line);
-    background:rgba(10,10,11,.85);
-    backdrop-filter:blur(10px);
-    position:sticky;top:0;z-index:50;
-  }
-  .topbar-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.5px}
-  .brand-mark{
-    width:38px;height:38px;border-radius:9px;
-    background:linear-gradient(135deg,var(--gold),var(--gold-soft));
-    display:grid;place-items:center;color:#0a0a0b;font-weight:700;font-size:15px;
-    font-family:'Be Vietnam Pro',sans-serif;
-  }
-  .brand small{display:block;font-size:9px;letter-spacing:2px;color:var(--txt-3);font-weight:500;font-family:'Be Vietnam Pro'}
-  .topbar a.back{color:var(--txt-2);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px;transition:color .2s}
-  .topbar a.back:hover{color:var(--gold)}
-
-  /* ── hero ── */
-  .hero{
-    text-align:center;padding:64px 24px 40px;position:relative;overflow:hidden;
-  }
-  .hero::before{
-    content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);
-    width:600px;height:340px;background:radial-gradient(ellipse,var(--gold-glow),transparent 70%);
-    pointer-events:none;
-  }
-  .hero .eyebrow{
-    display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:1.5px;
-    color:var(--gold);text-transform:uppercase;font-weight:600;margin-bottom:18px;
-    border:1px solid var(--line-2);padding:6px 14px;border-radius:100px;background:var(--bg-2);
-    position:relative;
-  }
-  .hero h1{font-size:clamp(28px,5vw,42px);font-weight:600;line-height:1.15;letter-spacing:-.5px;position:relative}
-  .hero h1 .y{color:var(--gold)}
-  .hero p.sub{color:var(--txt-2);font-size:16px;margin:14px auto 28px;max-width:480px;position:relative}
-  .search{position:relative;max-width:520px;margin:0 auto}
-  .search input{
-    width:100%;background:var(--bg-2);border:1px solid var(--line-2);border-radius:100px;
-    padding:15px 20px 15px 50px;color:var(--txt);font-size:15px;font-family:inherit;transition:.2s;
-  }
-  .search input::placeholder{color:var(--txt-3)}
-  .search input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow)}
-  .search svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--txt-3)}
-
-  /* ── section ── */
-  section{padding:18px 0}
-  .sec-title{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt-3);font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-  .sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
-
-  /* ── category cards ── */
-  .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-  .cat{
-    background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);
-    padding:22px 18px;text-align:left;cursor:pointer;transition:.22s;display:block;text-decoration:none;color:inherit;
-  }
-  .cat:hover{border-color:var(--gold);transform:translateY(-3px);background:var(--bg-3)}
-  .cat .ico{
-    width:44px;height:44px;border-radius:11px;background:var(--bg-3);
-    display:grid;place-items:center;margin-bottom:14px;color:var(--gold);transition:.22s;
-  }
-  .cat:hover .ico{background:var(--gold-glow)}
-  .cat h3{font-size:15px;font-weight:600;margin-bottom:5px}
-  .cat p{font-size:13px;color:var(--txt-2);line-height:1.5}
-
-  /* ── faq ── */
-  .faq-list{display:flex;flex-direction:column;gap:10px}
-  .faq{
-    background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;transition:.2s;
-  }
-  .faq.open{border-color:var(--line-2)}
-  .faq button{
-    width:100%;background:none;border:none;color:var(--txt);font-family:'Be Vietnam Pro';font-size:15px;font-weight:500;
-    text-align:left;padding:17px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;
-  }
-  .faq button:hover{color:var(--gold)}
-  .faq .chev{color:var(--txt-3);transition:transform .25s;flex-shrink:0}
-  .faq.open .chev{transform:rotate(180deg);color:var(--gold)}
-  .faq .ans{
-    max-height:0;overflow:hidden;transition:max-height .3s ease;
-  }
-  .faq .ans-inner{padding:0 20px 18px;color:var(--txt-2);font-size:14px;line-height:1.7}
-  .faq .ans-inner strong{color:var(--txt);font-weight:600}
-
-  /* ── consult ── */
-  .consult{
-    background:
-      radial-gradient(circle at 85% 0%,rgba(245,184,32,.10),transparent 50%),
-      var(--bg-2);
-    border:1px solid var(--line-2);border-radius:var(--r);padding:36px;
-    display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;margin-top:8px;
-  }
-  .consult h2{font-size:24px;font-weight:600;letter-spacing:-.3px;margin-bottom:10px}
-  .consult .lead{color:var(--txt-2);font-size:15px;margin-bottom:18px}
-  .pledge{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ok);background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.25);padding:7px 13px;border-radius:100px}
-  .channels{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
-  .ch{
-    display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;text-decoration:none;
-    padding:9px 15px;border-radius:100px;border:1px solid var(--line-2);color:var(--txt-2);transition:.2s;
-  }
-  .ch:hover{border-color:var(--gold);color:var(--gold)}
-  /* form */
-  .cform{display:flex;flex-direction:column;gap:11px}
-  .cform label{font-size:12px;color:var(--txt-3);font-weight:500;margin-bottom:-5px}
-  .cform input,.cform select{
-    background:var(--bg);border:1px solid var(--line-2);border-radius:var(--r-sm);
-    padding:13px 15px;color:var(--txt);font-size:14px;font-family:inherit;transition:.2s;width:100%;
-  }
-  .cform input::placeholder{color:var(--txt-3)}
-  .cform input:focus,.cform select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-glow)}
-  .cform select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b73' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
-  .submit{
-    background:linear-gradient(135deg,var(--gold),var(--gold-soft));color:#0a0a0b;border:none;
-    border-radius:var(--r-sm);padding:14px;font-family:'Be Vietnam Pro';font-size:15px;font-weight:600;cursor:pointer;
-    transition:.2s;margin-top:4px;
-  }
-  .submit:hover{filter:brightness(1.08);transform:translateY(-1px)}
-  .form-note{font-size:12px;color:var(--txt-3);text-align:center;margin-top:2px}
-  .form-ok{display:none;text-align:center;padding:30px 10px}
-  .form-ok.show{display:block}
-  .form-ok .big{font-size:18px;font-weight:600;font-family:'Be Vietnam Pro';color:var(--ok);margin:14px 0 6px}
-  .form-ok p{color:var(--txt-2);font-size:14px}
-
-  footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0;text-align:center;color:var(--txt-3);font-size:13px}
-  footer .tag{color:var(--gold-soft);font-weight:600;letter-spacing:1px;font-family:'Be Vietnam Pro'}
-
-  @media(max-width:860px){
-    .cats{grid-template-columns:repeat(2,1fr)}
-    .consult{grid-template-columns:1fr;gap:28px;padding:26px}
-  }
-  @media(max-width:520px){
-    .cats{grid-template-columns:1fr}
-    .hero{padding:44px 20px 30px}
-  }
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
-</style>
-</head>
-<body>
-
-<div class="topbar">
-  <div class="wrap topbar-inner">
-    <div class="brand">
-      <div class="brand-mark">AE</div>
-      <div>AE TRADING<small>TOGETHER WE WIN</small></div>
-    </div>
-    <a href="#" class="back" onclick="window.parent.postMessage('navigate-back','*');return false;">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
-      Về trang học
-    </a>
-  </div>
-</div>
-
-<div class="hero">
-  <span class="eyebrow">
-    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-    Trung tâm hỗ trợ
-  </span>
-  <h1>AE Trading <span class="y">đồng hành</span> cùng bạn</h1>
-  <p class="sub">Tìm câu trả lời nhanh, hoặc để đội ngũ tư vấn hỗ trợ bạn nâng cấp tài khoản.</p>
-  <div class="search">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input type="text" placeholder="Tìm: rank, kích hoạt PLUS, mở khóa học…" aria-label="Tìm kiếm hỗ trợ">
-  </div>
-</div>
-
-<div class="wrap">
-
-  <section>
-    <div class="sec-title">Chọn chủ đề</div>
-    <div class="cats">
-      <a href="#faq" class="cat">
-        <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8a2 2 0 00-3 0z"/><path d="M12 15l-3-3a22 22 0 014-9 7 7 0 016 6 22 22 0 01-9 4z"/><path d="M9 12H4s.5-3 2-4 5-1 5-1"/><path d="M12 15v5s3-.5 4-2 1-5 1-5"/></svg></div>
-        <h3>Bắt đầu học</h3>
-        <p>Học từ đâu, cách mở khóa bài học đầu tiên</p>
-      </a>
-      <a href="#faq" class="cat">
-        <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 21h6v-6"/><path d="M9 15l6-6"/><path d="M15 9V3h6"/><path d="M3 21L21 3"/></svg></div>
-        <h3>Rank thành viên</h3>
-        <p>Basic, PLUS và PRO khác nhau thế nào</p>
-      </a>
-      <a href="#consult" class="cat">
-        <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></div>
-        <h3>Kích hoạt PLUS / PRO</h3>
-        <p>Quy trình và điều kiện nâng cấp tài khoản</p>
-      </a>
-      <a href="#faq" class="cat">
-        <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M3 21a9 9 0 0118 0"/></svg></div>
-        <h3>Tài khoản</h3>
-        <p>Đăng nhập, đổi mật khẩu, thông tin cá nhân</p>
-      </a>
-    </div>
-  </section>
-
-  <section id="faq">
-    <div class="sec-title">Câu hỏi thường gặp</div>
-    <div class="faq-list">
-      <div class="faq">
-        <button aria-expanded="false">Tôi là Basic, vì sao có khóa bị khóa?<span class="chev"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
-        <div class="ans"><div class="ans-inner">Các khóa <strong>PLUS</strong> và <strong>PRO</strong> là nội dung chuyên sâu dành cho thành viên đã tham gia Challenge FIN AI hoặc Mastermind. Là thành viên <strong>Basic</strong>, bạn vẫn được học trọn vẹn các khóa nền tảng và xem thử bài đầu tiên của mọi khóa nâng cao — để cảm nhận trước khi quyết định.</div></div>
-      </div>
-      <div class="faq">
-        <button aria-expanded="false">Làm sao để kích hoạt tài khoản PLUS?<span class="chev"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
-        <div class="ans"><div class="ans-inner">Tài khoản <strong>PLUS</strong> được kích hoạt khi bạn tham gia <strong>Challenge FIN AI</strong>. Bạn chỉ cần để lại thông tin ở mục <em>Yêu cầu tư vấn</em> bên dưới hoặc nhắn Zalo — đội ngũ AE Trading sẽ hướng dẫn và kích hoạt giúp bạn.</div></div>
-      </div>
-      <div class="faq">
-        <button aria-expanded="false">Tài khoản PRO dành cho ai?<span class="chev"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
-        <div class="ans"><div class="ans-inner">Tài khoản <strong>PRO</strong> dành cho thành viên tham gia chương trình <strong>Mastermind (từ $1.000 trở lên)</strong>, mở khóa mentoring thực chiến 1:1 và lộ trình quản trị vốn nâng cao. Đăng ký tư vấn để được tư vấn chi tiết về điều kiện và quyền lợi.</div></div>
-      </div>
-      <div class="faq">
-        <button aria-expanded="false">Chứng chỉ ở AE Trading có ý nghĩa gì?<span class="chev"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
-        <div class="ans"><div class="ans-inner">Chứng chỉ là cách AE Trading <strong>ghi nhận thành tích học tập</strong> và khuyến khích bạn duy trì hành trình học đều đặn. Khi hoàn thành một khóa học, chứng chỉ sẽ hiển thị ngay trong mục <strong>Chứng chỉ đã cấp</strong> trên trang học — đánh dấu một cột mốc bạn đã chinh phục.</div></div>
-      </div>
-      <div class="faq">
-        <button aria-expanded="false">Sau khi đăng ký tư vấn, bao lâu được phản hồi?<span class="chev"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
-        <div class="ans"><div class="ans-inner">Đội ngũ AE Trading phản hồi trong <strong>giờ hành chính (T2–T7)</strong>, thường trong vòng vài giờ làm việc. Nếu cần gấp, bạn có thể nhắn trực tiếp qua <strong>Zalo</strong> để được hỗ trợ nhanh hơn.</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="consult">
-    <div class="consult">
-      <div>
-        <h2>Cần tư vấn nâng cấp tài khoản?</h2>
-        <p class="lead">Để lại thông tin, đội ngũ AE Trading sẽ liên hệ tư vấn và kích hoạt tài khoản PLUS / PRO cho bạn.</p>
-        <span class="pledge">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          Phản hồi trong giờ hành chính, T2–T7
-        </span>
-        <div class="channels">
-          <a href="https://zalo.me/SO_ZALO_AE_TRADING" target="_blank" rel="noopener" class="ch"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-12 7.6L3 21l1.9-5.6A8.4 8.4 0 1121 11.5z"/></svg>Nhắn Zalo</a>
-          <a href="mailto:support@aetrading.vn" class="ch"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>Gửi email</a>
-        </div>
-      </div>
-      <div>
-        <form class="cform" id="consultForm">
-          <label for="cf-name">Họ tên</label>
-          <input id="cf-name" type="text" placeholder="Nguyễn Văn A" required>
-          <label for="cf-email">Email</label>
-          <input id="cf-email" type="email" placeholder="email@example.com" required>
-          <label for="cf-phone">Số điện thoại / Zalo</label>
-          <input id="cf-phone" type="tel" placeholder="09xx xxx xxx" required>
-          <label for="cf-want">Bạn quan tâm tài khoản nào?</label>
-          <select id="cf-want">
-            <option>Tư vấn kích hoạt PLUS (Challenge FIN AI)</option>
-            <option>Tư vấn kích hoạt PRO (Mastermind)</option>
-            <option>Chưa rõ, cần tư vấn thêm</option>
-          </select>
-          <button type="submit" class="submit" id="cf-submit">Yêu cầu tư vấn</button>
-          <p class="form-note">Thông tin của bạn được bảo mật theo chính sách AE Trading.</p>
-        </form>
-        <div class="form-ok" id="formOk">
-          <svg width="40" height="40" fill="none" stroke="#3ecf8e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
-          <div class="big">Đã nhận thông tin!</div>
-          <p>Đội ngũ AE Trading sẽ liên hệ với bạn sớm nhất.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-<footer class="wrap">
-  © 2026 <span class="tag">AE TRADING</span> · Together We Win
-</footer>
-
-<script>
-  // API URL (same as main app)
-  var API_URL = 'https://api.aetrading.vn';
-
-  // FAQ accordion
-  document.querySelectorAll('.faq button').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var item = btn.parentElement;
-      var ans = item.querySelector('.ans');
-      var open = item.classList.contains('open');
-      document.querySelectorAll('.faq').forEach(function(f){
-        f.classList.remove('open');
-        f.querySelector('.ans').style.maxHeight = null;
-        f.querySelector('button').setAttribute('aria-expanded','false');
-      });
-      if(!open){
-        item.classList.add('open');
-        ans.style.maxHeight = ans.scrollHeight + 'px';
-        btn.setAttribute('aria-expanded','true');
-      }
-    });
-  });
-
-  // Form submit → gọi API hỗ trợ
-  document.getElementById('consultForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    var form = this;
-    var submitBtn = document.getElementById('cf-submit');
-    var name = document.getElementById('cf-name').value.trim();
-    var email = document.getElementById('cf-email').value.trim();
-    var phone = document.getElementById('cf-phone').value.trim();
-    var want = document.getElementById('cf-want').value;
-
-    // Kiểm tra dữ liệu
-    if (!name || !email || !phone) {
-      alert('Vui lòng điền đầy đủ họ tên, email và số điện thoại.');
-      return;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trung tâm hỗ trợ — AE Trading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --bg-2: #121214;
+      --bg-3: #1a1a1d;
+      --line: #26262b;
+      --line-2: #34343a;
+      --gold: #f5b820;
+      --gold-soft: #d9a01a;
+      --gold-glow: rgba(245, 184, 32, .14);
+      --txt: #f4f4f5;
+      --txt-2: #a1a1aa;
+      --txt-3: #6b6b73;
+      --info: #5b9dff;
+      --ok: #3ecf8e;
+      --r: 14px;
+      --r-sm: 10px;
     }
 
-    // Disable nút & hiển thị loading
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Đang gửi...';
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-    // Gọi API tương tự như supportService.createContactRequest
-    fetch(API_URL + '/api/support/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        topic: want,
-        message: 'So dien thoai/Zalo: ' + phone + '. Quan tam: ' + want,
-        sourcePage: 'landing-faq'
-      })
-    })
-    .then(function(res){ return res.json().catch(function(){ return null; }); })
-    .then(function(body){
-      if (!body || !body.success) {
-        throw new Error((body && body.message) || 'Không thể gửi yêu cầu hỗ trợ');
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background: var(--gold);
+      color: #0a0a0b
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px
+    }
+
+    h1,
+    h2,
+    h3,
+    .brand {
+      font-family: 'Be Vietnam Pro', sans-serif
+    }
+
+    /* ── top bar ── */
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 11, .85);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 700;
+      letter-spacing: .5px
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+      display: grid;
+      place-items: center;
+      color: #0a0a0b;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--txt-3);
+      font-weight: 500;
+      font-family: 'Be Vietnam Pro'
+    }
+
+    .topbar a.back {
+      color: var(--txt-2);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s
+    }
+
+    .topbar a.back:hover {
+      color: var(--gold)
+    }
+
+    /* ── hero ── */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 340px;
+      background: radial-gradient(ellipse, var(--gold-glow), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+      border: 1px solid var(--line-2);
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--bg-2);
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -.5px;
+      position: relative
+    }
+
+    .hero h1 .y {
+      color: var(--gold)
+    }
+
+    .hero p.sub {
+      color: var(--txt-2);
+      font-size: 16px;
+      margin: 14px auto 28px;
+      max-width: 480px;
+      position: relative
+    }
+
+    .search {
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto
+    }
+
+    .search input {
+      width: 100%;
+      background: var(--bg-2);
+      border: 1px solid var(--line-2);
+      border-radius: 100px;
+      padding: 15px 20px 15px 50px;
+      color: var(--txt);
+      font-size: 15px;
+      font-family: inherit;
+      transition: .2s;
+    }
+
+    .search input::placeholder {
+      color: var(--txt-3)
+    }
+
+    .search input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px var(--gold-glow)
+    }
+
+    .search svg {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--txt-3)
+    }
+
+    /* ── section ── */
+    section {
+      padding: 18px 0
+    }
+
+    .sec-title {
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--txt-3);
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .sec-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line)
+    }
+
+    /* ── category cards ── */
+    .cats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px
+    }
+
+    .cat {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 22px 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: .22s;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .cat:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+      background: var(--bg-3)
+    }
+
+    .cat .ico {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: var(--bg-3);
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      color: var(--gold);
+      transition: .22s;
+    }
+
+    .cat:hover .ico {
+      background: var(--gold-glow)
+    }
+
+    .cat h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 5px
+    }
+
+    .cat p {
+      font-size: 13px;
+      color: var(--txt-2);
+      line-height: 1.5
+    }
+
+    /* ── faq ── */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .faq {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      transition: .2s;
+    }
+
+    .faq.open {
+      border-color: var(--line-2)
+    }
+
+    .faq button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--txt);
+      font-family: 'Be Vietnam Pro';
+      font-size: 15px;
+      font-weight: 500;
+      text-align: left;
+      padding: 17px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .faq button:hover {
+      color: var(--gold)
+    }
+
+    .faq .chev {
+      color: var(--txt-3);
+      transition: transform .25s;
+      flex-shrink: 0
+    }
+
+    .faq.open .chev {
+      transform: rotate(180deg);
+      color: var(--gold)
+    }
+
+    .faq .ans {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+
+    .faq .ans-inner {
+      padding: 0 20px 18px;
+      color: var(--txt-2);
+      font-size: 14px;
+      line-height: 1.7
+    }
+
+    .faq .ans-inner strong {
+      color: var(--txt);
+      font-weight: 600
+    }
+
+    /* ── consult ── */
+    .consult {
+      background:
+        radial-gradient(circle at 85% 0%, rgba(245, 184, 32, .10), transparent 50%),
+        var(--bg-2);
+      border: 1px solid var(--line-2);
+      border-radius: var(--r);
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .consult h2 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -.3px;
+      margin-bottom: 10px
+    }
+
+    .consult .lead {
+      color: var(--txt-2);
+      font-size: 15px;
+      margin-bottom: 18px
+    }
+
+    .pledge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--ok);
+      background: rgba(62, 207, 142, .1);
+      border: 1px solid rgba(62, 207, 142, .25);
+      padding: 7px 13px;
+      border-radius: 100px
+    }
+
+    .channels {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap
+    }
+
+    .ch {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 9px 15px;
+      border-radius: 100px;
+      border: 1px solid var(--line-2);
+      color: var(--txt-2);
+      transition: .2s;
+    }
+
+    .ch:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    /* form */
+    .cform {
+      display: flex;
+      flex-direction: column;
+      gap: 11px
+    }
+
+    .cform label {
+      font-size: 12px;
+      color: var(--txt-3);
+      font-weight: 500;
+      margin-bottom: -5px
+    }
+
+    .cform input,
+    .cform select {
+      background: var(--bg);
+      border: 1px solid var(--line-2);
+      border-radius: var(--r-sm);
+      padding: 13px 15px;
+      color: var(--txt);
+      font-size: 14px;
+      font-family: inherit;
+      transition: .2s;
+      width: 100%;
+    }
+
+    .cform input::placeholder {
+      color: var(--txt-3)
+    }
+
+    .cform input:focus,
+    .cform select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px var(--gold-glow)
+    }
+
+    .cform select {
+      appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b73' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center
+    }
+
+    .submit {
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+      color: #0a0a0b;
+      border: none;
+      border-radius: var(--r-sm);
+      padding: 14px;
+      font-family: 'Be Vietnam Pro';
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      margin-top: 4px;
+    }
+
+    .submit:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px)
+    }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--txt-3);
+      text-align: center;
+      margin-top: 2px
+    }
+
+    .form-ok {
+      display: none;
+      text-align: center;
+      padding: 30px 10px
+    }
+
+    .form-ok.show {
+      display: block
+    }
+
+    .form-ok .big {
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Be Vietnam Pro';
+      color: var(--ok);
+      margin: 14px 0 6px
+    }
+
+    .form-ok p {
+      color: var(--txt-2);
+      font-size: 14px
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      margin-top: 56px;
+      padding: 28px 0;
+      text-align: center;
+      color: var(--txt-3);
+      font-size: 13px
+    }
+
+    footer .tag {
+      color: var(--gold-soft);
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-family: 'Be Vietnam Pro'
+    }
+
+    @media(max-width:860px) {
+      .cats {
+        grid-template-columns: repeat(2, 1fr)
       }
-      // Thành công → ẩn form, hiện thông báo
-      form.style.display = 'none';
-      document.getElementById('formOk').classList.add('show');
-    })
-    .catch(function(err){
-      console.error('Lỗi gửi form:', err);
-      alert('Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại sau.\n' + err.message);
-    })
-    .finally(function(){
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Yêu cầu tư vấn';
+
+      .consult {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 26px
+      }
+    }
+
+    @media(max-width:520px) {
+      .cats {
+        grid-template-columns: 1fr
+      }
+
+      .hero {
+        padding: 44px 20px 30px
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">AE</div>
+        <div>AE TRADING<small>TOGETHER WE WIN</small></div>
+      </div>
+      <a href="#" class="back" onclick="window.parent.postMessage('navigate-back','*');return false;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M19 12H5m7-7l-7 7 7 7" />
+        </svg>
+        Về trang học
+      </a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <span class="eyebrow">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+        <path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3" />
+        <path d="M12 17h.01" />
+      </svg>
+      Trung tâm hỗ trợ
+    </span>
+    <h1>AE Trading <span class="y">đồng hành</span> cùng bạn</h1>
+    <p class="sub">Tìm câu trả lời nhanh, hoặc để đội ngũ tư vấn hỗ trợ bạn nâng cấp tài khoản.</p>
+    <div class="search">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.3-4.3" />
+      </svg>
+      <input type="text" placeholder="Tìm: rank, kích hoạt PLUS, mở khóa học…" aria-label="Tìm kiếm hỗ trợ">
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <div class="sec-title">Chọn chủ đề</div>
+      <div class="cats">
+        <a href="#faq" class="cat">
+          <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8a2 2 0 00-3 0z" />
+              <path d="M12 15l-3-3a22 22 0 014-9 7 7 0 016 6 22 22 0 01-9 4z" />
+              <path d="M9 12H4s.5-3 2-4 5-1 5-1" />
+              <path d="M12 15v5s3-.5 4-2 1-5 1-5" />
+            </svg></div>
+          <h3>Bắt đầu học</h3>
+          <p>Học từ đâu, cách mở khóa bài học đầu tiên</p>
+        </a>
+        <a href="#faq" class="cat">
+          <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M3 21h6v-6" />
+              <path d="M9 15l6-6" />
+              <path d="M15 9V3h6" />
+              <path d="M3 21L21 3" />
+            </svg></div>
+          <h3>Rank thành viên</h3>
+          <p>Basic, PLUS và PRO khác nhau thế nào</p>
+        </a>
+        <a href="#consult" class="cat">
+          <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M19 8v6M22 11h-6" />
+            </svg></div>
+          <h3>Kích hoạt PLUS / PRO</h3>
+          <p>Quy trình và điều kiện nâng cấp tài khoản</p>
+        </a>
+        <a href="#faq" class="cat">
+          <div class="ico"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="5" />
+              <path d="M3 21a9 9 0 0118 0" />
+            </svg></div>
+          <h3>Tài khoản</h3>
+          <p>Đăng nhập, đổi mật khẩu, thông tin cá nhân</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="sec-title">Câu hỏi thường gặp</div>
+      <div class="faq-list">
+        <div class="faq">
+          <button aria-expanded="false">Tôi là Basic, vì sao có khóa bị khóa?<span class="chev"><svg width="20"
+                height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" />
+              </svg></span></button>
+          <div class="ans">
+            <div class="ans-inner">Các khóa <strong>PLUS</strong> và <strong>PRO</strong> là nội dung chuyên sâu dành
+              cho thành viên đã tham gia Challenge FIN AI hoặc Mastermind. Là thành viên <strong>Basic</strong>, bạn vẫn
+              được học trọn vẹn các khóa nền tảng và xem thử bài đầu tiên của mọi khóa nâng cao — để cảm nhận trước khi
+              quyết định.</div>
+          </div>
+        </div>
+        <div class="faq">
+          <button aria-expanded="false">Làm sao để kích hoạt tài khoản PLUS?<span class="chev"><svg width="20"
+                height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" />
+              </svg></span></button>
+          <div class="ans">
+            <div class="ans-inner">Tài khoản <strong>PLUS</strong> được kích hoạt khi bạn tham gia <strong>Challenge FIN
+                AI</strong>. Bạn chỉ cần để lại thông tin ở mục <em>Yêu cầu tư vấn</em> bên dưới hoặc nhắn Zalo — đội
+              ngũ AE Trading sẽ hướng dẫn và kích hoạt giúp bạn.</div>
+          </div>
+        </div>
+        <div class="faq">
+          <button aria-expanded="false">Tài khoản PRO dành cho ai?<span class="chev"><svg width="20" height="20"
+                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" />
+              </svg></span></button>
+          <div class="ans">
+            <div class="ans-inner">Tài khoản <strong>PRO</strong> dành cho thành viên tham gia chương trình
+              <strong>Mastermind (từ $1.000 trở lên)</strong>, mở khóa mentoring thực chiến 1:1 và lộ trình quản trị vốn
+              nâng cao. Đăng ký tư vấn để được tư vấn chi tiết về điều kiện và quyền lợi.</div>
+          </div>
+        </div>
+        <div class="faq">
+          <button aria-expanded="false">Chứng chỉ ở AE Trading có ý nghĩa gì?<span class="chev"><svg width="20"
+                height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" />
+              </svg></span></button>
+          <div class="ans">
+            <div class="ans-inner">Chứng chỉ là cách AE Trading <strong>ghi nhận thành tích học tập</strong> và khuyến
+              khích bạn duy trì hành trình học đều đặn. Khi hoàn thành một khóa học, chứng chỉ sẽ hiển thị ngay trong
+              mục <strong>Chứng chỉ đã cấp</strong> trên trang học — đánh dấu một cột mốc bạn đã chinh phục.</div>
+          </div>
+        </div>
+        <div class="faq">
+          <button aria-expanded="false">Sau khi đăng ký tư vấn, bao lâu được phản hồi?<span class="chev"><svg width="20"
+                height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" />
+              </svg></span></button>
+          <div class="ans">
+            <div class="ans-inner">Đội ngũ AE Trading phản hồi trong <strong>giờ hành chính (T2–T7)</strong>, thường
+              trong vòng vài giờ làm việc. Nếu cần gấp, bạn có thể nhắn trực tiếp qua <strong>Zalo</strong> để được hỗ
+              trợ nhanh hơn.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="consult">
+      <div class="consult">
+        <div>
+          <h2>Cần tư vấn nâng cấp tài khoản?</h2>
+          <p class="lead">Để lại thông tin, đội ngũ AE Trading sẽ liên hệ tư vấn và kích hoạt tài khoản PLUS / PRO cho
+            bạn.</p>
+          <span class="pledge">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            Phản hồi trong giờ hành chính, T2–T7
+          </span>
+          <div class="channels">
+            <a href="https://zalo.me/SO_ZALO_AE_TRADING" target="_blank" rel="noopener" class="ch"><svg width="15"
+                height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 11.5a8.4 8.4 0 01-12 7.6L3 21l1.9-5.6A8.4 8.4 0 1121 11.5z" />
+              </svg>Nhắn Zalo</a>
+            <a href="mailto:support@aetrading.vn" class="ch"><svg width="15" height="15" fill="none"
+                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M22 6l-10 7L2 6" />
+              </svg>Gửi email</a>
+          </div>
+        </div>
+        <div>
+          <form class="cform" id="consultForm">
+            <label for="cf-name">Họ tên</label>
+            <input id="cf-name" type="text" placeholder="Nguyễn Văn A" required>
+            <label for="cf-email">Email</label>
+            <input id="cf-email" type="email" placeholder="email@example.com" required>
+            <label for="cf-phone">Số điện thoại / Zalo</label>
+            <input id="cf-phone" type="tel" placeholder="09xx xxx xxx" required>
+            <label for="cf-want">Bạn quan tâm tài khoản nào?</label>
+            <select id="cf-want">
+              <option>Tư vấn kích hoạt PLUS (Challenge FIN AI)</option>
+              <option>Tư vấn kích hoạt PRO (Mastermind)</option>
+              <option>Chưa rõ, cần tư vấn thêm</option>
+            </select>
+            <button type="submit" class="submit" id="cf-submit">Yêu cầu tư vấn</button>
+            <p class="form-note">Thông tin của bạn được bảo mật theo chính sách AE Trading.</p>
+          </form>
+          <div class="form-ok" id="formOk">
+            <svg width="40" height="40" fill="none" stroke="#3ecf8e" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 12l3 3 5-6" />
+            </svg>
+            <div class="big">Đã nhận thông tin!</div>
+            <p>Đội ngũ AE Trading sẽ liên hệ với bạn sớm nhất.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="wrap">
+    © 2026 <span class="tag">AE TRADING</span> · Together We Win
+  </footer>
+
+  <script>
+    // API URL (same as main app)
+    var API_URL = 'http://localhost:3000';
+
+    // FAQ accordion
+    document.querySelectorAll('.faq button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.parentElement;
+        var ans = item.querySelector('.ans');
+        var open = item.classList.contains('open');
+        document.querySelectorAll('.faq').forEach(function (f) {
+          f.classList.remove('open');
+          f.querySelector('.ans').style.maxHeight = null;
+          f.querySelector('button').setAttribute('aria-expanded', 'false');
+        });
+        if (!open) {
+          item.classList.add('open');
+          ans.style.maxHeight = ans.scrollHeight + 'px';
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
     });
-  });
-</script>
+
+    // Form submit → gọi API hỗ trợ
+    document.getElementById('consultForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var form = this;
+      var submitBtn = document.getElementById('cf-submit');
+      var name = document.getElementById('cf-name').value.trim();
+      var email = document.getElementById('cf-email').value.trim();
+      var phone = document.getElementById('cf-phone').value.trim();
+      var want = document.getElementById('cf-want').value;
+
+      // Kiểm tra dữ liệu
+      if (!name || !email || !phone) {
+        alert('Vui lòng điền đầy đủ họ tên, email và số điện thoại.');
+        return;
+      }
+
+      // Disable nút & hiển thị loading
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Đang gửi...';
+
+      // Gọi API tương tự như supportService.createContactRequest
+      fetch(API_URL + '/api/support/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          topic: want,
+          message: 'So dien thoai/Zalo: ' + phone + '. Quan tam: ' + want,
+          sourcePage: 'landing-faq'
+        })
+      })
+        .then(function (res) { return res.json().catch(function () { return null; }); })
+        .then(function (body) {
+          if (!body || !body.success) {
+            throw new Error((body && body.message) || 'Không thể gửi yêu cầu hỗ trợ');
+          }
+          // Thành công → ẩn form, hiện thông báo
+          form.style.display = 'none';
+          document.getElementById('formOk').classList.add('show');
+        })
+        .catch(function (err) {
+          console.error('Lỗi gửi form:', err);
+          alert('Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại sau.\n' + err.message);
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Yêu cầu tư vấn';
+        });
+    });
+  </script>
 </body>
+
 </html>

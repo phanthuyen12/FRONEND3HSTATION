@@ -7,6 +7,7 @@ export interface SystemConfig {
     header_description: string;
     notification: string;
     commission_rate: string;
+    landing_ref_links?: string;
 }
 
 const getToken = (): string | null => {

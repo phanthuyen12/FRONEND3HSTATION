@@ -81,7 +81,7 @@ class ElearningService {
   private api: string;
 
   constructor() {
-    this.api = 'https://api.aetrading.vn';
+    this.api = 'http://localhost:3000';
   }
 
   private getAuthToken(): string | null {

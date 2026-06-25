@@ -3,6 +3,7 @@ import FeatherIcon from 'feather-icons-react';
 import HostingLayout from '../layouts/HostingLayout';
 import { useTheme } from '../context/ThemeContext';
 import { authService, userService, vpsService, workflowsService, elearningService } from '../../../config';
+import FacebookConnectPopup from '../../components/FacebookConnectPopup';
 import { NodeverseVpsPlan, VpsPlan, VpsBillingTerm } from '../../../services/vpsService';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -414,11 +415,6 @@ const LandingProfilePage = () => {
                         <InfoItem label="Ngày tham gia" value={new Date(user?.createdAt || '').toLocaleString('vi-VN')} icon="calendar" />
                      </div>
                   </div>
-               </div>
-            );
-         case 'password':
-            return (
-               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="bg-[#0d1412] rounded-[16px] shadow-sm border border-white/[0.03] overflow-hidden">
                      <div className="bg-black/40 px-6 py-4 flex items-center gap-3 text-white">
                         <div className="bg-[#FBBF24] w-7 h-7 rounded-full flex items-center justify-center">

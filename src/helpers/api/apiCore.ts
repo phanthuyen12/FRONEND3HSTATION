@@ -81,7 +81,7 @@ const setAuthorization = (token: string | null) => {
 };
 
 const getUserFromCookie = () => {
-  const user = sessionStorage.getItem(AUTH_SESSION_KEY);
+  let user = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY);
   if (user) return typeof user == "object" ? user : JSON.parse(user);
   
   // Fallback: check localStorage directly for token if konrix_user not found
@@ -222,10 +222,12 @@ class APICore {
   };
 
   setLoggedInUser = (session: any) => {
-    if (session)
+    if (session) {
       sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
-    else {
+      localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+    } else {
       sessionStorage.removeItem(AUTH_SESSION_KEY);
+      localStorage.removeItem(AUTH_SESSION_KEY);
     }
   };
   /**

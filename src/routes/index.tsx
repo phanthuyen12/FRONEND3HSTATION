@@ -44,6 +44,7 @@ const DocumentsAdminList = React.lazy(() => import("../pages/apps/DocumentsAdmin
 const DocumentsAdminDetail = React.lazy(() => import("../pages/apps/DocumentsAdmin/Detail"));
 const BankAdminList = React.lazy(() => import("../pages/apps/BankAdmin/List"));
 const SupportAdminList = React.lazy(() => import("../pages/apps/SupportAdmin/List"));
+const SupportRefLinksAdmin = React.lazy(() => import("../pages/apps/SupportAdmin/RefLinks"));
 const OrdersReport = React.lazy(() => import("../pages/apps/OrdersAdmin/Report"));
 
 // extra pages 
@@ -456,6 +457,12 @@ const supportAdminRoutes: RoutesProps = {
       path: "/admin/support-requests",
       name: "SupportAdminList",
       element: <SupportAdminList />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/admin/support-ref-links",
+      name: "SupportRefLinksAdmin",
+      element: <SupportRefLinksAdmin />,
       route: PrivateRoute,
     },
   ],

@@ -374,6 +374,7 @@ const SupportAdminList: React.FC = () => {
                     <h4 className="mt-1 mb-1">{selectedItem.topic}</h4>
                     <div className="text-sm text-slate-500">
                       {selectedItem.name} · {selectedItem.email}
+                      {selectedItem.phone ? ` · ${selectedItem.phone}` : ""}
                     </div>
                   </div>
                   <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${statusBadgeMap[selectedItem.status]}`}>
@@ -390,7 +391,29 @@ const SupportAdminList: React.FC = () => {
                     <div className="text-xs text-slate-400 mb-1">Thời gian gửi</div>
                     <div className="text-sm text-slate-700">{formatDateTime(selectedItem.created_at)}</div>
                   </div>
+                  <div className="rounded-lg border border-slate-200 p-3">
+                    <div className="text-xs text-slate-400 mb-1">Số điện thoại</div>
+                    <div className="text-sm text-slate-700">{selectedItem.phone || "—"}</div>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 p-3">
+                    <div className="text-xs text-slate-400 mb-1">Ref chiến dịch</div>
+                    <div className="font-mono text-sm text-slate-700">{selectedItem.ref_code || "—"}</div>
+                  </div>
                 </div>
+
+                {selectedItem.redirect_url && (
+                  <div className="mt-3 rounded-lg border border-slate-200 p-3">
+                    <div className="text-xs text-slate-400 mb-1">Link đích</div>
+                    <a
+                      href={selectedItem.redirect_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm break-all text-primary"
+                    >
+                      {selectedItem.redirect_url}
+                    </a>
+                  </div>
+                )}
 
                 <div className="mt-4">
                   <div className="text-xs text-slate-400 mb-2">Nội dung</div>
@@ -403,6 +426,11 @@ const SupportAdminList: React.FC = () => {
                   <a className="btn btn-light" href={`mailto:${selectedItem.email}?subject=${encodeURIComponent(`[Ho tro] ${selectedItem.topic}`)}`}>
                     Gửi email
                   </a>
+                  {selectedItem.phone && (
+                    <a className="btn btn-light" href={`tel:${selectedItem.phone}`}>
+                      Gọi nhanh
+                    </a>
+                  )}
                   <button
                     className="btn btn-warning"
                     disabled={saving || selectedItem.status === "reviewing"}

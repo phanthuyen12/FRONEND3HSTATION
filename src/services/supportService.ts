@@ -4,9 +4,12 @@ import { SupportContent, defaultSupportContent } from '../client/landing/data/su
 export interface ContactRequestPayload {
   name: string;
   email: string;
+  phone?: string;
   topic: string;
   message: string;
   sourcePage?: string;
+  refCode?: string;
+  redirectUrl?: string;
 }
 
 const supportService = {

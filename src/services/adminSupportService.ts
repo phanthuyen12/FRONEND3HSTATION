@@ -4,9 +4,12 @@ export interface SupportRequestItem {
   id: number;
   name: string;
   email: string;
+  phone?: string | null;
   topic: string;
   message: string;
   source_page: string;
+  ref_code?: string | null;
+  redirect_url?: string | null;
   status: "new" | "reviewing" | "resolved";
   created_at: string;
   updated_at: string;
