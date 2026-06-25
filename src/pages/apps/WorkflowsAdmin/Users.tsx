@@ -51,8 +51,8 @@ const WorkflowsUsersAdmin: React.FC = () => {
           typeof window !== "undefined" &&
           (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
         const baseUrl = isLocal
-          ? "http://localhost:3000"
-          : API_URL || process.env.VITE_API_URL || "http://localhost:3000";
+          ? "https://api.aetrading.vn"
+          : API_URL || process.env.VITE_API_URL || "https://api.aetrading.vn";
         const res = await fetch(`${baseUrl}/api/workflows/registrations?${params.toString()}`, {
           headers: {
             "Content-Type": "application/json",

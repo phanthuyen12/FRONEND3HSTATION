@@ -163,7 +163,7 @@ class AdminElearningService {
   private AUTH_SESSION_KEY = 'konrix_user';
 
   constructor() {
-    this.api = 'http://localhost:3000';
+    this.api = 'https://api.aetrading.vn';
   }
 
   // Helper để lấy token từ sessionStorage
