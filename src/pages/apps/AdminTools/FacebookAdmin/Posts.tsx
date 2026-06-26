@@ -1212,7 +1212,7 @@ const FacebookPosts: React.FC = () => {
               (
                 item.message === nextMessage.message &&
                 item.from_id === nextMessage.from_id &&
-                item.created_time === nextMessage.created_time
+                Math.abs(new Date(item.created_time).getTime() - new Date(nextMessage.created_time).getTime()) < 10000
               )
           );
 
@@ -1804,11 +1804,20 @@ const FacebookPosts: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      {pageDetails.link && (
-                        <a href={pageDetails.link} target="_blank" rel="noreferrer" className="btn bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm whitespace-nowrap">
-                          <i className="mgc_external_link_line mr-1"></i> Xem trên FB
-                        </a>
-                      )}
+                      <div className="flex flex-wrap gap-2">
+                        {pageDetails.link && (
+                          <a href={pageDetails.link} target="_blank" rel="noreferrer" className="btn bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm whitespace-nowrap">
+                            <i className="mgc_external_link_line mr-1"></i> Xem trên FB
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          className="btn bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-200 hover:text-red-700 text-sm whitespace-nowrap"
+                          onClick={() => handleDisconnectPage(selectedPage)}
+                        >
+                          <i className="mgc_delete_line mr-1"></i> Hủy kết nối Page
+                        </button>
+                      </div>
                     </div>
                   )}
 
