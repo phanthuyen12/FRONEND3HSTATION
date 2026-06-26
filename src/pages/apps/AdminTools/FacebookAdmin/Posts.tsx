@@ -1124,47 +1124,7 @@ const FacebookPosts: React.FC = () => {
     }
   }, [sort]);
 
-  const handleConnect = async () => {
-    const appId = "1798186884217998";
-    const redirectUri = encodeURIComponent(`${window.location.origin}/admin/facebook/callback`);
-    const scope = "pages_show_list,pages_manage_metadata,pages_messaging,pages_read_engagement,business_management,read_insights,pages_read_user_content,pages_manage_posts";
-    const oauthUrl = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${appId}&redirect_uri=${redirectUri}&scope=${scope}&auth_type=rerequest`;
-    window.location.href = oauthUrl;
-  };
 
-  // ==================== CRM CHAT CRM FUNCTIONS ====================
-  const hydrateLeadForm = (lead: any) => {
-    setCrmStatus(lead.lead_status || lead.leadStatus || "new_lead");
-    setCrmPhone(lead.phone || "");
-    setCrmCourse(lead.course_interest || lead.courseInterest || "");
-    setCrmNotes(lead.notes || "");
-    setCrmTags(lead.tags || "");
-    setCrmSaleAgent(lead.sale_agent || lead.saleAgent || "");
-  };
-
-  const buildChatFetchKey = (pageId: string, lead: any) => `${pageId}::${String(lead?.id || "")}`;
-
-  async function fetchLeadChatHistory(lead: any, pageId: string, force = false) {
-    if (!lead || !pageId) return;
-
-    const nextKey = buildChatFetchKey(pageId, lead);
-    if (!force && lastFetchedChatKeyRef.current === nextKey) {
-      return;
-    }
-
-    lastFetchedChatKeyRef.current = nextKey;
-    setLoadingChat(true);
-    try {
-      const history = await adminFacebookService.getFacebookMessages(pageId, String(lead.id));
-      setChatHistory(history || []);
-    } catch (err: any) {
-      console.error("Error loading chat history:", err);
-      setChatHistory([]);
-      lastFetchedChatKeyRef.current = "";
-    } finally {
-      setLoadingChat(false);
-    }
-  }
 
   useEffect(() => {
     return () => {
@@ -1192,6 +1152,7 @@ const FacebookPosts: React.FC = () => {
         Boolean(selectedLeadUserId) &&
         selectedLeadUserId === String(payload.facebookUserId);
 
+      let isNewCustomer = false;
       setLeads((prev) => {
         const nextLeads = [...prev];
         const existingIndex = nextLeads.findIndex(
@@ -1215,6 +1176,8 @@ const FacebookPosts: React.FC = () => {
           nextLeads.splice(existingIndex, 1);
           nextLeads.unshift(updatedLead);
           return nextLeads;
+        } else {
+          isNewCustomer = true;
         }
 
         return prev;
@@ -1258,8 +1221,8 @@ const FacebookPosts: React.FC = () => {
         });
       }
 
-      if (filterPageId) {
-        loadLeads(searchLeadQuery, filterPageId);
+      if (isNewCustomer && filterPageId) {
+        loadLeads(searchLeadQuery, filterPageId, true);
       }
 
       if (isSelectedLead && activePageId) {
@@ -1269,7 +1232,7 @@ const FacebookPosts: React.FC = () => {
 
         const selectedLeadSnapshot = selectedLead;
         realtimeChatRefreshTimeoutRef.current = window.setTimeout(() => {
-          fetchLeadChatHistory(selectedLeadSnapshot, activePageId, true);
+          fetchLeadChatHistory(selectedLeadSnapshot, activePageId, true, true);
         }, 1200);
       }
     };
@@ -1297,8 +1260,10 @@ const FacebookPosts: React.FC = () => {
     }
   }
 
-  async function loadLeads(search = "", pageId = "") {
-    setLoadingLeads(true);
+  async function loadLeads(search = "", pageId = "", silent = false) {
+    if (!silent) {
+      setLoadingLeads(true);
+    }
     try {
       const activePageId = pageId || filterPageId;
       if (!activePageId) {
@@ -1331,7 +1296,9 @@ const FacebookPosts: React.FC = () => {
           setSelectedLead(nextLead);
           
         } else {
-          await handleSelectLead(nextLead);
+          if (!silent) {
+            await handleSelectLead(nextLead);
+          }
         }
       } else {
         setSelectedLead(null);
@@ -1342,7 +1309,89 @@ const FacebookPosts: React.FC = () => {
       console.error("Failed to load leads", err);
       setLeads([]);
     } finally {
-      setLoadingLeads(false);
+      if (!silent) {
+        setLoadingLeads(false);
+      }
+    }
+  }
+
+  const handleConnect = async () => {
+    const appId = "1798186884217998";
+    const redirectUri = encodeURIComponent(`${window.location.origin}/admin/facebook/callback`);
+    const scope = "pages_show_list,pages_manage_metadata,pages_messaging,pages_read_engagement,business_management,read_insights,pages_read_user_content,pages_manage_posts";
+    const oauthUrl = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${appId}&redirect_uri=${redirectUri}&scope=${scope}&auth_type=rerequest`;
+    window.location.href = oauthUrl;
+  };
+
+  const handleDisconnectPage = async (page: FbPage) => {
+    const result = await Swal.fire({
+      title: "Hủy kết nối Page?",
+      text: `Bạn có chắc chắn muốn hủy kết nối với trang "${page.pageName}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Hủy",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await adminFacebookService.disconnectPage(page.pageId);
+        Swal.fire({
+          icon: "success",
+          title: "Thành công",
+          text: `Đã hủy kết nối với trang "${page.pageName}".`,
+          confirmButtonText: "Đã hiểu",
+        });
+        loadPages();
+      } catch (err: any) {
+        console.error("Failed to disconnect page", err);
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text: "Không thể hủy kết nối Page.",
+          confirmButtonText: "Đã hiểu",
+        });
+      }
+    }
+  };
+
+  // ==================== CRM CHAT CRM FUNCTIONS ====================
+  const hydrateLeadForm = (lead: any) => {
+    setCrmStatus(lead.lead_status || lead.leadStatus || "new_lead");
+    setCrmPhone(lead.phone || "");
+    setCrmCourse(lead.course_interest || lead.courseInterest || "");
+    setCrmNotes(lead.notes || "");
+    setCrmTags(lead.tags || "");
+    setCrmSaleAgent(lead.sale_agent || lead.saleAgent || "");
+  };
+
+  const buildChatFetchKey = (pageId: string, lead: any) => `${pageId}::${String(lead?.id || "")}`;
+
+  async function fetchLeadChatHistory(lead: any, pageId: string, force = false, silent = false) {
+    if (!lead || !pageId) return;
+
+    const nextKey = buildChatFetchKey(pageId, lead);
+    if (!force && lastFetchedChatKeyRef.current === nextKey) {
+      return;
+    }
+
+    lastFetchedChatKeyRef.current = nextKey;
+    if (!silent) {
+      setLoadingChat(true);
+    }
+    try {
+      const history = await adminFacebookService.getFacebookMessages(pageId, String(lead.id));
+      setChatHistory(history || []);
+    } catch (err: any) {
+      console.error("Error loading chat history:", err);
+      setChatHistory([]);
+      lastFetchedChatKeyRef.current = "";
+    } finally {
+      if (!silent) {
+        setLoadingChat(false);
+      }
     }
   }
 
@@ -1390,24 +1439,42 @@ const FacebookPosts: React.FC = () => {
   const handleSendManualMessage = async (msg: string) => {
     if (!selectedLead || !msg.trim()) return;
 
+    const tempId = `temp:${Date.now()}`;
+    const newMsgObj: FbChatLog = {
+      id: tempId,
+      message: msg.trim(),
+      from_id: filterPageId,
+      created_time: new Date().toISOString()
+    };
+
+    // Optimistically update chat history
+    setChatHistory(prev => [...prev, newMsgObj]);
+
+    // Optimistically update the active lead and place it at the top of the leads list
+    const updatedLead = { 
+      ...selectedLead, 
+      ai_enabled: 0, 
+      updated_time: new Date().toISOString(),
+      last_message: msg.trim()
+    };
+    setSelectedLead(updatedLead);
+    setLeads(prev => {
+      const filtered = prev.filter(l => String(l.id) !== String(updatedLead.id));
+      return [updatedLead, ...filtered];
+    });
+
     try {
       await adminFacebookService.sendManualMessage(selectedLead.lead_id || selectedLead.id, msg.trim());
       
-      // Reload tin nhắn từ FB
-      await fetchLeadChatHistory(selectedLead, filterPageId, true);
-      
-      // Tự động chuyển AI cờ của Lead này sang TẮT
-      const updatedLead = { 
-        ...selectedLead, 
-        ai_enabled: 0, 
-        updated_time: new Date().toISOString(),
-        last_message: msg.trim()
-      };
-      setSelectedLead(updatedLead);
-      setLeads(prev => prev.map(l => l.id === updatedLead.id ? updatedLead : l));
+      // Reload tin nhắn từ FB ngầm (silent)
+      await fetchLeadChatHistory(selectedLead, filterPageId, true, true);
       
     } catch (err: any) {
       console.error("Failed to send message", err);
+      // Rollback optimistic updates
+      setChatHistory(prev => prev.filter(m => m.id !== tempId));
+      setSelectedLead(selectedLead);
+      
       Swal.fire({
         icon: "error",
         title: "Lỗi gửi tin nhắn",
@@ -1989,9 +2056,9 @@ const FacebookPosts: React.FC = () => {
           </div>
 
           {/* 3-COLUMN FULL-HEIGHT LAYOUT */}
-          <div className="grid xl:grid-cols-4 gap-4 items-stretch h-[calc(100vh-165px)] min-h-[600px]">
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 items-stretch xl:h-[700px] h-auto">
             {/* COLUMN 1: LEADS LIST */}
-            <div className="card xl:col-span-1 flex flex-col h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm rounded-xl">
+            <div className="card xl:col-span-1 flex flex-col h-[500px] xl:h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm rounded-xl">
               <div className="p-4 border-b border-slate-200 dark:border-slate-700 font-bold text-slate-800 dark:text-slate-100 flex justify-between items-center bg-white dark:bg-slate-800 z-10 shadow-sm">
                 <span className="flex items-center gap-2"><i className="mgc_group_line text-blue-600 dark:text-blue-400 text-lg"></i> Khách hàng nhắn tin</span>
                 <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs px-2.5 py-0.5 rounded-full font-bold">{leads.length}</span>
@@ -2028,7 +2095,7 @@ const FacebookPosts: React.FC = () => {
             </div>
 
             {/* COLUMN 2 & 3: CHAT WINDOW */}
-            <div className="card xl:col-span-2 flex flex-col h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm relative rounded-xl bg-white dark:bg-slate-800">
+            <div className="card xl:col-span-2 flex flex-col h-[600px] xl:h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm relative rounded-xl bg-white dark:bg-slate-800">
               {!selectedLead ? (
                 <div className="flex-1 flex flex-col justify-center items-center p-6 text-slate-400 bg-slate-50/50 dark:bg-slate-900/50">
                   <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100 dark:border-slate-700">
@@ -2103,7 +2170,7 @@ const FacebookPosts: React.FC = () => {
             </div>
 
             {/* COLUMN 4: CRM LEAD DETAILS */}
-            <div className="card xl:col-span-1 p-4 flex flex-col justify-between h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-800 rounded-xl relative">
+            <div className="card xl:col-span-1 p-4 flex flex-col h-auto xl:h-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-800 rounded-xl relative">
               {!selectedLead ? (
                 <div className="flex-1 flex flex-col justify-center items-center text-slate-400 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl">
                   <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-3">

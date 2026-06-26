@@ -112,7 +112,7 @@ const Register = () => {
       <PageBreadcrumb title="Đăng ký" />
       <AuthLayout
         authTitle="Đăng ký"
-        helpText="Tạo tài khoản mới để bắt đầu sử dụng các dịch vụ của 3HSTATION."
+        helpText="Tạo tài khoản mới để bắt đầu sử dụng các dịch vụ của AETRADING."
         bottomLinks={<BottomLink />}
         hasThirdPartyLogin
       >

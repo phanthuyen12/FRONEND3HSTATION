@@ -102,7 +102,7 @@ const LandingRegisterPage = () => {
             </div>
             <h2 className="text-xl font-black text-white uppercase tracking-tight">Đăng ký tài khoản</h2>
             <p className="text-[13px] font-medium text-gray-400">
-              Tạo tài khoản mới để bắt đầu học tập trên 3HSTATION.
+              Tạo tài khoản mới để bắt đầu học tập trên AETRADING.
             </p>
           </div>
 
@@ -246,7 +246,7 @@ const LandingRegisterPage = () => {
         </div>
 
         <div className="mt-8 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest opacity-60">
-          3HSTATION © 2026 – Tài khoản mới mặc định BASIC
+          AETRADING © 2026 – Tài khoản mới mặc định BASIC
         </div>
       </div>
     </HostingLayout>

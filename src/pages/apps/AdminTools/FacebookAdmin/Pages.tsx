@@ -5,6 +5,7 @@ import axios from 'axios';
 
 interface FbPage {
   id: string;
+  pageId: string;
   pageName: string;
   status: string; // 'connected' | 'disconnected'
 }
@@ -47,6 +48,21 @@ const FacebookPages: React.FC = () => {
     }
   };
 
+  const handleDisconnect = async (pageId: string) => {
+    if (window.confirm('Bạn có chắc muốn hủy kết nối page này?')) {
+      try {
+        await axios.delete(`/api/admin/facebook/pages/${pageId}`);
+        alert('Đã hủy kết nối thành công');
+        // Refresh list after disconnection
+        const refreshed = await axios.get('/api/admin/facebook/pages');
+        setPages(refreshed.data);
+      } catch (err) {
+        console.error('Disconnect error', err);
+        alert('Hủy kết nối thất bại');
+      }
+    }
+  };
+
   if (loading) return <div>Loading Facebook pages…</div>;
 
   return (
@@ -77,7 +93,17 @@ const FacebookPages: React.FC = () => {
                       Connect
                     </button>
                   )}
-                  {p.status === 'connected' && <span style={{ color: 'green' }}>Connected</span>}
+                  {p.status === 'connected' && (
+                    <div style={{ display: 'inline-flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <span style={{ color: 'green' }}>Connected</span>
+                      <button
+                        onClick={() => handleDisconnect(p.pageId)}
+                        style={{ padding: '0.4rem 0.8rem', background: '#dc3545', color: '#fff', border: 'none', borderRadius: '0.3rem', cursor: 'pointer' }}
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

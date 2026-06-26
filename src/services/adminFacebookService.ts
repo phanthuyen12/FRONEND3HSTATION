@@ -70,6 +70,12 @@ class AdminFacebookService {
     });
   }
 
+  async disconnectPage(pageId: string) {
+    return await this.request<any>(`${this.api}/api/admin/facebook/pages/${pageId}`, {
+      method: "DELETE",
+    });
+  }
+
   async getPosts(pageId: string, query?: string) {
     return await this.request<any[]>(`${this.api}/api/admin/facebook/pages/${pageId}/posts${query ? query : ''}`);
   }
