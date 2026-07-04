@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { elearningService, authService } from "../../config";
-import { Course, CourseVideo } from "../../services/elearningService";
+import { Course, CourseVideo, LearningDashboard } from "../../services/elearningService";
 import { 
   BookOpen, 
   Search, 
@@ -48,6 +48,10 @@ interface HomeBannerItem extends CourseVideo {
   courseLevel?: Course["level"];
   coursePrice?: Course["price"];
   courseThumbnail?: string | null;
+  progress?: number;
+  totalLessons?: number;
+  completedLessons?: number;
+  updatedAt?: string | null;
 }
 
 const Home: React.FC = () => {
@@ -55,6 +59,7 @@ const Home: React.FC = () => {
   const [bannerVideos, setBannerVideos] = useState<HomeBannerItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [learningDashboard, setLearningDashboard] = useState<LearningDashboard | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -63,9 +68,14 @@ const Home: React.FC = () => {
         const localUser = authService.getUser();
         setUserProfile(localUser);
 
-        const data = await elearningService.getClientCourses({ limit: 12 });
+        const [data, dashboard, profile] = await Promise.all([
+          elearningService.getClientCourses({ limit: 12 }),
+          authService.isAuthenticated() ? elearningService.getLearningDashboard().catch(() => null) : Promise.resolve(null),
+          authService.isAuthenticated() ? authService.getProfile().catch(() => null) : Promise.resolve(null),
+        ]);
         const courseItems = data.data || [];
         setCourses(courseItems);
+        setLearningDashboard(dashboard);
 
         const bannerGroups = await Promise.all(
           courseItems.map(async (course) => {
@@ -89,8 +99,7 @@ const Home: React.FC = () => {
 
         setBannerVideos(bannerGroups.flat());
 
-        if (authService.isAuthenticated()) {
-          const profile = await authService.getProfile();
+        if (profile) {
           setUserProfile(profile);
         }
       } catch (error) {
@@ -120,9 +129,86 @@ const Home: React.FC = () => {
     [bannerVideos, courses]
   );
 
-  const continueLearning = homeItems.slice(0, 3);
-  const recommended = homeItems.slice(3, 6);
-  const recentEnrolled = homeItems.slice(6, 8);
+  const continueLearning = useMemo<HomeBannerItem[]>(
+    () => {
+      if (learningDashboard?.continueLearning?.length) {
+        return learningDashboard.continueLearning.map((item) => ({
+          course_id: Number(item.courseId) || 0,
+          courseId: item.courseId,
+          courseTitle: item.category || item.title,
+          title: item.title,
+          url: "",
+          img_banner: item.thumbnail || null,
+          courseThumbnail: item.thumbnail || null,
+          coursePrice: item.price,
+          progress: item.progress,
+          totalLessons: item.totalLessons,
+          completedLessons: item.completedLessons,
+          updatedAt: item.updatedAt || item.lastWatchedAt || null,
+        }));
+      }
+
+      return homeItems;
+    },
+    [homeItems, learningDashboard]
+  );
+
+  const recommended = useMemo<HomeBannerItem[]>(
+    () => {
+      if (learningDashboard?.recommendedCourses?.length) {
+        return learningDashboard.recommendedCourses.map((item) => ({
+          course_id: Number(item.courseId) || 0,
+          courseId: item.courseId,
+          courseTitle: item.category || item.title,
+          title: item.title,
+          url: "",
+          img_banner: item.thumbnail || null,
+          courseThumbnail: item.thumbnail || null,
+          coursePrice: item.price,
+          progress: item.progress,
+          totalLessons: item.totalLessons,
+          completedLessons: item.completedLessons,
+          updatedAt: item.updatedAt || item.lastWatchedAt || null,
+        }));
+      }
+
+      return homeItems;
+    },
+    [homeItems, learningDashboard]
+  );
+
+  const recentEnrolled = useMemo<HomeBannerItem[]>(
+    () => {
+      if (learningDashboard?.recentEnrolled?.length) {
+        return learningDashboard.recentEnrolled.map((item) => ({
+          course_id: Number(item.courseId) || 0,
+          courseId: item.courseId,
+          courseTitle: item.category || item.title,
+          title: item.title,
+          url: "",
+          img_banner: item.thumbnail || null,
+          courseThumbnail: item.thumbnail || null,
+          coursePrice: item.price,
+          progress: item.progress,
+          totalLessons: item.totalLessons,
+          completedLessons: item.completedLessons,
+          updatedAt: item.updatedAt || item.lastWatchedAt || null,
+        }));
+      }
+
+      return homeItems;
+    },
+    [homeItems, learningDashboard]
+  );
+
+  const learningStats = learningDashboard?.stats || {
+    allowedCourses: 0,
+    registeredCourses: 0,
+    inProgressCourses: 0,
+    completedCourses: 0,
+    progressRate: 0,
+    averageProgress: 0,
+  };
 
   return (
     <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
@@ -233,10 +319,13 @@ const Home: React.FC = () => {
               <div className="flex items-center gap-2">
                 <BookOpen className="text-slate-400" size={20} />
                 <h2 className="text-lg font-bold text-slate-900">Continue Learning</h2>
+                <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                  {continueLearning.length}
+                </span>
               </div>
-              <button className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
+              <Link to="/my-courses" className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
                 View All <ChevronRight size={14} />
-              </button>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -244,7 +333,7 @@ const Home: React.FC = () => {
                 <div key={item.id || `${item.courseId}-continue-${index}`} className="bg-white p-5 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex gap-4">
-                      <div className="w-14 h-14 bg-blue-50 rounded-[1.25rem] flex items-center justify-center text-2xl shadow-inner group-hover:scale-110 transition-transform">
+                        <div className="w-14 h-14 bg-blue-50 rounded-[1.25rem] flex items-center justify-center text-2xl shadow-inner group-hover:scale-110 transition-transform">
                         {item.img_banner ? <img src={item.img_banner} className="w-full h-full object-cover rounded-[1.25rem]" alt={item.title} /> : "🎨"}
                       </div>
                       <div>
@@ -258,15 +347,15 @@ const Home: React.FC = () => {
                   <div className="space-y-3 mb-6">
                      <div className="flex items-center justify-between text-[11px] font-bold">
                         <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden mr-3">
-                           <div className="h-full bg-teal-500 rounded-full" style={{ width: '55%' }} />
+                           <div className="h-full bg-teal-500 rounded-full" style={{ width: `${Math.max(0, Math.min(100, Number(item.progress || 0)))}%` }} />
                         </div>
-                        <span className="text-slate-900 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">55%</span>
+                        <span className="text-slate-900 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">{Math.round(Number(item.progress || 0))}%</span>
                      </div>
                   </div>
 
                   <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-4 border-t border-slate-50">
-                    <div className="flex items-center gap-1.5"><Calendar size={12} /> 18/40 Lessons</div>
-                    <div className="flex items-center gap-1.5"><Clock size={12} /> 2 hours left</div>
+                    <div className="flex items-center gap-1.5"><Calendar size={12} /> {Number(item.completedLessons || 0)}/{Number(item.totalLessons || 0)} Lessons</div>
+                    <div className="flex items-center gap-1.5"><Clock size={12} /> {Math.max(Number(item.totalLessons || 0) - Number(item.completedLessons || 0), 0)} videos left</div>
                   </div>
                   
                   <div className="mt-5">
@@ -285,6 +374,9 @@ const Home: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Rocket className="text-slate-400" size={20} />
                 <h2 className="text-lg font-bold text-slate-900">Recommended Courses</h2>
+                <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                  {recommended.length}
+                </span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="relative hidden md:block">
@@ -292,9 +384,9 @@ const Home: React.FC = () => {
                   <input type="text" placeholder="Search courses" className="bg-white border border-slate-100 rounded-xl pl-9 pr-10 py-1.5 text-xs w-48 outline-none" />
                   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-300 font-bold border border-slate-100 rounded px-1 flex items-center leading-none h-4">⌘ F</span>
                 </div>
-                <button className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
+                <Link to="/landing-courses" className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
                   View All <ChevronRight size={14} />
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -332,11 +424,11 @@ const Home: React.FC = () => {
              <div className="flex items-center justify-between mb-6">
                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                  <Sparkles className="text-slate-400" size={20} />
-                 Recent Enrolled Course <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[10px] font-bold">24</span>
+                 Recent Enrolled Course <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[10px] font-bold">{recentEnrolled.length}</span>
                </h2>
-               <button className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
+               <Link to="/my-courses" className="text-xs font-bold text-slate-400 hover:text-teal-600 flex items-center gap-1 transition-all">
                 View All <ChevronRight size={14} />
-              </button>
+              </Link>
              </div>
 
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -358,20 +450,20 @@ const Home: React.FC = () => {
                            
                            <div className="flex items-center gap-4 mb-6">
                               <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                                 <div className="h-full bg-teal-500 rounded-full" style={{ width: '55%' }} />
+                                 <div className="h-full bg-teal-500 rounded-full" style={{ width: `${Math.max(0, Math.min(100, Number(item.progress || 0)))}%` }} />
                               </div>
-                              <span className="text-[10px] font-bold text-slate-900 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">55%</span>
+                              <span className="text-[10px] font-bold text-slate-900 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">{Math.round(Number(item.progress || 0))}%</span>
                            </div>
                          </div>
 
                          <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-50">
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                <Calendar size={12} className="text-teal-500" />
-                               <span>18/40 Lessons</span>
+                               <span>{Number(item.completedLessons || 0)}/{Number(item.totalLessons || 0)} Lessons</span>
                             </div>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                <Clock size={12} className="text-teal-500" />
-                               <span>2 hours left</span>
+                               <span>{Math.max(Number(item.totalLessons || 0) - Number(item.completedLessons || 0), 0)} videos left</span>
                             </div>
                          </div>
 
@@ -408,7 +500,7 @@ const Home: React.FC = () => {
             <p className="text-xs text-slate-400 font-medium mb-6 uppercase tracking-wider">UI/UX Designer & Developer</p>
             <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-600 px-4 py-1.5 rounded-full border border-amber-100">
                <Trophy size={14} />
-               <span className="font-extrabold text-xs">921 <span className="font-medium text-amber-400">Points</span></span>
+               <span className="font-extrabold text-xs">{userProfile?.rank?.name || learningDashboard?.account?.rank?.name || "Member"} <span className="font-medium text-amber-400">Rank</span></span>
             </div>
          </div>
 
@@ -416,18 +508,18 @@ const Home: React.FC = () => {
          <div className="grid grid-cols-3 gap-2 mb-10">
             <div className="bg-orange-50/50 p-2 rounded-2xl border border-orange-100/30 text-center">
                <Flame className="text-orange-500 mx-auto mb-1" size={16} />
-               <p className="text-[14px] font-extrabold text-slate-900 leading-none">62</p>
-               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">Days Streak</p>
+               <p className="text-[14px] font-extrabold text-slate-900 leading-none">{learningStats.registeredCourses}</p>
+               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">Registered</p>
             </div>
             <div className="bg-blue-50/50 p-2 rounded-2xl border border-blue-100/30 text-center">
-               <Target className="text-blue-500 mx-auto mb-1" size={16} />
-               <p className="text-[14px] font-extrabold text-slate-900 leading-none">06</p>
-               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">Goals Month</p>
+              <Target className="text-blue-500 mx-auto mb-1" size={16} />
+               <p className="text-[14px] font-extrabold text-slate-900 leading-none">{learningStats.averageProgress}%</p>
+               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">Avg Progress</p>
             </div>
             <div className="bg-amber-50/50 p-2 rounded-2xl border border-amber-100/30 text-center">
                <Trophy className="text-amber-500 mx-auto mb-1" size={16} />
-               <p className="text-[14px] font-extrabold text-slate-900 leading-none">03</p>
-               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">2nd Place</p>
+               <p className="text-[14px] font-extrabold text-slate-900 leading-none">{learningStats.completedCourses}</p>
+               <p className="text-[8px] font-bold text-slate-400 uppercase leading-none mt-1">Completed</p>
             </div>
          </div>
 
@@ -464,12 +556,12 @@ const Home: React.FC = () => {
          <div className="grid grid-cols-2 gap-4 mb-10">
             <div className="bg-orange-50 p-4 rounded-[2rem] border border-orange-100 space-y-2 group hover:shadow-lg transition-all">
                <div className="p-2 bg-white rounded-xl w-fit shadow-sm group-hover:scale-110 transition-transform"><BookOpen size={16} className="text-orange-500" /></div>
-               <p className="text-lg font-black text-slate-900 leading-none">3 Courses</p>
+               <p className="text-lg font-black text-slate-900 leading-none">{learningStats.inProgressCourses} Courses</p>
                <p className="text-[10px] font-bold text-orange-600/70 uppercase leading-none">In Progress</p>
             </div>
             <div className="bg-teal-50 p-4 rounded-[2rem] border border-teal-100 space-y-2 group hover:shadow-lg transition-all">
                <div className="p-2 bg-white rounded-xl w-fit shadow-sm group-hover:scale-110 transition-transform"><CheckCircle size={16} className="text-teal-500" /></div>
-               <p className="text-lg font-black text-slate-900 leading-none">13 Courses</p>
+               <p className="text-lg font-black text-slate-900 leading-none">{learningStats.completedCourses} Courses</p>
                <p className="text-[10px] font-bold text-teal-600/70 uppercase leading-none">Completed</p>
             </div>
          </div>

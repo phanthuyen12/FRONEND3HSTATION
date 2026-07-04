@@ -4,8 +4,8 @@ import FeatherIcon from 'feather-icons-react';
 import parse from 'html-react-parser';
 import HostingLayout from '../layouts/HostingLayout';
 import { elearningService } from '../../../config';
-import { Course, CourseSection, CourseVideo } from '../../../services/elearningService';
-import Plyr from "plyr-react";
+import { Course, CourseProgressSummary, CourseSection, CourseVideo } from '../../../services/elearningService';
+import Plyr, { APITypes } from "plyr-react";
 import "plyr-react/plyr.css";
 
 const LESSON_PREVIEW_LIMIT = 6;
@@ -15,6 +15,14 @@ type CurriculumSectionEntry = {
     title: string;
     duration?: string | null;
     videos: CourseVideo[];
+};
+
+type CourseProgressState = {
+    totalLessons: number;
+    completedLessons: number;
+    completionPercent: number;
+    lastWatchedAt?: string | null;
+    completedAt?: string | null;
 };
 
 const decodeHtml = (html: string) => {
@@ -81,6 +89,41 @@ const getVideoThumbnail = (video: CourseVideo, courseThumbnail?: string | null) 
     }
 
     return courseThumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200';
+};
+
+const buildCourseProgressState = (
+    videosCount: number,
+    summary?: CourseProgressSummary | null
+): CourseProgressState => ({
+    totalLessons: Number(summary?.totalLessons || videosCount || 0),
+    completedLessons: Number(summary?.completedLessons || 0),
+    completionPercent: Number(summary?.completionPercent ?? summary?.progress ?? 0),
+    lastWatchedAt: summary?.lastWatchedAt || null,
+    completedAt: summary?.completedAt || null,
+});
+
+const formatProgressDate = (value?: string | null) => {
+    if (!value) return 'Chưa có hoạt động';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return 'Chưa có hoạt động';
+    }
+
+    return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+};
+
+const getReadyPlyr = (playerRef: React.RefObject<APITypes | null>) => {
+    const player = playerRef.current?.plyr;
+    if (!player || typeof player.on !== 'function' || typeof player.off !== 'function') {
+        return null;
+    }
+
+    return player;
 };
 
 const CourseCurriculum = ({
@@ -261,7 +304,16 @@ const CourseDetailPage = () => {
     const [accessDenied, setAccessDenied] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
+    const [courseProgress, setCourseProgress] = useState<CourseProgressState>({
+        totalLessons: 0,
+        completedLessons: 0,
+        completionPercent: 0,
+        lastWatchedAt: null,
+        completedAt: null,
+    });
     const playerRef = useRef<HTMLDivElement | null>(null);
+    const videoPlayerRef = useRef<APITypes | null>(null);
+    const lastSyncedSecondRef = useRef<Record<string, number>>({});
 
     const courseOverview = useMemo(() => {
         const primary = currentCourseContent(course);
@@ -273,6 +325,14 @@ const CourseDetailPage = () => {
         () => videos.filter((video) => Boolean(video.preview)).length,
         [videos]
     );
+    const isEnrolled = course?.can_view_full !== false;
+    const normalizedCompletionPercent = Math.min(100, Math.max(0, Number(courseProgress.completionPercent || 0)));
+    const remainingLessons = Math.max(0, Number(courseProgress.totalLessons || 0) - Number(courseProgress.completedLessons || 0));
+    const progressStatus = normalizedCompletionPercent >= 100
+        ? 'Đã hoàn thành'
+        : normalizedCompletionPercent > 0
+            ? 'Đang học'
+            : 'Chưa bắt đầu';
 
     const curriculumSections = useMemo<CurriculumSectionEntry[]>(() => {
         const sortedVideos = [...videos].sort((left, right) => Number(left.order || 0) - Number(right.order || 0));
@@ -314,16 +374,35 @@ const CourseDetailPage = () => {
         try {
             setLoading(true);
             setAccessDenied(false);
-            const [courseData, sectionsData, videosData] = await Promise.all([
+            setCourseProgress({
+                totalLessons: 0,
+                completedLessons: 0,
+                completionPercent: 0,
+                lastWatchedAt: null,
+                completedAt: null,
+            });
+            lastSyncedSecondRef.current = {};
+
+            const [courseData, sectionsData, videosData, dashboard] = await Promise.all([
                 elearningService.getClientCourse(id),
                 elearningService.getClientCourseSections(id),
                 elearningService.getClientCourseVideos(id),
+                elearningService.getLearningDashboard().catch(() => null),
             ]);
 
             setCourse(courseData);
             setSections(sectionsData || []);
             setVideos(videosData || []);
             setExpandedSections([]);
+
+            const dashboardCourses = [
+                ...(dashboard?.enrolledCourses || []),
+                ...(dashboard?.accessibleCourses || []),
+            ];
+            const matchedCourseProgress = dashboardCourses.find(
+                (item) => String(item.courseId) === String(id) || String(item.id) === String(id)
+            );
+            setCourseProgress(buildCourseProgressState((videosData || []).length, matchedCourseProgress));
 
             if (videosData && videosData.length > 0) {
                 const firstVideo = videosData.find(v => v.preview) || videosData[0];
@@ -366,6 +445,128 @@ const CourseDetailPage = () => {
         );
     };
 
+    const syncCurrentVideoProgress = async ({ completed = false, force = false } = {}) => {
+        if (!id || !selectedVideo?.id || !isEnrolled) {
+            return;
+        }
+
+        const player = getReadyPlyr(videoPlayerRef);
+        if (!player) {
+            return;
+        }
+
+        const durationSeconds = Math.max(0, Math.floor(Number(player.duration || 0)));
+        const watchedSeconds = durationSeconds > 0
+            ? Math.min(durationSeconds, Math.max(0, Math.floor(Number(player.currentTime || 0))))
+            : Math.max(0, Math.floor(Number(player.currentTime || 0)));
+        const progressPercent = durationSeconds > 0 ? (watchedSeconds / durationSeconds) * 100 : 0;
+        const videoKey = String(selectedVideo.id);
+
+        if (!force && !completed) {
+            const lastSyncedSecond = lastSyncedSecondRef.current[videoKey] || 0;
+            if (watchedSeconds === lastSyncedSecond) {
+                return;
+            }
+            if (watchedSeconds > 0 && watchedSeconds - lastSyncedSecond < 15) {
+                return;
+            }
+        }
+
+        lastSyncedSecondRef.current[videoKey] = watchedSeconds;
+
+        const response = await elearningService.updateVideoProgress(id, selectedVideo.id, {
+            watchedSeconds,
+            durationSeconds,
+            lastPositionSeconds: watchedSeconds,
+            progressPercent,
+            completed,
+        });
+
+        if (response?.courseProgress) {
+            setCourseProgress((prev) => ({
+                totalLessons: Number(response.courseProgress.totalLessons || prev.totalLessons || videos.length || 0),
+                completedLessons: Number(response.courseProgress.completedLessons || 0),
+                completionPercent: Number(response.courseProgress.completionPercent || 0),
+                lastWatchedAt: response.progress?.lastWatchedAt || prev.lastWatchedAt || new Date().toISOString(),
+                completedAt: response.progress?.completedAt || (Number(response.courseProgress.completionPercent || 0) >= 100 ? new Date().toISOString() : prev.completedAt || null),
+            }));
+        }
+    };
+
+    useEffect(() => {
+        if (!selectedVideo?.id || !isEnrolled) {
+            return undefined;
+        }
+
+        let attachedPlayer: APITypes['plyr'] | null = null;
+        let bootstrapTimerId: number | null = null;
+        let heartbeatTimerId: number | null = null;
+
+        const attachListeners = (player: APITypes['plyr']) => {
+            attachedPlayer = player;
+
+            const handlePause = () => {
+                void syncCurrentVideoProgress();
+            };
+
+            const handleTimeUpdate = () => {
+                void syncCurrentVideoProgress();
+            };
+
+            const handleEnded = () => {
+                void syncCurrentVideoProgress({ completed: true, force: true });
+            };
+
+            player.on('pause', handlePause);
+            player.on('timeupdate', handleTimeUpdate);
+            player.on('ended', handleEnded);
+
+            // YouTube provider can initialize later and emit fewer progress events,
+            // so keep a lightweight heartbeat sync while the lesson is open.
+            heartbeatTimerId = window.setInterval(() => {
+                void syncCurrentVideoProgress();
+            }, 15000);
+
+            return () => {
+                if (heartbeatTimerId) {
+                    window.clearInterval(heartbeatTimerId);
+                }
+                player.off('pause', handlePause);
+                player.off('timeupdate', handleTimeUpdate);
+                player.off('ended', handleEnded);
+            };
+        };
+
+        let detachListeners = () => {};
+
+        const tryAttach = () => {
+            const player = getReadyPlyr(videoPlayerRef);
+            if (!player || player === attachedPlayer) {
+                return false;
+            }
+
+            detachListeners();
+            detachListeners = attachListeners(player);
+            return true;
+        };
+
+        if (!tryAttach()) {
+            bootstrapTimerId = window.setInterval(() => {
+                if (tryAttach() && bootstrapTimerId) {
+                    window.clearInterval(bootstrapTimerId);
+                    bootstrapTimerId = null;
+                }
+            }, 400);
+        }
+
+        return () => {
+            if (bootstrapTimerId) {
+                window.clearInterval(bootstrapTimerId);
+            }
+            detachListeners();
+        };
+    }, [selectedVideo?.id, isEnrolled, id]);
+
     if (loading) {
         return (
             <HostingLayout>
@@ -381,7 +582,6 @@ const CourseDetailPage = () => {
 
     if (!course && !accessDenied) return null;
     const currentCourse = course as Course;
-    const isEnrolled = currentCourse?.can_view_full !== false;
     const selectedVideoBanner = selectedVideo
         ? getVideoThumbnail(selectedVideo, currentCourse.thumbnail || currentCourse.thumbnail_url)
         : (currentCourse.thumbnail || currentCourse.thumbnail_url || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200');
@@ -442,6 +642,7 @@ const CourseDetailPage = () => {
                                 <div className="aspect-video w-full" key={selectedVideo?.id}>
                                     {selectedVideo ? (
                                         <Plyr
+                                            ref={videoPlayerRef}
                                             source={{
                                                 type: "video",
                                                 sources: [{ src: selectedVideo.url, provider: getVideoProvider(selectedVideo.url) }],
@@ -470,6 +671,59 @@ const CourseDetailPage = () => {
                                     <div className="rounded-[10px] border border-emerald-400/10 bg-emerald-500/5 px-5 py-4 text-sm text-emerald-200">
                                         Tất cả bài học đã được mở cho tài khoản của bạn.
                                     </div>
+                                </div>
+
+                                <div className="mt-6 rounded-[10px] border border-white/[0.05] bg-[#0a100f] p-5">
+                                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                        <div>
+                                            <p className="text-[11px] font-black uppercase tracking-[2px] text-gray-400">
+                                                Tiến độ khóa học
+                                            </p>
+                                            <div className="mt-2 flex items-end gap-3">
+                                                <span className="text-3xl font-black text-white">
+                                                    {normalizedCompletionPercent}%
+                                                </span>
+                                                <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[2px] ${
+                                                    normalizedCompletionPercent >= 100
+                                                        ? 'bg-emerald-500/15 text-emerald-300'
+                                                        : normalizedCompletionPercent > 0
+                                                            ? 'bg-[#FBBF24]/15 text-[#FBBF24]'
+                                                            : 'bg-white/5 text-gray-300'
+                                                }`}>
+                                                    {progressStatus}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-[520px]">
+                                            <div className="rounded-[10px] border border-white/[0.05] bg-white/[0.02] px-4 py-3">
+                                                <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Đã hoàn thành</p>
+                                                <p className="mt-2 text-xl font-black text-white">
+                                                    {courseProgress.completedLessons}/{courseProgress.totalLessons}
+                                                </p>
+                                            </div>
+                                            <div className="rounded-[10px] border border-white/[0.05] bg-white/[0.02] px-4 py-3">
+                                                <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Còn lại</p>
+                                                <p className="mt-2 text-xl font-black text-white">{remainingLessons} bài</p>
+                                            </div>
+                                            <div className="rounded-[10px] border border-white/[0.05] bg-white/[0.02] px-4 py-3">
+                                                <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-500">Hoạt động gần nhất</p>
+                                                <p className="mt-2 text-sm font-bold text-white">
+                                                    {formatProgressDate(courseProgress.lastWatchedAt)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/[0.05]">
+                                        <div
+                                            className="h-full rounded-full bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-emerald-400 transition-all duration-500"
+                                            style={{ width: `${normalizedCompletionPercent}%` }}
+                                        />
+                                    </div>
+                                    <p className="mt-3 text-sm text-gray-400">
+                                        Hoàn thành đủ 100% video của khóa để hệ thống ghi nhận đã hoàn tất khóa học.
+                                    </p>
                                 </div>
                             </div>
 

@@ -32,6 +32,64 @@ export interface Course {
   updatedAt?: string;
   can_view_full?: boolean;
   is_locked?: boolean;
+  progress?: number;
+  completion_percent?: number;
+  completed_lessons?: number;
+  total_lessons?: number;
+}
+
+export interface CourseProgressSummary {
+  id: string;
+  courseId: string;
+  title: string;
+  thumbnail?: string;
+  price?: string;
+  category?: string;
+  progress: number;
+  completionPercent: number;
+  totalLessons: number;
+  completedLessons: number;
+  remainingLessons: number;
+  completedAt?: string | null;
+  lastWatchedAt?: string | null;
+  updatedAt?: string | null;
+}
+
+export interface LearningDashboard {
+  account?: {
+    id: string;
+    name: string;
+    email: string;
+    rank?: {
+      id: string;
+      code: string;
+      name: string;
+      description?: string | null;
+      status?: string | null;
+    } | null;
+  };
+  stats: {
+    allowedCourses: number;
+    registeredCourses: number;
+    inProgressCourses: number;
+    completedCourses: number;
+    progressRate: number;
+    averageProgress: number;
+  };
+  accessibleCourses: CourseProgressSummary[];
+  enrolledCourses: CourseProgressSummary[];
+  continueLearning: CourseProgressSummary[];
+  recommendedCourses: CourseProgressSummary[];
+  recentEnrolled: CourseProgressSummary[];
+  progress?: Array<{
+    course_id: number;
+    total_lessons: number;
+    completed_lessons: number;
+    completion_percent: number;
+    last_completed_at?: string | null;
+    last_watched_at?: string | null;
+    last_progress_at?: string | null;
+  }>;
 }
 
 // API Payload interface - matches backend validation
@@ -631,6 +689,106 @@ class ElearningService {
     } catch (error: any) {
       console.error('Enroll course error:', error);
       throw error;
+    }
+  }
+
+  async updateVideoProgress(
+    courseId: string | number,
+    videoId: string | number,
+    payload: {
+      watchedSeconds?: number;
+      durationSeconds?: number;
+      lastPositionSeconds?: number;
+      progressPercent?: number;
+      completed?: boolean;
+    }
+  ): Promise<{
+    progress: {
+      videoId: string;
+      courseId: string;
+      watchedSeconds: number;
+      durationSeconds: number;
+      lastPositionSeconds: number;
+      progressPercent: number;
+      completed: boolean;
+      completedAt?: string | null;
+      lastWatchedAt?: string | null;
+    };
+    courseProgress: {
+      courseId: string;
+      totalLessons: number;
+      completedLessons: number;
+      completionPercent: number;
+    };
+  } | null> {
+    try {
+      const token = this.getAuthToken();
+      if (!token) {
+        return null;
+      }
+
+      const url = `${this.api}/api/client/elearning/courses/${courseId}/videos/${videoId}/progress`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || 'Không thể cập nhật tiến độ video');
+      }
+
+      if (data.success && data.data?.data) {
+        return data.data.data;
+      }
+
+      if (data.success && data.data) {
+        return data.data;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Update video progress error:', error);
+      return null;
+    }
+  }
+
+  async getLearningDashboard(): Promise<LearningDashboard | null> {
+    try {
+      const token = this.getAuthToken();
+      if (!token) {
+        return null;
+      }
+
+      const url = `${this.api}/api/client/elearning/me/dashboard`;
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || 'Không thể tải dashboard học tập');
+      }
+
+      if (data.success && data.data?.data) {
+        return data.data.data as LearningDashboard;
+      }
+
+      if (data.success && data.data) {
+        return data.data as LearningDashboard;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Get learning dashboard error:', error);
+      return null;
     }
   }
 

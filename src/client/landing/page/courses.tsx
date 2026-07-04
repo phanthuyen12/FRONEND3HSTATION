@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import HostingLayout from '../layouts/HostingLayout';
 import { authService, elearningService, userService } from '../../../config';
-import { Category, Course } from '../../../services/elearningService';
+import { Category, Course, LearningDashboard } from '../../../services/elearningService';
 
 const fmt = (n: any) => {
   if (n === 0 || n === '0' || n === 'Miễn phí') return 'Miễn phí';
@@ -220,6 +220,7 @@ const LandingCoursesPage = () => {
   const [userName, setUserName] = useState('Học viên');
   const [userRank, setUserRank] = useState('Chưa gán rank');
   const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [learningDashboard, setLearningDashboard] = useState<LearningDashboard | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [referralData, setReferralData] = useState<{
     refCode?: string | null;
@@ -268,17 +269,32 @@ const LandingCoursesPage = () => {
         return;
       }
 
-      const [profile, enrolledCourses, referrals] = await Promise.all([
+      const [profile, dashboard, enrolledCourses, referrals] = await Promise.all([
         authService.getProfile().catch(() => null),
+        elearningService.getLearningDashboard().catch(() => null),
         elearningService.getMyCourses().catch(() => []),
         userService.getMyReferrals({ limit: 5 }).catch(() => null),
       ]);
 
       const name = (profile as any)?.name || (profile as any)?.full_name || (profile as any)?.username || (profile as any)?.email;
       if (name) setUserName(String(name).split(' ')[0]);
-      const rankName = (profile as any)?.rank?.name || (profile as any)?.rank?.code || (profile as any)?.rankName || (profile as any)?.rank_name;
+      const rankName =
+        dashboard?.account?.rank?.name ||
+        dashboard?.account?.rank?.code ||
+        (profile as any)?.rank?.name ||
+        (profile as any)?.rank?.code ||
+        (profile as any)?.rankName ||
+        (profile as any)?.rank_name;
       if (rankName) setUserRank(String(rankName));
-      setMyCourses(Array.isArray(enrolledCourses) ? enrolledCourses : []);
+      setLearningDashboard(dashboard);
+      const dashboardCourses: any[] = Array.isArray(dashboard?.enrolledCourses) ? (dashboard?.enrolledCourses || []) : [];
+      setMyCourses(
+        dashboardCourses.length
+          ? dashboardCourses
+          : Array.isArray(enrolledCourses)
+            ? enrolledCourses
+            : []
+      );
       setReferralData({
         refCode: referrals?.refCode || null,
         refCount: Number(referrals?.refCount || 0),
@@ -315,7 +331,27 @@ const LandingCoursesPage = () => {
   };
 
   const userStats = useMemo(() => {
-    const learningCourses = myCourses.filter(item => getCourseProgress(item) < 100);
+    if (learningDashboard?.stats) {
+      return {
+        learningCount: Number(learningDashboard.stats.inProgressCourses || 0),
+        enrolledCount: Number(learningDashboard.stats.allowedCourses || learningDashboard.stats.registeredCourses || 0),
+        avgProgress: Number(learningDashboard.stats.averageProgress || 0),
+        certificateCount: Number(learningDashboard.stats.completedCourses || 0),
+        newThisWeek: myCourses.filter(item => (
+          isThisWeek(item?.created_at) ||
+          isThisWeek(item?.createdAt) ||
+          isThisWeek(item?.enrolled_at) ||
+          isThisWeek(item?.enrolledAt) ||
+          isThisWeek(item?.updated_at) ||
+          isThisWeek(item?.updatedAt)
+        )).length,
+      };
+    }
+
+    const learningCourses = myCourses.filter(item => {
+      const progress = getCourseProgress(item);
+      return progress > 0 && progress < 100;
+    });
     const completedCourses = myCourses.filter(hasCertificate);
     const progressValues = myCourses.map(getCourseProgress);
     const avgProgress = progressValues.length
@@ -343,12 +379,12 @@ const LandingCoursesPage = () => {
     {
       label: 'Đang học',
       value: userStats.learningCount,
-      note: userStats.newThisWeek > 0 ? `+${userStats.newThisWeek} khóa mới tuần này` : `${userStats.enrolledCount} khóa đã đăng ký`,
+      note: userStats.newThisWeek > 0 ? `+${userStats.newThisWeek} khóa mới tuần này` : `${userStats.enrolledCount} khóa được cấp`,
       icon: 'book-open',
       dot: userStats.newThisWeek > 0 ? 'bg-emerald-500' : 'bg-gray-500',
     },
     {
-      label: 'Khóa đã đăng ký',
+      label: 'Khóa được cấp',
       value: userStats.enrolledCount,
       note: userStats.avgProgress > 0 ? `${userStats.avgProgress}% tiến độ trung bình` : 'Bắt đầu khóa đầu tiên',
       icon: 'layers',
@@ -409,7 +445,7 @@ const LandingCoursesPage = () => {
                 <div className="grid gap-2">
                   <HeroMetric icon="book-open" value={String(userStats.learningCount)} label="khóa đang học" />
                   <HeroMetric icon="activity" value={`${userStats.avgProgress}%`} label="tiến độ trung bình" ring percent={userStats.avgProgress} />
-                  <HeroMetric icon="layers" value={String(userStats.enrolledCount)} label="khóa đã đăng ký" />
+                  <HeroMetric icon="layers" value={String(userStats.enrolledCount)} label="khóa được cấp" />
                 </div>
               </div>
             </div>

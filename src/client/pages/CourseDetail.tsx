@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Plyr from "plyr-react";
+import Plyr, { APITypes } from "plyr-react";
 import "plyr-react/plyr.css";
 
 import { PageBreadcrumb } from "../../components";
@@ -16,6 +16,15 @@ interface CourseLesson {
   isPreview?: boolean;
 }
 
+const getReadyPlyr = (playerRef: React.RefObject<APITypes | null>) => {
+  const player = playerRef.current?.plyr;
+  if (!player || typeof player.on !== 'function' || typeof player.off !== 'function') {
+    return null;
+  }
+
+  return player;
+};
+
 const CourseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -24,6 +33,8 @@ const CourseDetail: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [accessDenied, setAccessDenied] = useState<boolean>(false);
   const [selectedVideo, setSelectedVideo] = useState<CourseVideo | null>(null);
+  const playerRef = useRef<APITypes | null>(null);
+  const lastSyncedSecondRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     if (!id) return;
@@ -68,6 +79,116 @@ const CourseDetail: React.FC = () => {
   const currentVideo = selectedVideo || videos[0];
   const canViewFull = course?.can_view_full !== false;
   const currentBanner = currentVideo?.imgBanner || currentVideo?.img_banner || course?.thumbnail || course?.thumbnail_url;
+
+  const syncCurrentVideoProgress = async ({ completed = false, force = false } = {}) => {
+    if (!id || !selectedVideo?.id || !canViewFull) {
+      return;
+    }
+
+    const player = getReadyPlyr(playerRef);
+    if (!player) {
+      return;
+    }
+
+    const durationSeconds = Math.max(0, Math.floor(Number(player.duration || 0)));
+    const watchedSeconds = durationSeconds > 0
+      ? Math.min(durationSeconds, Math.max(0, Math.floor(Number(player.currentTime || 0))))
+      : Math.max(0, Math.floor(Number(player.currentTime || 0)));
+    const progressPercent = durationSeconds > 0 ? (watchedSeconds / durationSeconds) * 100 : 0;
+    const videoKey = String(selectedVideo.id);
+
+    if (!force && !completed) {
+      const lastSyncedSecond = lastSyncedSecondRef.current[videoKey] || 0;
+      if (watchedSeconds === lastSyncedSecond) {
+        return;
+      }
+      if (watchedSeconds > 0 && watchedSeconds - lastSyncedSecond < 15) {
+        return;
+      }
+    }
+
+    lastSyncedSecondRef.current[videoKey] = watchedSeconds;
+
+    await elearningService.updateVideoProgress(id, selectedVideo.id, {
+      watchedSeconds,
+      durationSeconds,
+      lastPositionSeconds: watchedSeconds,
+      progressPercent,
+      completed,
+    });
+  };
+
+  useEffect(() => {
+    if (!selectedVideo?.id || !canViewFull) {
+      return undefined;
+    }
+
+    let attachedPlayer: APITypes["plyr"] | null = null;
+    let bootstrapTimerId: number | null = null;
+    let heartbeatTimerId: number | null = null;
+
+    const attachListeners = (player: APITypes["plyr"]) => {
+      attachedPlayer = player;
+
+      const handlePause = () => {
+        void syncCurrentVideoProgress();
+      };
+
+      const handleTimeUpdate = () => {
+        void syncCurrentVideoProgress();
+      };
+
+      const handleEnded = () => {
+        void syncCurrentVideoProgress({ completed: true, force: true });
+      };
+
+      player.on('pause', handlePause);
+      player.on('timeupdate', handleTimeUpdate);
+      player.on('ended', handleEnded);
+
+      heartbeatTimerId = window.setInterval(() => {
+        void syncCurrentVideoProgress();
+      }, 15000);
+
+      return () => {
+        if (heartbeatTimerId) {
+          window.clearInterval(heartbeatTimerId);
+        }
+        player.off('pause', handlePause);
+        player.off('timeupdate', handleTimeUpdate);
+        player.off('ended', handleEnded);
+      };
+    };
+
+    let detachListeners = () => {};
+
+    const tryAttach = () => {
+      const player = getReadyPlyr(playerRef);
+      if (!player || player === attachedPlayer) {
+        return false;
+      }
+
+      detachListeners();
+      detachListeners = attachListeners(player);
+      return true;
+    };
+
+    if (!tryAttach()) {
+      bootstrapTimerId = window.setInterval(() => {
+        if (tryAttach() && bootstrapTimerId) {
+          window.clearInterval(bootstrapTimerId);
+          bootstrapTimerId = null;
+        }
+      }, 400);
+    }
+
+    return () => {
+      if (bootstrapTimerId) {
+        window.clearInterval(bootstrapTimerId);
+      }
+      detachListeners();
+    };
+  }, [selectedVideo?.id, canViewFull, id]);
 
   if (loading) {
     return (
@@ -156,6 +277,7 @@ const CourseDetail: React.FC = () => {
               {currentVideo ? (
                 <div className="rounded-xl overflow-hidden">
                   <Plyr
+                    ref={playerRef}
                     source={{
                       type: "video",
                       sources: [
