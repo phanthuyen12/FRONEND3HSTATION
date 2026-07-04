@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import HostingLayout from '../layouts/HostingLayout';
 import { authService, elearningService, userService } from '../../../config';
-import { Category, Course } from '../../../services/elearningService';
+import { Category, Course, LearningDashboard } from '../../../services/elearningService';
 
 const fmt = (n: any) => {
   if (n === 0 || n === '0' || n === 'Miễn phí') return 'Miễn phí';
@@ -95,26 +95,29 @@ const HeroMetric = ({ icon, value, label, ring, percent = 0 }: { icon: string; v
   const deg = Math.round((Math.min(100, Math.max(0, percent)) / 100) * 360);
 
   return (
-    <div className="group flex items-center gap-5 rounded-[8px] border border-[#FBBF24]/18 bg-white/[0.035] px-5 py-4 shadow-[0_16px_42px_rgba(0,0,0,0.24)] transition-all hover:border-[#FBBF24]/42 hover:bg-white/[0.055]">
-      {ring ? (
-        <div
-          className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full p-[4px]"
-          style={{ background: `conic-gradient(#FBBF24 0deg ${deg}deg, rgba(255,255,255,0.12) ${deg}deg 360deg)` }}
-        >
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0b0f0d] text-sm font-black text-white">
-            {value}
+    <div className="group grid min-h-[108px] grid-cols-[60px_minmax(0,1fr)] items-center gap-4 rounded-[10px] border border-[#FBBF24]/18 bg-white/[0.035] px-4 py-4 shadow-[0_16px_42px_rgba(0,0,0,0.24)] transition-all hover:border-[#FBBF24]/42 hover:bg-white/[0.055] sm:px-5">
+      <div className="flex items-center justify-center">
+        {ring ? (
+          <div
+            className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full p-[4px]"
+            style={{ background: `conic-gradient(#FBBF24 0deg ${deg}deg, rgba(255,255,255,0.12) ${deg}deg 360deg)` }}
+          >
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0b0f0d] text-[13px] font-black text-white">
+              {value}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="flex h-[62px] w-[62px] shrink-0 items-center justify-center rounded-full border border-[#FBBF24]/45 bg-black/25 text-[#FBBF24]">
-          <FeatherIcon icon={icon} size={26} />
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <div className="text-2xl font-black leading-none text-white">{value}</div>
-        <div className="mt-2 text-sm font-medium text-gray-400">{label}</div>
+        ) : (
+          <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-[#FBBF24]/45 bg-black/25 text-[#FBBF24]">
+            <FeatherIcon icon={icon} size={24} />
+          </div>
+        )}
       </div>
-      <FeatherIcon icon="chevron-right" size={18} className="text-[#FBBF24]/70 transition-transform group-hover:translate-x-1" />
+      <div className="min-w-0 flex-1">
+        <div className="text-[28px] font-black leading-none text-white">{value}</div>
+        <div className="mt-2 max-w-[13ch] text-[13px] font-medium leading-[1.35] text-gray-400 sm:max-w-none sm:text-sm">
+          {label}
+        </div>
+      </div>
     </div>
   );
 };
@@ -220,6 +223,7 @@ const LandingCoursesPage = () => {
   const [userName, setUserName] = useState('Học viên');
   const [userRank, setUserRank] = useState('Chưa gán rank');
   const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [learningDashboard, setLearningDashboard] = useState<LearningDashboard | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [referralData, setReferralData] = useState<{
     refCode?: string | null;
@@ -268,17 +272,32 @@ const LandingCoursesPage = () => {
         return;
       }
 
-      const [profile, enrolledCourses, referrals] = await Promise.all([
+      const [profile, dashboard, enrolledCourses, referrals] = await Promise.all([
         authService.getProfile().catch(() => null),
+        elearningService.getLearningDashboard().catch(() => null),
         elearningService.getMyCourses().catch(() => []),
         userService.getMyReferrals({ limit: 5 }).catch(() => null),
       ]);
 
       const name = (profile as any)?.name || (profile as any)?.full_name || (profile as any)?.username || (profile as any)?.email;
       if (name) setUserName(String(name).split(' ')[0]);
-      const rankName = (profile as any)?.rank?.name || (profile as any)?.rank?.code || (profile as any)?.rankName || (profile as any)?.rank_name;
+      const rankName =
+        dashboard?.account?.rank?.name ||
+        dashboard?.account?.rank?.code ||
+        (profile as any)?.rank?.name ||
+        (profile as any)?.rank?.code ||
+        (profile as any)?.rankName ||
+        (profile as any)?.rank_name;
       if (rankName) setUserRank(String(rankName));
-      setMyCourses(Array.isArray(enrolledCourses) ? enrolledCourses : []);
+      setLearningDashboard(dashboard);
+      const dashboardCourses: any[] = Array.isArray(dashboard?.enrolledCourses) ? (dashboard?.enrolledCourses || []) : [];
+      setMyCourses(
+        dashboardCourses.length
+          ? dashboardCourses
+          : Array.isArray(enrolledCourses)
+            ? enrolledCourses
+            : []
+      );
       setReferralData({
         refCode: referrals?.refCode || null,
         refCount: Number(referrals?.refCount || 0),
@@ -315,7 +334,27 @@ const LandingCoursesPage = () => {
   };
 
   const userStats = useMemo(() => {
-    const learningCourses = myCourses.filter(item => getCourseProgress(item) < 100);
+    if (learningDashboard?.stats) {
+      return {
+        learningCount: Number(learningDashboard.stats.inProgressCourses || 0),
+        enrolledCount: Number(learningDashboard.stats.allowedCourses || learningDashboard.stats.registeredCourses || 0),
+        avgProgress: Number(learningDashboard.stats.averageProgress || 0),
+        certificateCount: Number(learningDashboard.stats.completedCourses || 0),
+        newThisWeek: myCourses.filter(item => (
+          isThisWeek(item?.created_at) ||
+          isThisWeek(item?.createdAt) ||
+          isThisWeek(item?.enrolled_at) ||
+          isThisWeek(item?.enrolledAt) ||
+          isThisWeek(item?.updated_at) ||
+          isThisWeek(item?.updatedAt)
+        )).length,
+      };
+    }
+
+    const learningCourses = myCourses.filter(item => {
+      const progress = getCourseProgress(item);
+      return progress > 0 && progress < 100;
+    });
     const completedCourses = myCourses.filter(hasCertificate);
     const progressValues = myCourses.map(getCourseProgress);
     const avgProgress = progressValues.length
@@ -343,12 +382,12 @@ const LandingCoursesPage = () => {
     {
       label: 'Đang học',
       value: userStats.learningCount,
-      note: userStats.newThisWeek > 0 ? `+${userStats.newThisWeek} khóa mới tuần này` : `${userStats.enrolledCount} khóa đã đăng ký`,
+      note: userStats.newThisWeek > 0 ? `+${userStats.newThisWeek} khóa mới tuần này` : `${userStats.enrolledCount} khóa được cấp`,
       icon: 'book-open',
       dot: userStats.newThisWeek > 0 ? 'bg-emerald-500' : 'bg-gray-500',
     },
     {
-      label: 'Khóa đã đăng ký',
+      label: 'Khóa được cấp',
       value: userStats.enrolledCount,
       note: userStats.avgProgress > 0 ? `${userStats.avgProgress}% tiến độ trung bình` : 'Bắt đầu khóa đầu tiên',
       icon: 'layers',
@@ -373,7 +412,7 @@ const LandingCoursesPage = () => {
               <div className="absolute -bottom-24 left-[42%] h-72 w-[560px] rotate-[-12deg] rounded-full border-t border-[#FBBF24]/35 blur-[1px]" />
               <div className="absolute -bottom-16 left-[48%] h-52 w-[420px] rotate-[-12deg] rounded-full border-t border-[#FBBF24]/45 blur-[1px]" />
 
-              <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
+              <div className="relative z-10 grid gap-8 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-center">
                 <div className="max-w-3xl">
                   <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-[#FBBF24]/55 bg-[#FBBF24]/10 px-4 py-2 text-[10px] font-black uppercase tracking-[2px] text-[#FBBF24]">
                     <FeatherIcon icon="grid" size={14} />
@@ -406,10 +445,10 @@ const LandingCoursesPage = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-2">
+                <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-1">
                   <HeroMetric icon="book-open" value={String(userStats.learningCount)} label="khóa đang học" />
                   <HeroMetric icon="activity" value={`${userStats.avgProgress}%`} label="tiến độ trung bình" ring percent={userStats.avgProgress} />
-                  <HeroMetric icon="layers" value={String(userStats.enrolledCount)} label="khóa đã đăng ký" />
+                  <HeroMetric icon="layers" value={String(userStats.enrolledCount)} label="khóa được cấp" />
                 </div>
               </div>
             </div>

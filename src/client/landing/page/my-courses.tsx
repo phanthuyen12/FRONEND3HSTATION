@@ -22,11 +22,11 @@ const MyCoursesPage = () => {
                     id: item.course_id || item.course?.id || item.id,
                     title: item.course?.title || item.title || 'Khóa học không tên',
                     thumbnail: item.course?.thumbnail_url || item.course?.thumbnail || item.thumbnail_url || item.thumbnail || null,
-                    lessons: item.course?.lessons || item.lessons || 0,
-                    progress: item.progress || Math.floor(Math.random() * 100),
-                    category: item.course?.category?.name || item.category || 'Học tập',
+                    lessons: item.total_lessons || item.course?.lessons || item.lessons || 0,
+                    progress: Number(item.progress ?? item.completion_percent ?? 0),
+                    category: item.course?.category_name || item.course?.category?.name || item.category_name || item.category || 'Học tập',
                     instructor: item.course?.instructor?.name || item.instructor || '3H Station',
-                    lastAccessed: item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'Vừa mới đây'
+                    lastAccessed: (item.last_watched_at || item.updated_at) ? new Date(item.last_watched_at || item.updated_at).toLocaleDateString() : 'Vừa mới đây'
                 }));
                 setCourses(items);
             } catch (error) {
