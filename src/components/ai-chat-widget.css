@@ -437,9 +437,32 @@
   padding: 10px 12px;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
-  white-space: pre-wrap;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.ai-chat-widget__bubble-text {
+  display: block;
+  white-space: normal;
+}
+
+.ai-chat-widget__bubble-media {
+  margin-top: 10px;
+}
+
+.ai-chat-widget__bubble-image {
+  display: block;
+  width: min(100%, 220px);
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 150, 16, 0.18);
+  background: #ffffff;
+}
+
+.ai-chat-widget__bubble-caption {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ai-chat-muted);
 }
 
 .ai-chat-widget__bubble--assistant {

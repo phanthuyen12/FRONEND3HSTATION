@@ -171,6 +171,11 @@ const chatWidgetService = {
 
     return `${wsBase}/ws/chat-widget${params.toString() ? `?${params.toString()}` : ""}`;
   },
+
+  getPublicAssetUrl(assetPath: string) {
+    const normalizedPath = assetPath.startsWith("/") ? assetPath : `/${assetPath}`;
+    return `${(config.API_URL || window.location.origin).replace(/\/$/, "")}${normalizedPath}`;
+  },
 };
 
 export default chatWidgetService;

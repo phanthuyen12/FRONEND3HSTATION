@@ -32,6 +32,8 @@ type WidgetIconName =
   | "chat"
   | "shield";
 
+const ADMIN_QR_MARKER = "[[ADMIN_QR]]";
+
 const TOPIC_ICON_RULES: Array<{ pattern: RegExp; icon: WidgetIconName }> = [
   { pattern: /bootcamp|chương trình|khoá|khóa|tổng quan/i, icon: "school" },
   { pattern: /giá|học phí|chi phí|bao nhiêu/i, icon: "money" },
@@ -117,6 +119,16 @@ const getTopicIcon = (topic: ChatWidgetTopic) => {
   const matched = TOPIC_ICON_RULES.find((rule) => rule.pattern.test(haystack));
   return matched?.icon || "chat";
 };
+
+const renderTextWithLineBreaks = (text: string) =>
+  text.split("\n").map((line, index, lines) => (
+    <React.Fragment key={`line-${index}`}>
+      {line}
+      {index < lines.length - 1 ? <br /> : null}
+    </React.Fragment>
+  ));
+
+const parseMessageParts = (text: string) => text.split(ADMIN_QR_MARKER);
 
 const AIChatWidget: React.FC = () => {
   const location = useLocation();
@@ -372,6 +384,36 @@ const AIChatWidget: React.FC = () => {
   );
 
   const resolveDefaultTopic = () => selectedTopicId || config?.topics?.[0]?.id || "";
+
+  const adminQrImageUrl = useMemo(
+    () => chatWidgetService.getPublicAssetUrl("/images/admin-zalo-ros-pham.jpg"),
+    []
+  );
+
+  const renderMessageContent = (text: string) => {
+    const parts = parseMessageParts(text);
+
+    return parts.map((part, index) => (
+      <React.Fragment key={`part-${index}`}>
+        {part ? (
+          <span className="ai-chat-widget__bubble-text">
+            {renderTextWithLineBreaks(part)}
+          </span>
+        ) : null}
+        {index < parts.length - 1 ? (
+          <div className="ai-chat-widget__bubble-media">
+            <img
+              src={adminQrImageUrl}
+              alt="QR Zalo admin Ros Pham"
+              className="ai-chat-widget__bubble-image"
+              loading="lazy"
+            />
+            <div className="ai-chat-widget__bubble-caption">QR Zalo admin Ros Pham</div>
+          </div>
+        ) : null}
+      </React.Fragment>
+    ));
+  };
 
   const sendSocketPayload = async (payload: Record<string, any>) => {
     const socket = await connectSocket();
@@ -646,7 +688,7 @@ const AIChatWidget: React.FC = () => {
                       <div
                         className={`ai-chat-widget__bubble ai-chat-widget__bubble--${message.role}`}
                       >
-                        {message.text}
+                        {renderMessageContent(message.text)}
                         <div className="ai-chat-widget__meta">
                           {new Date(message.timestamp).toLocaleTimeString("vi-VN", {
                             hour: "2-digit",
