@@ -26,6 +26,7 @@ import DocumentsAdminDetail from "../pages/apps/DocumentsAdmin/Detail";
 import BankAdminList from "../pages/apps/BankAdmin/List";
 import RanksAdminList from "../pages/apps/RanksAdmin/List";
 import ConfigAdmin from "../pages/apps/ConfigAdmin";
+import AIChatAdmin from "../pages/apps/AIChatAdmin";
 import ToolPackagesAdmin from "../pages/apps/ToolsAdmin/Packages";
 import ToolKeysAdmin from "../pages/apps/ToolsAdmin/Keys";
 import SupportAdminList from "../pages/apps/SupportAdmin/List";
@@ -288,6 +289,14 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <ConfigAdmin />
+          </VerticalLayout>
+        }
+      />
+      <Route
+        path="ai-chat"
+        element={
+          <VerticalLayout>
+            <AIChatAdmin />
           </VerticalLayout>
         }
       />

@@ -247,6 +247,12 @@ const MENU_ITEMS: MenuItemTypes[] = [
         parentKey: "apps-support",
       },
       {
+        key: "support-ai-chat",
+        label: "Quản lý chat AI",
+        url: "/admin/ai-chat",
+        parentKey: "apps-support",
+      },
+      {
         key: "support-ref-links",
         label: "Link ref quảng cáo",
         url: "/admin/support-ref-links",

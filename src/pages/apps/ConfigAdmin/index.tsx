@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import configService, { SystemConfig } from '../../../services/configService';
+import ChatWidgetSettings from './ChatWidgetSettings';
 
 const defaultConfig: SystemConfig = {
     support_phone: '',
@@ -396,6 +397,7 @@ const ConfigAdmin: React.FC = () => {
                     </button>
                 </div>
             </form>
+            <ChatWidgetSettings />
         </>
     );
 };

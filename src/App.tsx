@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import AppRouter from "./routes/AppRouter";
 import { authService } from "./config";
+import AIChatWidget from "./components/AIChatWidget";
 
 import { configureFakeBackend } from "./helpers";
 
@@ -30,6 +31,7 @@ const App = () => {
   return (
     <React.Fragment>
       <AppRouter />
+      <AIChatWidget />
     </React.Fragment>
   );
 };
