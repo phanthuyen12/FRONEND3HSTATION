@@ -370,6 +370,7 @@ const UserAdminDetail: React.FC = () => {
                 <label className="text-xs text-slate-500 mb-1 block">Chức vụ (Role)</label>
                 <select className="form-select" value={user.role || 'user'} onChange={e => setUser(p => ({ ...p, role: e.target.value }))}>
                   <option value="user">User (Học viên)</option>
+                  <option value="student">Student (Học sinh)</option>
                   <option value="staff">Staff (Nhân viên)</option>
                   <option value="viewer">Viewer (Chỉ xem giao diện)</option>
                   <option value="admin">Admin (Quản trị viên)</option>
