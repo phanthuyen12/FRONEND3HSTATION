@@ -12,6 +12,18 @@ import {
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 
+const getLeadFields = (submission: LandingPageSubmission): Record<string, any> => {
+  const data = submission.data;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
+
+  if (data.fields && typeof data.fields === 'object' && !Array.isArray(data.fields)) {
+    const { fields, ...rest } = data;
+    return { ...rest, ...fields };
+  }
+
+  return data;
+};
+
 const LandingPageEdit: React.FC = () => {
   const { id } = useParams();
   const isEditMode = id !== undefined && id !== 'new';
@@ -73,7 +85,7 @@ const LandingPageEdit: React.FC = () => {
       const rowData = [
         new Date(sub.submitted_at).toLocaleString('vi-VN'),
         ...submissionCols.map(col => {
-          const val = sub.data?.[col];
+          const val = getLeadFields(sub)[col];
           return val !== undefined ? `"${String(val).replace(/"/g, '""')}"` : '';
         }),
         sub.ip_address || '',
@@ -559,9 +571,7 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
   const getSubmissionsColumns = () => {
     const keys = new Set<string>();
     submissions.forEach(sub => {
-      if (sub.data && typeof sub.data === 'object') {
-        Object.keys(sub.data).forEach(k => keys.add(k));
-      }
+      Object.keys(getLeadFields(sub)).forEach(k => keys.add(k));
     });
     return Array.from(keys);
   };
@@ -573,8 +583,9 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
     const query = leadsSearch.toLowerCase();
     
     // Search in fields data
-    if (sub.data && typeof sub.data === 'object') {
-      return Object.values(sub.data).some(val => 
+    const leadFields = getLeadFields(sub);
+    if (Object.keys(leadFields).length > 0) {
+      return Object.values(leadFields).some(val =>
         String(val).toLowerCase().includes(query)
       );
     }
@@ -1285,7 +1296,7 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
                                 </td>
 
                                 {submissionCols.map(col => {
-                                  const val = sub.data?.[col];
+                                  const val = getLeadFields(sub)[col];
                                   const isRefOrUtm = col.toLowerCase().includes('ref') || col.toLowerCase().includes('utm');
                                   
                                   if (isRefOrUtm && val) {
@@ -1374,7 +1385,7 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
                             {/* Card Body */}
                             <div className="flex flex-col gap-2.5 flex-1">
                               {submissionCols.map(col => {
-                                const val = sub.data?.[col];
+                                const val = getLeadFields(sub)[col];
                                 const isRefOrUtm = col.toLowerCase().includes('ref') || col.toLowerCase().includes('utm');
                                 
                                 return (
@@ -1444,7 +1455,7 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
                               <h6 className="font-bold text-slate-800 dark:text-slate-200 text-sm border-b border-slate-100 dark:border-slate-850 pb-2">
                                 Dữ liệu điền biểu mẫu (Fields)
                               </h6>
-                              {Object.entries(selectedLead.data || {}).map(([key, val]) => {
+                              {Object.entries(getLeadFields(selectedLead)).map(([key, val]) => {
                                 const isRefOrUtm = key.toLowerCase().includes('ref') || key.toLowerCase().includes('utm');
                                 return (
                                   <div key={key} className="flex flex-col bg-slate-50/30 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-850 gap-1.5 hover:border-slate-200 transition-all">
