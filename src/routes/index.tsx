@@ -46,6 +46,9 @@ const BankAdminList = React.lazy(() => import("../pages/apps/BankAdmin/List"));
 const SupportAdminList = React.lazy(() => import("../pages/apps/SupportAdmin/List"));
 const SupportRefLinksAdmin = React.lazy(() => import("../pages/apps/SupportAdmin/RefLinks"));
 const OrdersReport = React.lazy(() => import("../pages/apps/OrdersAdmin/Report"));
+const LandingPageList = React.lazy(() => import("../pages/apps/LandingPageAdmin/List"));
+const LandingPageEdit = React.lazy(() => import("../pages/apps/LandingPageAdmin/Edit"));
+const LandingPageDomains = React.lazy(() => import("../pages/apps/LandingPageAdmin/Domains"));
 
 // extra pages 
 const Starter = React.lazy(() => import('../pages/extra/Starter'));
@@ -478,6 +481,34 @@ const ordersReportRoutes: RoutesProps = {
   header: "Reports",
 };
 
+const landingPagesAdminRoutes: RoutesProps = {
+  path: "/admin/landing-pages-root",
+  name: "LandingPages",
+  route: PrivateRoute,
+  roles: ["Admin", "Staff", "Viewer"],
+  icon: "globe",
+  children: [
+    {
+      path: "/admin/landing-pages",
+      name: "LandingPageList",
+      element: <LandingPageList />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/admin/landing-pages/domains",
+      name: "LandingPageDomains",
+      element: <LandingPageDomains />,
+      route: PrivateRoute,
+    },
+    {
+      path: "/admin/landing-pages/:id",
+      name: "LandingPageEdit",
+      element: <LandingPageEdit />,
+      route: PrivateRoute,
+    },
+  ],
+};
+
 const appRoutes = [
   calendarAppRoutes,
   ticketsAppRoutes,
@@ -494,6 +525,7 @@ const appRoutes = [
   bankAdminRoutes,
   supportAdminRoutes,
   ordersReportRoutes,
+  landingPagesAdminRoutes,
 ];
 
 // pages (admin)

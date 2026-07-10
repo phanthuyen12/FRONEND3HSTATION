@@ -129,6 +129,14 @@ const ClientRoutes: React.FC = () => {
           element={<LandingCoursesPage />}
         />
         <Route
+          path="/page"
+          element={<LandingCoursesPage />}
+        />
+        <Route
+          path="/page/courses"
+          element={<LandingCoursesPage />}
+        />
+        <Route
           path="/landing-tools"
           element={<LandingToolsPage />}
         />
@@ -145,6 +153,10 @@ const ClientRoutes: React.FC = () => {
           element={<LandingCourseDetailPage />}
         />
         <Route
+          path="/page/courses/:id"
+          element={<LandingCourseDetailPage />}
+        />
+        <Route
           path="/landing-workflows/:id"
           element={<LandingWorkflowDetailPage />}
         />
@@ -154,6 +166,10 @@ const ClientRoutes: React.FC = () => {
         />
         <Route
           path="/landing-profile"
+          element={<LandingProfilePage />}
+        />
+        <Route
+          path="/page/profile"
           element={<LandingProfilePage />}
         />
         <Route
@@ -177,7 +193,15 @@ const ClientRoutes: React.FC = () => {
           element={<Contact />}
         />
         <Route
+          path="/page/contact"
+          element={<Contact />}
+        />
+        <Route
           path="/landing-faq"
+          element={<AeTradingFaq />}
+        />
+        <Route
+          path="/page/faq"
           element={<AeTradingFaq />}
         />
         <Route
@@ -201,7 +225,15 @@ const ClientRoutes: React.FC = () => {
           element={<LandingPolicyPage />}
         />
         <Route
+          path="/page/policy"
+          element={<LandingPolicyPage />}
+        />
+        <Route
           path="/landing-disclaimer"
+          element={<LandingDisclaimerPage />}
+        />
+        <Route
+          path="/page/disclaimer"
           element={<LandingDisclaimerPage />}
         />
         <Route

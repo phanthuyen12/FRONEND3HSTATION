@@ -8,6 +8,8 @@ import { findAllParent, findMenuItem } from '../helpers/menu';
 // constants
 import { MenuItemTypes } from '../constants/menu'
 import { SimpleCollapse } from '../components/FrostUI';
+import { APICore } from '../helpers/api/apiCore';
+import { authService } from '../config';
 
 interface SubMenus {
   item: MenuItemTypes;
@@ -117,6 +119,65 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
 
   const [activeMenuItems, setActiveMenuItems] = useState<Array<string>>([]);
 
+  const api = new APICore();
+  const loggedInUser = authService.getUser();
+  const [currentUser, setCurrentUser] = useState(loggedInUser);
+
+  useEffect(() => {
+    if (authService.isAuthenticated()) {
+      authService.getProfile().then(profile => {
+        if (profile) {
+          api.setUserInSession(profile);
+          localStorage.setItem('auth_user', JSON.stringify(profile));
+          setCurrentUser(profile);
+        }
+      }).catch(err => console.error("Failed to sync profile:", err));
+    }
+  }, []);
+
+  let filteredItems = menuItems;
+  if (currentUser && (currentUser.role === 'staff' || currentUser.role === 'viewer' || currentUser.role === 'admin')) {
+    const permissions = currentUser.permissions || [];
+    const shouldFilter = permissions.length > 0 || currentUser.role === 'staff' || currentUser.role === 'viewer';
+
+    if (shouldFilter) {
+      const filterItems = (items: MenuItemTypes[]): MenuItemTypes[] => {
+        return items.map(item => ({ ...item })).filter(item => {
+          // Headers are visible if they have children that are allowed
+          if (item.key === 'menu' || item.key === 'apps') {
+            return true;
+          }
+          if (item.key === 'dashboard') {
+            return true;
+          }
+          if (permissions.includes(item.key)) {
+            return true;
+          }
+          if (item.children) {
+            const children = filterItems(item.children);
+            if (children.length > 0) {
+              item.children = children;
+              return true;
+            }
+          }
+          return false;
+        });
+      };
+
+      // Filter and clean empty titles/headers if their submenus are empty
+      filteredItems = filterItems(menuItems).filter((item, idx, arr) => {
+        if (item.key === 'menu' || item.key === 'apps') {
+          // Look ahead to check if the next item is a title, if yes or if it is the end, hide this title
+          const nextItem = arr[idx + 1];
+          if (!nextItem || nextItem.isTitle) {
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+  }
+
   /**
    * toggle the menus
    */
@@ -202,7 +263,7 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
         ref={menuRef}
         id='main-side-menu'
       >
-        {(menuItems || []).map((item, idx) => {
+        {(filteredItems || []).map((item, idx) => {
           return (
             <React.Fragment key={idx}>
               {item.isTitle ? (<li className='menu-title'>

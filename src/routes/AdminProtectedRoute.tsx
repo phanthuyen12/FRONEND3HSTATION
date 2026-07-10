@@ -22,7 +22,8 @@ const AdminProtectedRoute: React.FC<Props> = ({ children }) => {
     );
   }
 
-  if (user.role !== "admin") {
+  const roleLower = (user.role || "").toLowerCase();
+  if (roleLower !== "admin" && roleLower !== "staff" && roleLower !== "viewer") {
     return <Navigate to="/admin/login" replace />;
   }
 

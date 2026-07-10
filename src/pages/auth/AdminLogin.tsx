@@ -32,10 +32,10 @@ const AdminLogin: React.FC = () => {
       });
 
       const role = res?.user?.role;
-      if (role !== "admin") {
-        // Nếu không phải admin, xoá token và chặn truy cập
+      if (role !== "admin" && role !== "staff" && role !== "viewer") {
+        // Nếu không có quyền, xoá token và chặn truy cập
         await authService.logout();
-        alert("Tài khoản không có quyền admin");
+        alert("Tài khoản không có quyền truy cập trang quản trị");
         return;
       }
 

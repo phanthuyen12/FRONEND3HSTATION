@@ -45,4 +45,31 @@ const findMenuItem = (
   return null;
 }
 
-export { getMenuItems, findAllParent, findMenuItem, };
+const getFirstAllowedUrl = (permissions: string[], role: string): string => {
+  const normRole = (role || '').toLowerCase();
+  if (normRole === 'admin') {
+    return '/admin/dashboard';
+  }
+  
+  const perms = permissions || [];
+  if (perms.includes('dashboard')) {
+    return '/admin/dashboard';
+  }
+
+  const findFirst = (items: MenuItemTypes[]): string | null => {
+    for (const item of items) {
+      if (item.url && item.url !== '/admin' && item.url !== '/admin/dashboard' && perms.includes(item.key)) {
+        return item.url;
+      }
+      if (item.children) {
+        const found = findFirst(item.children);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+  
+  return findFirst(MENU_ITEMS) || '/admin/dashboard';
+};
+
+export { getMenuItems, findAllParent, findMenuItem, getFirstAllowedUrl };

@@ -6,6 +6,7 @@ export interface User {
   balance?: number;
   status?: 'active' | 'locked';
   role?: string;
+  permissions?: string[];
   rankId?: string | number | null;
   rank_id?: string | number | null;
   rank_code?: string | null;
@@ -149,6 +150,8 @@ class UserService {
     phone?: string;
     password: string;
     status?: string;
+    role?: string;
+    permissions?: string[];
     rankId?: string | number | null;
   }): Promise<User> {
     return await this.request<User>("/api/users", {
@@ -162,6 +165,8 @@ class UserService {
     email?: string;
     phone?: string;
     status?: string;
+    role?: string;
+    permissions?: string[];
     rankId?: string | number | null;
   }>): Promise<User> {
     return await this.request<User>(`/api/users/${id}`, {

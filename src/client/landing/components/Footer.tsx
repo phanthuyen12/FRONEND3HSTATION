@@ -4,13 +4,14 @@ import { useTheme } from '../context/ThemeContext';
 
 const Footer = () => {
   const { isDark } = useTheme();
+  const footerBasePath = '/page';
 
   const quickLinks = [
-    { label: 'Khóa học', to: '/landing-courses' },
-    { label: 'Trung tâm hỗ trợ', to: '/landing-faq' },
-    { label: 'Chính sách', to: '/landing-policy' },
-    { label: 'Hồ sơ cá nhân', to: '/landing-profile' },
-    { label: 'Liên hệ', to: '/landing-contact' },
+    { label: 'Khóa học', to: `${footerBasePath}/courses` },
+    { label: 'Trung tâm hỗ trợ', to: `${footerBasePath}/faq` },
+    { label: 'Chính sách', to: `${footerBasePath}/policy` },
+    { label: 'Hồ sơ cá nhân', to: `${footerBasePath}/profile` },
+    { label: 'Liên hệ', to: `${footerBasePath}/contact` },
   ];
 
   const headingColor = isDark ? '#ffffff' : '#0B0B0B';
@@ -20,10 +21,10 @@ const Footer = () => {
   const dividerColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
 
   const bottomLinks = [
-    { label: 'Chính Sách Bảo Mật', to: '/landing-policy#bao-mat' },
-    { label: 'Điều Khoản', to: '/landing-policy#su-dung' },
-    { label: 'Thanh Toán', to: '/landing-policy#thanh-toan' },
-    { label: 'Miễn Trừ Trách Nhiệm', to: '/landing-disclaimer' },
+    { label: 'Chính Sách Bảo Mật', to: `${footerBasePath}/policy#bao-mat` },
+    { label: 'Điều Khoản', to: `${footerBasePath}/policy#su-dung` },
+    { label: 'Thanh Toán', to: `${footerBasePath}/policy#thanh-toan` },
+    { label: 'Miễn Trừ Trách Nhiệm', to: `${footerBasePath}/disclaimer` },
   ];
 
   return (
@@ -57,7 +58,7 @@ const Footer = () => {
           </div>
 
           <Link
-            to="/landing-courses"
+            to={`${footerBasePath}/courses`}
             className="relative z-10 flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-bold px-6 py-3.5 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl"
             style={{ background: '#ffffff', color: '#D97706' }}
           >
@@ -83,7 +84,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-10 lg:gap-14 mb-12">
           {/* Brand */}
           <div>
-            <Link to="/landing-courses" className="inline-flex items-center mb-5">
+            <Link to={`${footerBasePath}/courses`} className="inline-flex items-center mb-5">
               <img
                 src="/logo.png"
                 alt="AETRADING"
@@ -139,7 +140,7 @@ const Footer = () => {
               <p>Học tập, thực chiến và phát triển tư duy giao dịch cùng cộng đồng AETRADING.</p>
 
               <Link
-                to="/landing-contact"
+                to={`${footerBasePath}/contact`}
                 className="inline-flex items-center gap-2 font-bold transition-colors duration-200"
                 style={{ color: headingColor }}
                 onMouseEnter={(e) => {

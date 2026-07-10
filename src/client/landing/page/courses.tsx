@@ -406,7 +406,7 @@ const LandingCoursesPage = () => {
     <HostingLayout>
       <div className="min-h-screen bg-[#050706] text-white">
         <section className="bg-[#050706]">
-          <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6 lg:px-8 lg:py-8">
+          <div className="mx-auto w-full max-w-7xl px-4 pt-10 pb-6 md:px-6 md:pt-16 lg:px-8 lg:pt-20 lg:pb-8">
             <div className="relative overflow-hidden rounded-[8px] border border-[#FBBF24]/35 bg-[#080b09] p-6 shadow-[0_28px_100px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.06)] md:p-10 lg:p-12">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_54%,rgba(251,191,36,0.28),transparent_34%),linear-gradient(110deg,rgba(255,255,255,0.035),transparent_38%)]" />
               <div className="absolute -bottom-24 left-[42%] h-72 w-[560px] rotate-[-12deg] rounded-full border-t border-[#FBBF24]/35 blur-[1px]" />

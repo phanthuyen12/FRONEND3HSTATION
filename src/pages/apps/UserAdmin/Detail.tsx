@@ -67,13 +67,15 @@ const statusBadge = (s: string) => s === 'completed' || s === 'active'
     ? <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700">{s}</span>
     : <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600">{s}</span>;
 
-const emptyUser = (): EditableUser => ({ name: "", email: "", phone: "", balance: 0, status: "active", role: "user", password: "" });
+const emptyUser = (): EditableUser => ({ name: "", email: "", phone: "", balance: 0, status: "active", role: "user", permissions: [], password: "" });
 
 const buildUserPayload = (user: EditableUser) => {
   const payload: Record<string, any> = {
     name: user.name.trim(),
     email: user.email.trim(),
     status: user.status,
+    role: user.role,
+    permissions: user.permissions || [],
   };
 
   const phone = user.phone?.trim();
@@ -138,6 +140,7 @@ const UserAdminDetail: React.FC = () => {
         balance: data.balance || 0,
         status: data.status || "active",
         role: data.role || "user",
+        permissions: data.permissions || [],
         rankId,
         joinedAt: data.joinedAt || data.createdAt || "",
       });
@@ -221,6 +224,8 @@ const UserAdminDetail: React.FC = () => {
           email: user.email.trim(),
           password: user.password!,
           status: user.status,
+          role: user.role,
+          permissions: user.permissions || [],
           ...(user.phone?.trim() ? { phone: user.phone.trim() } : {}),
           ...(user.rankId !== "" && user.rankId !== undefined && user.rankId !== null
             ? { rankId: user.rankId }
@@ -361,6 +366,70 @@ const UserAdminDetail: React.FC = () => {
                   <option value="locked">Khóa</option>
                 </select>
               </div>
+              <div>
+                <label className="text-xs text-slate-500 mb-1 block">Chức vụ (Role)</label>
+                <select className="form-select" value={user.role || 'user'} onChange={e => setUser(p => ({ ...p, role: e.target.value }))}>
+                  <option value="user">User (Học viên)</option>
+                  <option value="staff">Staff (Nhân viên)</option>
+                  <option value="viewer">Viewer (Chỉ xem giao diện)</option>
+                  <option value="admin">Admin (Quản trị viên)</option>
+                </select>
+              </div>
+
+              {(user.role === 'staff' || user.role === 'viewer' || user.role === 'admin') && (
+                <div className="col-span-1 md:col-span-2 border border-slate-200 dark:border-slate-800 p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/20 mt-2">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wide">
+                    Quyền hạn truy cập các trang quản trị
+                  </label>
+                  {user.role === 'admin' && (
+                    <div className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mb-3 flex items-center gap-1">
+                      <i className="mgc_information_line text-sm" /> Quản trị viên (Admin) mặc định có toàn quyền truy cập tất cả các trang.
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      { key: 'dashboard', label: 'Bảng điều khiển (Dashboard)' },
+                      { key: 'apps-elearning', label: 'E-Learning (Khóa học)' },
+                      { key: 'apps-ranks', label: 'Rank (Cấp độ)' },
+                      { key: 'apps-vps', label: 'VPS (Máy chủ ảo)' },
+                      { key: 'apps-workflows', label: 'Workflows (Kịch bản)' },
+                      { key: 'apps-facebook', label: 'Quản lý Facebook CRM' },
+                      { key: 'apps-topups', label: 'Lịch sử nạp tiền' },
+                      { key: 'apps-banks', label: 'Tài khoản ngân hàng' },
+                      { key: 'apps-documents', label: 'Kho tài liệu' },
+                      { key: 'apps-users', label: 'Quản lý thành viên' },
+                      { key: 'apps-landing-pages', label: 'Landing Pages' },
+                      { key: 'apps-tools', label: 'Phần mềm & Key dịch vụ' },
+                      { key: 'apps-configs', label: 'Cấu hình hệ thống' },
+                      { key: 'apps-support', label: 'Hỗ trợ & Liên hệ' },
+                    ].map(perm => {
+                      const isChecked = (user.permissions || []).includes(perm.key);
+                      return (
+                        <label key={perm.key} className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200 transition-all">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox rounded border-slate-300 text-primary focus:ring-primary/20"
+                            checked={isChecked}
+                            onChange={e => {
+                              const currentPerms = [...(user.permissions || [])];
+                              if (e.target.checked) {
+                                if (!currentPerms.includes(perm.key)) {
+                                  currentPerms.push(perm.key);
+                                }
+                              } else {
+                                const idx = currentPerms.indexOf(perm.key);
+                                if (idx !== -1) currentPerms.splice(idx, 1);
+                              }
+                              setUser(p => ({ ...p, permissions: currentPerms }));
+                            }}
+                          />
+                          {perm.label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="text-xs text-slate-500 mb-1 block">Rank</label>
                 <select
