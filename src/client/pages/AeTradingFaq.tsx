@@ -25,7 +25,7 @@ const AeTradingFaq: React.FC = () => {
     <div className="w-full min-h-screen bg-[#0a0a0b]">
       <iframe
         title="AE Trading - Trung tâm hỗ trợ"
-        src="/ae-trading-support.html"
+        src="/ae-trading-support.html?v=account-classification-20260711"
         className="w-full min-h-screen border-0"
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
       />
