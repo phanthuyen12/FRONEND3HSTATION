@@ -62,8 +62,8 @@ const dedupeRepeatedContent = (value: string) => {
     return normalized;
 };
 
-const getVideoProvider = (url?: string | null) => {
-    const safeUrl = typeof url === 'string' ? url : '';
+const getVideoProvider = (url?: string | null): 'youtube' | 'html5' => {
+    const safeUrl = typeof url === 'string' ? url.toLowerCase() : '';
     return safeUrl.includes('youtube') || safeUrl.includes('youtu.be') ? 'youtube' : 'html5';
 };
 
@@ -326,6 +326,23 @@ const CourseDetailPage = () => {
         [videos]
     );
     const isEnrolled = course?.can_view_full !== false;
+    const playerSource = useMemo(() => {
+        if (!selectedVideo?.url) {
+            return undefined;
+        }
+
+        return {
+            type: 'video' as const,
+            sources: [{
+                src: selectedVideo.url,
+                provider: getVideoProvider(selectedVideo.url),
+            }],
+        };
+    }, [selectedVideo?.id, selectedVideo?.url]);
+    const playerOptions = useMemo(() => ({
+        playsinline: true,
+        resetOnEnd: false,
+    }), []);
     const normalizedCompletionPercent = Math.min(100, Math.max(0, Number(courseProgress.completionPercent || 0)));
     const remainingLessons = Math.max(0, Number(courseProgress.totalLessons || 0) - Number(courseProgress.completedLessons || 0));
     const progressStatus = normalizedCompletionPercent >= 100
@@ -640,13 +657,11 @@ const CourseDetailPage = () => {
                         <div className="space-y-8 animate-in fade-in duration-700">
                             <div ref={playerRef} className="relative w-full scroll-mt-[130px] bg-black rounded-[10px] overflow-hidden shadow-2xl">
                                 <div className="aspect-video w-full" key={selectedVideo?.id}>
-                                    {selectedVideo ? (
+                                    {selectedVideo && playerSource ? (
                                         <Plyr
                                             ref={videoPlayerRef}
-                                            source={{
-                                                type: "video",
-                                                sources: [{ src: selectedVideo.url, provider: getVideoProvider(selectedVideo.url) }],
-                                            }}
+                                            source={playerSource}
+                                            options={playerOptions}
                                         />
                                     ) : (
                                         <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-white/50 bg-slate-900">
