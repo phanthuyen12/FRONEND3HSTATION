@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Plyr, { APITypes } from "plyr-react";
 import "plyr-react/plyr.css";
@@ -79,6 +79,30 @@ const CourseDetail: React.FC = () => {
   const currentVideo = selectedVideo || videos[0];
   const canViewFull = course?.can_view_full !== false;
   const currentBanner = currentVideo?.imgBanner || currentVideo?.img_banner || course?.thumbnail || course?.thumbnail_url;
+  const playerSource = useMemo(() => {
+    if (!currentVideo?.url) {
+      return undefined;
+    }
+
+    const normalizedUrl = currentVideo.url.toLowerCase();
+
+    return {
+      type: "video" as const,
+      sources: [
+        {
+          src: currentVideo.url,
+          provider: normalizedUrl.includes('youtube.com') || normalizedUrl.includes('youtu.be')
+            ? 'youtube' as const
+            : 'html5' as const,
+        },
+      ],
+    };
+  }, [currentVideo?.id, currentVideo?.url]);
+
+  const playerOptions = useMemo(() => ({
+    playsinline: true,
+    resetOnEnd: false,
+  }), []);
 
   const syncCurrentVideoProgress = async ({ completed = false, force = false } = {}) => {
     if (!id || !selectedVideo?.id || !canViewFull) {
@@ -274,19 +298,12 @@ const CourseDetail: React.FC = () => {
                   />
                 </div>
               )}
-              {currentVideo ? (
+              {currentVideo && playerSource ? (
                 <div className="rounded-xl overflow-hidden">
                   <Plyr
                     ref={playerRef}
-                    source={{
-                      type: "video",
-                      sources: [
-                        {
-                          src: currentVideo.url,
-                          provider: currentVideo.url.includes('youtube') || currentVideo.url.includes('youtu.be') ? 'youtube' : 'html5',
-                        },
-                      ],
-                    }}
+                    source={playerSource}
+                    options={playerOptions}
                   />
                 </div>
               ) : (
