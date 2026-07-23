@@ -26,6 +26,8 @@ export interface LandingPage {
   draft_js: string | null;
   draft_assets_path: string | null;
   preview_token: string;
+  google_sheet_id: string | null;
+  google_sheet_tab_name: string | null;
 }
 
 export interface LandingPageVersion {

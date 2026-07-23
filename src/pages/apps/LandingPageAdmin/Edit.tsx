@@ -41,6 +41,8 @@ const LandingPageEdit: React.FC = () => {
   const [publishStart, setPublishStart] = useState('');
   const [publishEnd, setPublishEnd] = useState('');
   const [previewToken, setPreviewToken] = useState('');
+  const [googleSheetId, setGoogleSheetId] = useState('');
+  const [googleSheetTabName, setGoogleSheetTabName] = useState('');
 
   // Code editor states
   const [htmlCode, setHtmlCode] = useState('');
@@ -129,6 +131,8 @@ const LandingPageEdit: React.FC = () => {
           setCssCode(lp.draft_css || '');
           setJsCode(lp.draft_js || '');
           setPreviewToken(lp.preview_token);
+          setGoogleSheetId(lp.google_sheet_id || '');
+          setGoogleSheetTabName(lp.google_sheet_tab_name || '');
           setHasAssets(!!lp.draft_assets_path);
 
           // Fetch tab lists
@@ -224,7 +228,8 @@ const LandingPageEdit: React.FC = () => {
       publish_end_at: publishEnd || null,
       draft_html: htmlCode,
       draft_css: cssCode,
-      draft_js: jsCode
+      draft_js: jsCode,
+      google_sheet_id: googleSheetId.trim() || null
     };
 
     try {
@@ -267,6 +272,36 @@ const LandingPageEdit: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       Swal.fire({ icon: 'error', title: 'Thất bại', text: err.message || 'Lưu Landing Page thất bại', confirmButtonText: 'Đóng' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveGoogleSheet = async () => {
+    if (!isEditMode) return;
+    setSaving(true);
+    try {
+      const updated = await landingPageService.updateLandingPage(Number(id), {
+        google_sheet_id: googleSheetId.trim() || null,
+        google_sheet_tab_name: googleSheetTabName.trim() || null
+      });
+      setGoogleSheetId(updated.google_sheet_id || '');
+      setGoogleSheetTabName(updated.google_sheet_tab_name || '');
+      Swal.fire({
+        icon: 'success',
+        title: 'Đã lưu Google Sheet!',
+        text: 'Lead mới của landing này sẽ được đồng bộ vào Sheet đã cấu hình.',
+        timer: 1600,
+        showConfirmButton: false
+      });
+      loadLogs();
+    } catch (err: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Không thể lưu Google Sheet',
+        text: err.message || 'Vui lòng thử lại',
+        confirmButtonText: 'Đóng'
+      });
     } finally {
       setSaving(false);
     }
@@ -795,7 +830,7 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
             <div className="card h-full">
               {/* Tab Selector */}
               <div className="card-header border-b border-slate-200 dark:border-slate-700 flex justify-between items-center p-0">
-                <nav className="flex gap-6 px-6" aria-label="Tabs">
+                <nav className="flex flex-wrap gap-x-6 px-6" aria-label="Tabs">
                   <button
                     onClick={() => setActiveTab('editor')}
                     className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-all ${
@@ -822,6 +857,17 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
                   
                   {isEditMode && (
                     <>
+                      <button
+                        onClick={() => setActiveTab('google-sheets')}
+                        className={`py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm transition-all ${
+                          activeTab === 'google-sheets'
+                            ? 'border-green-500 text-green-600 font-semibold'
+                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        <i className="mgc_table_2_line text-base" />
+                        Google Sheets
+                      </button>
                       <button
                         onClick={() => {
                           setActiveTab('versions');
@@ -870,6 +916,75 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
               </div>
 
               <div className="card-body">
+                {activeTab === 'google-sheets' && isEditMode && (
+                  <div className="max-w-3xl">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/40 text-green-600 flex items-center justify-center flex-shrink-0">
+                        <i className="mgc_table_2_line text-2xl" />
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-slate-800 dark:text-slate-200 text-lg">
+                          Đồng bộ lead sang Google Sheets
+                        </h5>
+                        <p className="text-sm text-slate-500 mt-1">
+                          Cấu hình một file Google Sheet riêng cho landing này. Lead mới sẽ được gửi sang Sheet ngay sau khi đăng ký.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+                      <label className="text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2 block">
+                        Google Sheet link hoặc Spreadsheet ID
+                      </label>
+                      <input
+                        type="text"
+                        className="form-input font-mono"
+                        value={googleSheetId}
+                        onChange={e => setGoogleSheetId(e.target.value)}
+                        placeholder="https://docs.google.com/spreadsheets/d/.../edit"
+                        disabled={isReadOnly}
+                      />
+                      <p className="text-xs text-slate-500 mt-2">
+                        Chấp nhận nguyên đường link hoặc chỉ Spreadsheet ID. Hãy chia sẻ file cho service account với quyền Editor.
+                      </p>
+
+                      <label className="text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2 mt-5 block">
+                        Tên tab trong Google Sheet
+                      </label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={googleSheetTabName}
+                        onChange={e => setGoogleSheetTabName(e.target.value)}
+                        placeholder={`Ví dụ: Leads Landing ${id || ''}`}
+                        maxLength={100}
+                        disabled={isReadOnly}
+                      />
+                      <p className="text-xs text-slate-500 mt-2">
+                        Nếu tab chưa tồn tại, hệ thống sẽ tự tạo. Để trống sẽ dùng tên mặc định <code>Landing {id}</code>.
+                      </p>
+
+                      {googleSheetId.trim() && (
+                        <div className="mt-4 px-3 py-2.5 rounded bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 text-sm flex items-center gap-2">
+                          <i className="mgc_check_circle_fill" />
+                          Landing này đã có cấu hình Google Sheet.
+                        </div>
+                      )}
+
+                      {!isReadOnly && (
+                        <button
+                          type="button"
+                          onClick={handleSaveGoogleSheet}
+                          className="btn bg-green-600 hover:bg-green-700 text-white mt-5"
+                          disabled={saving}
+                        >
+                          {saving ? 'Đang lưu...' : 'Lưu cấu hình Google Sheet'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* 1. EDITOR TAB */}
                 {activeTab === 'editor' && (
                   <div className="flex flex-col gap-6">
