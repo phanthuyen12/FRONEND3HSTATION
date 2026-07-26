@@ -213,6 +213,34 @@ class LandingPageService {
     });
   }
 
+  async exportLandingPage(id: number): Promise<{ blob: Blob; filename: string }> {
+    const token = this.getToken();
+    const res = await fetch(`${this.api}/api/admin/landing-pages/${id}/export`, {
+      headers: {
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      }
+    });
+
+    if (!res.ok) {
+      let message = 'Export landing page thất bại';
+      try {
+        const body = await res.json();
+        message = body?.message || message;
+      } catch {
+        // The server may return a non-JSON error response.
+      }
+      throw new Error(message);
+    }
+
+    const disposition = res.headers.get('Content-Disposition') || '';
+    const filenameMatch = disposition.match(/filename="?([^";]+)"?/i);
+    const contentType = res.headers.get('Content-Type') || '';
+    const filename = filenameMatch?.[1]
+      || `landing-page-${id}.${contentType.includes('zip') ? 'zip' : 'html'}`;
+
+    return { blob: await res.blob(), filename };
+  }
+
   // ==========================================
   // ZIP UPLOAD API
   // ==========================================

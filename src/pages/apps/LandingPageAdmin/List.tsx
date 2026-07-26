@@ -165,6 +165,27 @@ const LandingPagesList: React.FC = () => {
     }
   };
 
+  const handleExport = async (page: LandingPage) => {
+    try {
+      const { blob, filename } = await landingPageService.exportLandingPage(page.id);
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(downloadUrl);
+    } catch (err: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Export thất bại',
+        text: err.message || 'Không thể tải mã nguồn Landing Page',
+        confirmButtonText: 'Đóng'
+      });
+    }
+  };
+
   const getStatusBadge = (status: LandingPage['status']) => {
     switch (status) {
       case 'draft':
@@ -367,6 +388,15 @@ const LandingPagesList: React.FC = () => {
                           >
                             <i className="mgc_eye_line text-base" />
                           </a>
+
+                          {/* Export source: ZIP with assets, otherwise HTML only */}
+                          <button
+                            onClick={() => handleExport(page)}
+                            className="btn btn-sm bg-sky-500/10 text-sky-600 hover:bg-sky-500/20"
+                            title={page.draft_assets_path ? 'Export ZIP đầy đủ' : 'Export file HTML'}
+                          >
+                            <i className="mgc_download_2_line text-base" />
+                          </button>
 
                           {/* Clone Button */}
                           {!isReadOnly && (
