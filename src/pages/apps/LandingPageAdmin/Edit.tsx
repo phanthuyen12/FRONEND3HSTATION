@@ -63,6 +63,7 @@ const LandingPageEdit: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   // Version comment
   const [versionDesc, setVersionDesc] = useState('');
@@ -106,6 +107,32 @@ const LandingPageEdit: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleBackupLanding = async () => {
+    if (!isEditMode) return;
+
+    setExporting(true);
+    try {
+      const { blob, filename } = await landingPageService.exportLandingPage(Number(id));
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    } catch (err: any) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Backup thất bại',
+        text: err.message || 'Không thể tải bản backup Landing Page',
+        confirmButtonText: 'Đóng'
+      });
+    } finally {
+      setExporting(false);
+    }
   };
 
   useEffect(() => {
@@ -807,6 +834,22 @@ document.getElementById('landingForm')?.addEventListener('submit', async functio
                     >
                       <i className="mgc_eye_line text-base" /> Preview
                     </a>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleBackupLanding}
+                      disabled={exporting}
+                      className="btn bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 w-full flex items-center justify-center gap-1"
+                      title={hasAssets ? 'Tải ZIP đầy đủ HTML và assets' : 'Tải file HTML'}
+                    >
+                      <i className="mgc_download_2_line text-base" />
+                      {exporting
+                        ? 'Đang tạo backup...'
+                        : hasAssets
+                          ? 'Backup / Export ZIP'
+                          : 'Backup / Export HTML'}
+                    </button>
                   </div>
                   {status === 'published' && (
                     <div className="flex gap-2">
