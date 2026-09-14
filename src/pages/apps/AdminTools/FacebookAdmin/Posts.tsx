@@ -1316,7 +1316,7 @@ const FacebookPosts: React.FC = () => {
   }
 
   const handleConnect = async () => {
-    const appId = "1798186884217998";
+    const appId = import.meta.env.VITE_FACEBOOK_APP_ID || "1745285366717188";
     const redirectUri = encodeURIComponent(`${window.location.origin}/admin/facebook/callback`);
     const scope = "pages_show_list,pages_manage_metadata,pages_messaging,pages_read_engagement,business_management,read_insights,pages_read_user_content,pages_manage_posts";
     const oauthUrl = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${appId}&redirect_uri=${redirectUri}&scope=${scope}&auth_type=rerequest`;

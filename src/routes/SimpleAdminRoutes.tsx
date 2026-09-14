@@ -38,6 +38,7 @@ import FacebookCallback from '../pages/apps/AdminTools/FacebookAdmin/Callback';
 import LandingPageList from "../pages/apps/LandingPageAdmin/List";
 import LandingPageEdit from "../pages/apps/LandingPageAdmin/Edit";
 import LandingPageDomains from "../pages/apps/LandingPageAdmin/Domains";
+import ExifRemover from '../pages/apps/AdminTools/ExifRemover/ExifRemover';
 /**
  * Admin router đơn giản, bỏ hết auth / PrivateRoute
  * - /admin/dashboard                  -> Dashboard
@@ -282,6 +283,14 @@ const SimpleAdminRoutes: React.FC = () => {
         element={
           <VerticalLayout>
             <ToolKeysAdmin />
+          </VerticalLayout>
+        }
+      />
+      <Route
+        path="tools/exif-remover"
+        element={
+          <VerticalLayout>
+            <ExifRemover />
           </VerticalLayout>
         }
       />

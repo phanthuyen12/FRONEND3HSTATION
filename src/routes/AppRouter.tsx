@@ -15,6 +15,7 @@ import {
 } from "../client/techxen/TechxenPages";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 import AdminLogin from "../pages/auth/AdminLogin";
+import ExifRemoverPublic from "../pages/apps/AdminTools/ExifRemover/ExifRemoverPublic";
 
 /**
  * Router tổng hợp cho toàn bộ ứng dụng
@@ -48,6 +49,9 @@ const AppRouter: React.FC = () => {
         <Route path="/techxen/home" element={<TechxenHomePage />} />
         <Route path="/techxen/services" element={<TechxenServicesPage />} />
         <Route path="/techxen/service-intro" element={<TechxenServiceIntroPage />} />
+
+        {/* Public Tools — không cần login */}
+        <Route path="/tools/exif-remover" element={<ExifRemoverPublic />} />
 
         {/* Client chính */}
         <Route path="/*" element={<ClientRoutes />} />

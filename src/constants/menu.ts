@@ -244,7 +244,13 @@ const MENU_ITEMS: MenuItemTypes[] = [
         label: "Facebook",
         url: "/admin/facebook/posts",
         parentKey: "apps-tools",
-      }
+      },
+      {
+        key: "tools-exif-remover",
+        label: "EXIF Remover",
+        url: "/admin/tools/exif-remover",
+        parentKey: "apps-tools",
+      },
     ],
   },
   {

@@ -15,6 +15,7 @@ import configService from './services/configService';
 import toolKeyService from './services/toolKeyService';
 import supportService from './services/supportService';
 import LandingPageService from './services/landingPageService';
+import ExifService from './services/exifService';
 
 
 // Tạo instance ElearningService
@@ -33,6 +34,7 @@ export const bankService = new BankService(API_URL);
 export const rankService = adminRankService;
 export const toolKeyServiceInstance = toolKeyService;
 export const landingPageService = new LandingPageService(API_URL);
+export const exifService = new ExifService(API_URL);
 export { configService, toolKeyService, API_URL, supportService };
 export type { Bank };
 
