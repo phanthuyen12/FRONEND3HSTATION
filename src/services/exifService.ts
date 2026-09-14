@@ -1,6 +1,5 @@
 /**
- * exifService.ts — Service xoá EXIF metadata
- * Theo pattern của project: class-based service với API_URL constructor
+ * exifService.ts — Service xoá/inject EXIF metadata
  */
 
 export interface ExifRemoveResult {
@@ -25,6 +24,21 @@ export interface ExifServiceInfo {
   maxBatchSize: number;
 }
 
+export interface ExifDevice {
+  key: string;
+  label: string;
+}
+
+export interface ExifInjectResult {
+  filename: string;
+  injectedFilename: string;
+  originalSize: number;
+  injectedSize: number;
+  device: string;
+  datetime: string;
+  blob: Blob;
+}
+
 class ExifService {
   private api: string;
 
@@ -32,9 +46,6 @@ class ExifService {
     this.api = apiUrl;
   }
 
-  /**
-   * Lấy thông tin về service (số luồng, format hỗ trợ, v.v.)
-   */
   async getInfo(): Promise<ExifServiceInfo> {
     const res = await fetch(`${this.api}/api/tools/exif/info`);
     const body = await res.json();
@@ -42,11 +53,13 @@ class ExifService {
     return body.data as ExifServiceInfo;
   }
 
-  /**
-   * Xoá EXIF khỏi 1 ảnh
-   * @param file - File ảnh cần xoá EXIF
-   * @returns ExifRemoveResult với blob ảnh sạch
-   */
+  async getDevices(): Promise<ExifDevice[]> {
+    const res = await fetch(`${this.api}/api/tools/exif/devices`);
+    const body = await res.json();
+    if (!res.ok) throw new Error(body?.message || 'Lỗi khi lấy danh sách thiết bị');
+    return body.data as ExifDevice[];
+  }
+
   async removeExif(file: File): Promise<ExifRemoveResult> {
     const formData = new FormData();
     formData.append('image', file);
@@ -64,23 +77,11 @@ class ExifService {
     const blob = await res.blob();
     const originalSize = parseInt(res.headers.get('X-Original-Size') || '0', 10);
     const cleanSize = parseInt(res.headers.get('X-Clean-Size') || '0', 10);
-    const cleanFilename = getCleanFilename(file.name);
+    const cleanFilename = getSuffixFilename(file.name, '_clean');
 
-    return {
-      filename: file.name,
-      cleanFilename,
-      originalSize,
-      cleanSize,
-      blob,
-    };
+    return { filename: file.name, cleanFilename, originalSize, cleanSize, blob };
   }
 
-  /**
-   * Xoá EXIF khỏi nhiều ảnh (đa luồng trên backend)
-   * @param files - Mảng File ảnh
-   * @param onProgress - Callback nhận % tiến độ (0-100)
-   * @returns ExifBatchResult với ZIP blob
-   */
   async removeExifBatch(
     files: File[],
     onProgress?: (percent: number) => void
@@ -93,8 +94,7 @@ class ExifService {
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) {
-          const percent = Math.round((e.loaded / e.total) * 80); // Upload = 0-80%
-          onProgress(percent);
+          onProgress(Math.round((e.loaded / e.total) * 80));
         }
       };
 
@@ -111,21 +111,61 @@ class ExifService {
       };
 
       xhr.onerror = () => reject(new Error('Lỗi kết nối tới server'));
-
       xhr.open('POST', `${this.api}/api/tools/exif/remove-batch`);
       xhr.responseType = 'blob';
       xhr.send(formData);
     });
   }
+
+  /**
+   * Inject metadata giả vào ảnh (giả lập thiết bị chụp)
+   */
+  async injectMetadata(
+    file: File,
+    options: {
+      device: string;
+      datetime?: string;
+      addGps?: boolean;
+      lat?: string;
+      lon?: string;
+    }
+  ): Promise<ExifInjectResult> {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('device', options.device);
+    if (options.datetime) formData.append('datetime', options.datetime);
+    if (options.addGps) {
+      formData.append('addGps', 'true');
+      if (options.lat) formData.append('lat', options.lat);
+      if (options.lon) formData.append('lon', options.lon);
+    }
+
+    const res = await fetch(`${this.api}/api/tools/exif/inject`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body?.message || 'Inject metadata thất bại');
+    }
+
+    const blob = await res.blob();
+    const originalSize = parseInt(res.headers.get('X-Original-Size') || String(file.size), 10);
+    const injectedSize = parseInt(res.headers.get('Content-Length') || '0', 10);
+    const device = res.headers.get('X-Device') || options.device;
+    const datetime = res.headers.get('X-DateTime') || '';
+    const injectedFilename = getSuffixFilename(file.name, '_injected', '.jpg');
+
+    return { filename: file.name, injectedFilename, originalSize, injectedSize, device, datetime, blob };
+  }
 }
 
-/**
- * Helper: tạo tên file clean từ tên gốc
- */
-function getCleanFilename(filename: string): string {
+function getSuffixFilename(filename: string, suffix: string, forceExt?: string): string {
   const lastDot = filename.lastIndexOf('.');
-  if (lastDot === -1) return `${filename}_clean`;
-  return `${filename.slice(0, lastDot)}_clean${filename.slice(lastDot)}`;
+  const base = lastDot === -1 ? filename : filename.slice(0, lastDot);
+  const ext = forceExt || (lastDot === -1 ? '' : filename.slice(lastDot));
+  return `${base}${suffix}${ext}`;
 }
 
 export default ExifService;
