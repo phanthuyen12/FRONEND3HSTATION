@@ -31,6 +31,9 @@ const AppRouter: React.FC = () => {
         {/* Admin login */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
+        {/* ⚠️ Route công khai — phải đặt TRƯỚC /admin/* để bypass AdminProtectedRoute */}
+        <Route path="/admin/tools/exif-remover" element={<ExifRemoverPublic />} />
+
         {/* Admin: yêu cầu role admin */}
         <Route
           path="/admin/*"
@@ -50,7 +53,7 @@ const AppRouter: React.FC = () => {
         <Route path="/techxen/services" element={<TechxenServicesPage />} />
         <Route path="/techxen/service-intro" element={<TechxenServiceIntroPage />} />
 
-        {/* Public Tools — không cần login */}
+        {/* Public Tools (path khác /admin) */}
         <Route path="/tools/exif-remover" element={<ExifRemoverPublic />} />
 
         {/* Client chính */}
