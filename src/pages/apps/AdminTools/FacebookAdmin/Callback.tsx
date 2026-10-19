@@ -30,11 +30,24 @@ const FacebookCallback: React.FC = () => {
       
       // Gọi service để gửi code xuống backend xử lý
       adminFacebookService.connectPage(code, redirectUri)
-        .then(() => {
+        .then((result) => {
+          const failedSubscriptions = (result?.webhookSubscriptions || []).filter(
+            (subscription: { success: boolean }) => !subscription.success
+          );
+          const webhookMessage = failedSubscriptions.length > 0
+            ? `\n\nWebhook chưa đăng ký được cho: ${failedSubscriptions
+                .map((subscription: { pageName?: string; pageId: string; error?: string }) =>
+                  `${subscription.pageName || subscription.pageId}${subscription.error ? ` (${subscription.error})` : ''}`
+                )
+                .join(', ')}. Hãy kiểm tra quyền Page Access Token hoặc thử kết nối lại.`
+            : result?.webhookSubscriptions?.length
+              ? '\n\nWebhook tin nhắn đã đăng ký thành công cho các Page.'
+              : '';
+
           Swal.fire({
-            icon: "success",
-            title: "Thành công",
-            text: "Đã kết nối và đồng bộ các trang Facebook thành công!",
+            icon: failedSubscriptions.length > 0 ? "warning" : "success",
+            title: failedSubscriptions.length > 0 ? "Đã kết nối nhưng webhook bị lỗi" : "Thành công",
+            text: `Đã kết nối và đồng bộ các trang Facebook.${webhookMessage}`,
             confirmButtonText: "Quay lại Dashboard",
           }).then(() => {
             navigate("/admin/facebook/posts");

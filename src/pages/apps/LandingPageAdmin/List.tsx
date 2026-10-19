@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { PageBreadcrumb } from '../../../components';
 import { landingPageService, API_URL, authService } from '../../../config';
@@ -11,12 +11,17 @@ const LandingPagesList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const navigate = useNavigate();
+
+  // Tracks the most recently fired request so a slower, older request can't
+  // overwrite the table with stale data once a newer one has already resolved.
+  const latestRequestId = useRef(0);
 
   const isReadOnly = authService.getUser()?.role === 'viewer';
 
@@ -25,18 +30,31 @@ const LandingPagesList: React.FC = () => {
     setSearch(paramSearch);
   }, [searchParams]);
 
+  // Debounce typing in the search box: wait for a short pause before actually
+  // querying the API, instead of firing one request per keystroke.
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setDebouncedSearch(search);
+      setOffset(0);
+    }, 400);
+    return () => clearTimeout(handle);
+  }, [search]);
+
   const loadPages = async () => {
+    const requestId = ++latestRequestId.current;
     setLoading(true);
     try {
       const result = await landingPageService.getLandingPages({
-        search: search || undefined,
+        search: debouncedSearch || undefined,
         status: statusFilter !== 'all' ? statusFilter : undefined,
         limit,
         offset
       });
+      if (requestId !== latestRequestId.current) return; // a newer request has superseded this one
       setPages(result.data || []);
       setTotal(result.total || 0);
     } catch (err: any) {
+      if (requestId !== latestRequestId.current) return;
       console.error('Failed to load landing pages:', err);
       Swal.fire({
         icon: 'error',
@@ -45,13 +63,13 @@ const LandingPagesList: React.FC = () => {
         confirmButtonText: 'Đóng'
       });
     } finally {
-      setLoading(false);
+      if (requestId === latestRequestId.current) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadPages();
-  }, [search, statusFilter, offset]);
+  }, [debouncedSearch, statusFilter, offset]);
 
   const handleSoftDelete = async (id: number) => {
     const result = await Swal.fire({
@@ -247,10 +265,7 @@ const LandingPagesList: React.FC = () => {
                 className="form-input"
                 placeholder="Tìm kiếm theo tên, tên miền hoặc đường dẫn..."
                 value={search}
-                onChange={e => {
-                  setSearch(e.target.value);
-                  setOffset(0);
-                }}
+                onChange={e => setSearch(e.target.value)}
               />
             </div>
             <select
